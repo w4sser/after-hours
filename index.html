@@ -3,158 +3,366 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>After Hours — For Two</title>
-<meta name="description" content="A premium card game for couples. Stop scrolling. Start laughing.">
-<meta name="theme-color" content="#0D0D0D">
+<title>After Hours</title>
+<meta name="description" content="A card game for couples. Stop scrolling. Start laughing.">
+<meta name="theme-color" content="#111111">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; overflow: hidden; }
+html, body { height: 100%; }
 body {
   font-family: 'Inter', -apple-system, system-ui, sans-serif;
-  background: linear-gradient(165deg, #0D0D0D 0%, #1A1A2E 50%, #16213E 100%);
-  color: #F0E6D3;
+  background: #111111;
+  color: #EDE0C8;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   -webkit-user-select: none;
+  overflow: hidden;
 }
 #app {
   height: 100vh; height: 100dvh;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  padding: 24px;
+  padding: 32px 24px;
   overflow-y: auto;
 }
-button { font-family: inherit; cursor: pointer; -webkit-appearance: none; }
-button:active { transform: scale(0.97); }
-
-/* Screens */
+button { font-family: inherit; cursor: pointer; -webkit-appearance: none; border: none; }
+button:active { transform: scale(0.97); transition: transform 0.1s; }
 .screen { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 400px; }
 .screen.hidden { display: none; }
 
-/* Home */
-.home-subtitle { font-size: 13px; letter-spacing: 6px; text-transform: uppercase; color: #8B7E74; margin-bottom: 12px; }
-.home-title { font-size: 42px; font-weight: 300; letter-spacing: -1px; line-height: 1.1; color: #F0E6D3; }
-.home-tagline { font-size: 15px; color: #8B7E74; margin-top: 16px; line-height: 1.5; font-weight: 300; }
-.mood-label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #6B5F54; text-align: center; margin: 32px 0 12px; }
+/* ── LANG TOGGLE ── */
+.lang-toggle {
+  position: fixed; top: 20px; right: 20px;
+  background: rgba(237,224,200,0.08);
+  border: 1px solid rgba(237,224,200,0.15);
+  border-radius: 8px; padding: 7px 13px;
+  color: #9A8E7E; font-size: 12px; font-weight: 500;
+  letter-spacing: 1px; z-index: 100;
+  transition: background 0.2s;
+}
+.lang-toggle:hover { background: rgba(237,224,200,0.13); }
+
+/* ── HOME ── */
+.home-title {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(52px, 16vw, 80px);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #EDE0C8;
+  text-align: center;
+  line-height: 1;
+  margin-bottom: 14px;
+}
+.home-subtitle {
+  font-size: 15px;
+  font-weight: 300;
+  color: #9A8E7E;
+  text-align: center;
+  line-height: 1.6;
+  max-width: 280px;
+  margin-bottom: 40px;
+}
+.card-fan {
+  width: 180px;
+  height: 160px;
+  position: relative;
+  margin-bottom: 44px;
+  flex-shrink: 0;
+}
+.card-fan svg { width: 100%; height: 100%; }
+.btn-start {
+  width: 100%;
+  padding: 20px;
+  background: #EDE0C8;
+  border-radius: 50px;
+  color: #111111;
+  font-family: 'Anton', sans-serif;
+  font-size: 22px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 28px;
+  transition: background 0.2s, transform 0.1s;
+}
+.btn-start:hover { background: #F5EDD8; }
+.home-nav {
+  display: flex; gap: 28px;
+  font-size: 11px; letter-spacing: 2px;
+  text-transform: uppercase; color: #6B5F52;
+}
+.home-nav button {
+  background: none; color: #6B5F52;
+  font-size: 11px; letter-spacing: 2px;
+  text-transform: uppercase; font-family: inherit;
+  padding: 4px 0;
+  transition: color 0.2s;
+}
+.home-nav button:hover { color: #9A8E7E; }
+
+/* ── MOOD SELECT ── */
+.mood-back {
+  align-self: flex-start;
+  background: none; color: #6B5F52;
+  font-size: 13px; padding: 0 0 24px 0;
+  display: flex; align-items: center; gap: 6px;
+}
+.mood-heading {
+  font-family: 'Anton', sans-serif;
+  font-size: 32px; letter-spacing: 1px;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 6px;
+}
+.mood-desc {
+  font-size: 13px; color: #9A8E7E;
+  text-align: center; margin-bottom: 32px;
+}
 .mood-btn {
-  width: 100%; padding: 18px 24px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 16px; color: #F0E6D3; font-size: 16px;
+  width: 100%; padding: 18px 20px;
+  background: rgba(237,224,200,0.04);
+  border: 1px solid rgba(237,224,200,0.08);
+  border-radius: 14px;
   display: flex; align-items: center; gap: 16px;
-  text-align: left; margin-bottom: 10px;
+  margin-bottom: 10px; text-align: left;
   transition: background 0.2s, border-color 0.2s;
 }
-.mood-btn:hover, .mood-btn:focus { background: rgba(255,255,255,0.08); }
-.mood-btn .emoji { font-size: 24px; flex-shrink: 0; }
-.mood-btn .info .name { font-weight: 500; font-size: 16px; }
-.mood-btn .info .desc { font-size: 13px; color: #8B7E74; margin-top: 2px; }
-.mood-btn .count { margin-left: auto; font-size: 13px; color: #6B5F54; flex-shrink: 0; }
-.home-footer { font-size: 11px; color: #4A4440; text-align: center; line-height: 1.6; margin-top: 24px; }
-.lang-toggle {
-  position: fixed; top: 16px; right: 16px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 10px; padding: 8px 14px;
-  color: #8B7E74; font-size: 13px; font-weight: 500;
-  z-index: 10; letter-spacing: 0.5px;
-  transition: background 0.2s;
+.mood-btn:hover { background: rgba(237,224,200,0.08); }
+.mood-btn .m-emoji { font-size: 22px; flex-shrink: 0; }
+.mood-btn .m-info .m-name {
+  font-family: 'Anton', sans-serif;
+  font-size: 18px; letter-spacing: 1px;
+  text-transform: uppercase; color: #EDE0C8;
 }
-.lang-toggle:hover { background: rgba(255,255,255,0.1); }
+.mood-btn .m-info .m-desc { font-size: 12px; color: #7A6E62; margin-top: 2px; }
+.mood-btn .m-count { margin-left: auto; font-size: 12px; color: #6B5F52; flex-shrink: 0; }
 
-/* Play */
-.play-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px; }
-.play-exit { background: none; border: none; color: #6B5F54; font-size: 14px; padding: 8px 0; }
-.play-counter { font-size: 13px; color: #6B5F54; }
-.play-mood { font-size: 13px; opacity: 0.7; }
-.card-container {
-  width: 100%; min-height: 380px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 24px; padding: 36px 28px;
-  display: flex; flex-direction: column; justify-content: space-between;
+/* ── PLAY ── */
+.play-header {
+  display: flex; justify-content: space-between;
+  align-items: center; width: 100%; margin-bottom: 20px;
+}
+.play-exit {
+  background: none; color: #6B5F52; font-size: 13px;
+  padding: 8px 0; display: flex; align-items: center; gap: 4px;
+}
+.play-counter { font-size: 12px; color: #6B5F52; letter-spacing: 1px; }
+.play-mood-tag {
+  font-size: 12px; letter-spacing: 1px;
+  opacity: 0.8; text-transform: uppercase;
+}
+.card-box {
+  width: 100%; min-height: 360px;
+  background: #1A1A1A;
+  border: 1px solid rgba(237,224,200,0.07);
+  border-radius: 20px;
+  padding: 28px 24px;
+  display: flex; flex-direction: column;
+  justify-content: space-between;
   position: relative; overflow: hidden;
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition: opacity 0.2s, transform 0.2s;
 }
-.card-container.animating { opacity: 0; transform: translateX(30px); }
-.card-accent { position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 24px 24px 0 0; }
-.card-type-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.card-type-icon { font-size: 20px; }
-.card-type-label { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.8; }
-.card-hint { font-size: 11px; color: #6B5F54; margin: 0 0 0 30px; font-style: italic; }
-.card-text { font-size: 22px; font-weight: 400; line-height: 1.5; text-align: center; padding: 0 8px; letter-spacing: -0.3px; }
-.action-row { display: flex; gap: 12px; width: 100%; margin-top: 20px; }
-.btn-reveal, .btn-next {
-  flex: 1; padding: 16px; border-radius: 14px;
-  font-size: 15px; font-weight: 500;
+.card-box.animating { opacity: 0; transform: translateX(24px); }
+.card-top-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 20px 20px 0 0; }
+.card-type-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.card-type-icon { font-size: 18px; }
+.card-type-name {
+  font-family: 'Anton', sans-serif;
+  font-size: 13px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.7;
 }
+.card-hint { font-size: 11px; color: #6B5F52; font-style: italic; padding-left: 26px; }
+.card-text {
+  font-size: 21px; font-weight: 400; line-height: 1.55;
+  text-align: center; padding: 0 4px;
+  letter-spacing: -0.2px; color: #EDE0C8;
+}
+.card-spacer { min-height: 32px; }
+.action-row { display: flex; gap: 10px; width: 100%; margin-top: 16px; }
 .btn-next {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: #F0E6D3;
+  flex: 1; padding: 16px;
+  background: #EDE0C8;
+  border-radius: 50px;
+  color: #111111;
+  font-family: 'Anton', sans-serif;
+  font-size: 16px; letter-spacing: 2px; text-transform: uppercase;
   transition: background 0.2s;
 }
-.btn-next:hover { background: rgba(255,255,255,0.1); }
-.btn-reveal { border: none; }
-.guess-hint { font-size: 12px; text-align: center; margin-top: 8px; opacity: 0.7; }
-.progress-track { width: 100%; height: 2px; background: rgba(255,255,255,0.04); border-radius: 1px; margin-top: 16px; }
+.btn-next:hover { background: #F5EDD8; }
+.btn-reveal {
+  flex: 1; padding: 16px;
+  border-radius: 50px;
+  font-family: 'Anton', sans-serif;
+  font-size: 16px; letter-spacing: 2px; text-transform: uppercase;
+  transition: background 0.2s;
+}
+.guess-hint {
+  font-size: 12px; text-align: center;
+  margin-top: 10px; opacity: 0.7; letter-spacing: 0.3px;
+}
+.progress-track {
+  width: 100%; height: 2px;
+  background: rgba(237,224,200,0.06);
+  border-radius: 1px; margin-top: 18px;
+}
 .progress-bar { height: 100%; border-radius: 1px; transition: width 0.4s ease; }
 
-/* Done */
-.done-icon { font-size: 48px; margin-bottom: 8px; }
-.done-title { font-size: 28px; font-weight: 300; letter-spacing: -0.5px; margin-bottom: 12px; }
-.done-sub { font-size: 15px; color: #8B7E74; line-height: 1.6; }
-.done-actions { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 32px; }
-.btn-replay {
-  width: 100%; padding: 16px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 14px; color: #F0E6D3;
-  font-size: 15px; font-weight: 500;
+/* ── DONE ── */
+.done-icon { font-size: 44px; margin-bottom: 16px; }
+.done-title {
+  font-family: 'Anton', sans-serif;
+  font-size: 36px; letter-spacing: 1px; text-transform: uppercase;
+  text-align: center; margin-bottom: 10px;
 }
-.btn-home {
+.done-sub { font-size: 14px; color: #9A8E7E; text-align: center; line-height: 1.6; }
+.done-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 36px; }
+.btn-replay {
+  width: 100%; padding: 18px;
+  background: #EDE0C8;
+  border-radius: 50px;
+  color: #111111;
+  font-family: 'Anton', sans-serif;
+  font-size: 18px; letter-spacing: 2px; text-transform: uppercase;
+}
+.btn-home-outline {
   width: 100%; padding: 16px;
   background: none;
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 14px; color: #8B7E74; font-size: 15px;
+  border: 1px solid rgba(237,224,200,0.12);
+  border-radius: 50px;
+  color: #9A8E7E;
+  font-family: 'Anton', sans-serif;
+  font-size: 16px; letter-spacing: 2px; text-transform: uppercase;
 }
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 200; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: #1A1A1A;
+  border: 1px solid rgba(237,224,200,0.1);
+  border-radius: 20px; padding: 32px 28px;
+  max-width: 380px; width: 100%;
+}
+.modal-title {
+  font-family: 'Anton', sans-serif;
+  font-size: 24px; letter-spacing: 1px; text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.modal-body { font-size: 14px; color: #9A8E7E; line-height: 1.8; }
+.modal-body li { margin-bottom: 8px; list-style: none; padding-left: 0; }
+.modal-close {
+  width: 100%; padding: 14px;
+  background: #EDE0C8; border-radius: 50px;
+  color: #111; font-family: 'Anton', sans-serif;
+  font-size: 15px; letter-spacing: 2px; text-transform: uppercase;
+  margin-top: 24px;
+}
+.coming-soon { font-size: 13px; color: #6B5F52; text-align: center; margin-top: 10px; }
 </style>
 </head>
 <body>
 <button class="lang-toggle" id="langBtn" onclick="toggleLang()">SV</button>
-<div id="app">
-  <!-- Home Screen -->
-  <div class="screen" id="homeScreen">
-    <div style="text-align:center">
-      <div class="home-subtitle">For Two</div>
-      <h1 class="home-title">After Hours</h1>
-      <p class="home-tagline" id="tagline"></p>
+
+<!-- Modal: How to Play -->
+<div class="modal-overlay" id="howModal">
+  <div class="modal-box">
+    <div class="modal-title" id="howTitle"></div>
+    <div class="modal-body" id="howBody"></div>
+    <button class="modal-close" onclick="closeModal('howModal')">GOT IT</button>
+  </div>
+</div>
+
+<!-- Modal: Card Packs -->
+<div class="modal-overlay" id="packsModal">
+  <div class="modal-box">
+    <div class="modal-title">CARD PACKS</div>
+    <div class="modal-body">
+      <div style="margin-bottom:14px;color:#EDE0C8;">Available now:</div>
+      <li>✦ &nbsp;After Hours (120 cards)</li>
+      <br>
+      <div style="margin-bottom:14px;color:#EDE0C8;">Coming soon:</div>
+      <li style="opacity:0.4;">✦ &nbsp;First Dates</li>
+      <li style="opacity:0.4;">✦ &nbsp;Long-Term Chaos</li>
+      <li style="opacity:0.4;">✦ &nbsp;Spicy Night</li>
+      <li style="opacity:0.4;">✦ &nbsp;Travel Mode</li>
     </div>
-    <p class="mood-label" id="moodLabel"></p>
-    <div id="moodButtons"></div>
-    <p class="home-footer" id="homeFooter"></p>
+    <button class="modal-close" onclick="closeModal('packsModal')">CLOSE</button>
+  </div>
+</div>
+
+<div id="app">
+  <!-- Home -->
+  <div class="screen" id="homeScreen">
+    <div class="home-title">After Hours</div>
+    <div class="home-subtitle" id="homeSubtitle"></div>
+    <div class="card-fan">
+      <svg viewBox="0 0 180 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Card 1 (far left) -->
+        <g transform="rotate(-28 90 140)">
+          <rect x="52" y="20" width="76" height="110" rx="10" fill="#1E1E1E" stroke="rgba(237,224,200,0.12)" stroke-width="1.5"/>
+          <rect x="60" y="32" width="60" height="86" rx="6" fill="#171717"/>
+        </g>
+        <!-- Card 2 -->
+        <g transform="rotate(-14 90 140)">
+          <rect x="52" y="20" width="76" height="110" rx="10" fill="#222222" stroke="rgba(237,224,200,0.14)" stroke-width="1.5"/>
+          <rect x="60" y="32" width="60" height="86" rx="6" fill="#1A1A1A"/>
+        </g>
+        <!-- Card 3 (center) -->
+        <g transform="rotate(0 90 140)">
+          <rect x="52" y="20" width="76" height="110" rx="10" fill="#272727" stroke="rgba(237,224,200,0.18)" stroke-width="1.5"/>
+          <rect x="60" y="32" width="60" height="86" rx="6" fill="#1E1E1E"/>
+          <text x="90" y="82" font-family="Anton, sans-serif" font-size="22" fill="rgba(237,224,200,0.25)" text-anchor="middle">AH</text>
+        </g>
+        <!-- Card 4 -->
+        <g transform="rotate(14 90 140)">
+          <rect x="52" y="20" width="76" height="110" rx="10" fill="#222222" stroke="rgba(237,224,200,0.14)" stroke-width="1.5"/>
+          <rect x="60" y="32" width="60" height="86" rx="6" fill="#1A1A1A"/>
+        </g>
+        <!-- Card 5 (far right) -->
+        <g transform="rotate(28 90 140)">
+          <rect x="52" y="20" width="76" height="110" rx="10" fill="#1E1E1E" stroke="rgba(237,224,200,0.12)" stroke-width="1.5"/>
+          <rect x="60" y="32" width="60" height="86" rx="6" fill="#171717"/>
+        </g>
+      </svg>
+    </div>
+    <button class="btn-start" id="startBtn" onclick="showMoodSelect()"></button>
+    <div class="home-nav">
+      <button onclick="openModal('howModal')" id="howBtn"></button>
+      <button onclick="openModal('packsModal')" id="packsBtn"></button>
+    </div>
   </div>
 
-  <!-- Play Screen -->
+  <!-- Mood Select -->
+  <div class="screen hidden" id="moodScreen">
+    <button class="mood-back" onclick="showHome()">&#8592; <span id="backLabel"></span></button>
+    <div class="mood-heading" id="moodHeading"></div>
+    <div class="mood-desc" id="moodDesc"></div>
+    <div id="moodButtons" style="width:100%"></div>
+  </div>
+
+  <!-- Play -->
   <div class="screen hidden" id="playScreen">
     <div class="play-header">
       <button class="play-exit" id="exitBtn" onclick="goHome()"></button>
       <span class="play-counter" id="counter"></span>
-      <span class="play-mood" id="playMoodLabel"></span>
+      <span class="play-mood-tag" id="playMoodTag"></span>
     </div>
-    <div class="card-container" id="cardContainer">
-      <div class="card-accent" id="cardAccent"></div>
+    <div class="card-box" id="cardBox">
+      <div class="card-top-bar" id="cardBar"></div>
       <div>
         <div class="card-type-row">
           <span class="card-type-icon" id="typeIcon"></span>
-          <span class="card-type-label" id="typeLabel"></span>
+          <span class="card-type-name" id="typeName"></span>
         </div>
         <p class="card-hint" id="typeHint"></p>
       </div>
       <p class="card-text" id="cardText"></p>
-      <div style="min-height:40px"></div>
+      <div class="card-spacer"></div>
     </div>
     <div class="action-row">
       <button class="btn-reveal hidden" id="revealBtn" onclick="reveal()"></button>
@@ -166,84 +374,110 @@ button:active { transform: scale(0.97); }
     </div>
   </div>
 
-  <!-- Done Screen -->
+  <!-- Done -->
   <div class="screen hidden" id="doneScreen">
     <div class="done-icon">&#10024;</div>
-    <h2 class="done-title" id="doneTitle"></h2>
+    <div class="done-title" id="doneTitle"></div>
     <p class="done-sub" id="doneSub"></p>
     <div class="done-actions">
       <button class="btn-replay" id="replayBtn" onclick="replay()"></button>
-      <button class="btn-home" id="newMoodBtn" onclick="goHome()"></button>
+      <button class="btn-home-outline" id="newMoodBtn" onclick="showHome()"></button>
     </div>
   </div>
 </div>
 
 <script>
-// ─── LANGUAGE DATA ───
+// ── LANGUAGE ──
 var lang = "en";
 
 var UI = {
   en: {
-    tagline: "Stop scrolling. Start laughing.",
-    moodLabel: "Choose mood",
-    footer: "One phone. Two people. No accounts.",
+    subtitle: "For couples who want to laugh,\u00a0reveal, and reconnect.",
+    startBtn: "START \u25B6",
+    howBtn: "HOW TO PLAY",
+    packsBtn: "CARD PACKS",
+    howTitle: "HOW TO PLAY",
+    howBody: [
+      "\u2460  Choose a mood: Fun, Deep, Spicy, or Mix.",
+      "\u2461  Draw a card and read it aloud.",
+      "\u2462  For \u2018Guess Your Partner\u2019 cards: both answer secretly, then tap Reveal.",
+      "\u2463  For \u2018Who\u2019s More Likely\u2019: point at each other on 3\u20132\u20131.",
+      "\u2464  No wrong answers. No scoring. Just talk."
+    ],
+    backLabel: "Back",
+    moodHeading: "CHOOSE YOUR MOOD",
+    moodDesc: "Sets the tone for the whole session.",
     exit: "\u2190 Exit",
-    next: "Next card \u2192",
-    reveal: "\uD83D\uDD2E Reveal",
-    guessWait: "Both answer first. Then tap Reveal.",
-    guessReveal: "Compare your answers! Did you match?",
-    doneTitle: "That's all of them.",
-    doneSub: function(n){ return n + " cards done. Hope you laughed."; },
-    replay: function(m){ return "Play again (" + m + ")"; },
-    newMood: "Choose new mood",
+    next: "NEXT \u2192",
+    reveal: "\uD83D\uDD2E REVEAL",
+    guessWait: "Both answer first \u2014 then tap Reveal.",
+    guessReveal: "Compare your answers. Did you match?",
+    doneTitle: "THAT\u2019S ALL.",
+    doneSub: function(n){ return n + " cards. Hope you laughed."; },
+    replay: function(m){ return "PLAY AGAIN \u2014 " + m; },
+    newMood: "CHOOSE NEW MOOD",
     cards: "cards",
     moods: {
-      fun:  { label:"Fun",   emoji:"\uD83C\uDF89", desc:"Light, fast, laughs" },
-      deep: { label:"Deep",  emoji:"\uD83C\uDF0A", desc:"Memories, feelings, future" },
-      spicy:{ label:"Spicy", emoji:"\uD83D\uDD25", desc:"Flirty, bold, hot" },
-      mix:  { label:"Mix",   emoji:"\u2728",       desc:"A bit of everything" },
+      fun:   { label:"FUN",   emoji:"\uD83C\uDF89", desc:"Light, fast, laughs" },
+      deep:  { label:"DEEP",  emoji:"\uD83C\uDF0A", desc:"Memories, feelings, future" },
+      spicy: { label:"SPICY", emoji:"\uD83D\uDD25", desc:"Flirty, bold, a bit hot" },
+      mix:   { label:"MIX",   emoji:"\u2728",       desc:"A bit of everything" },
     },
     types: {
-      hot_take:           { label:"Hot Take",           icon:"\uD83D\uDD25", hint:"Argue for or against." },
-      whos_more_likely:   { label:"Who's More Likely",  icon:"\uD83D\uDC49", hint:"Point at each other. 3, 2, 1\u2026" },
-      guess_your_partner: { label:"Guess Your Partner", icon:"\uD83D\uDD2E", hint:"Answer separately. Then reveal." },
-      confession:         { label:"Confession",         icon:"\uD83D\uDE48", hint:"Be honest. No excuses." },
-      memory_lane:        { label:"Memory Lane",        icon:"\uD83D\uDCF8", hint:"Share the memory. Let it sink in." },
-      spicy_scenario:     { label:"Spicy Scenario",     icon:"\uD83C\uDF0D", hint:"Discuss. No right answers." },
+      hot_take:           { label:"HOT TAKE",           icon:"\uD83D\uDD25", hint:"Argue for or against." },
+      whos_more_likely:   { label:"WHO'S MORE LIKELY",  icon:"\uD83D\uDC49", hint:"Point at each other. 3, 2, 1\u2026" },
+      guess_your_partner: { label:"GUESS YOUR PARTNER", icon:"\uD83D\uDD2E", hint:"Answer separately. Then reveal." },
+      confession:         { label:"CONFESSION",         icon:"\uD83D\uDE48", hint:"Be honest. No excuses." },
+      memory_lane:        { label:"MEMORY LANE",        icon:"\uD83D\uDCF8", hint:"Share the memory. Let it sink in." },
+      spicy_scenario:     { label:"SPICY SCENARIO",     icon:"\uD83C\uDF0D", hint:"Discuss. No right answers." },
     },
   },
   sv: {
-    tagline: "Sluta scrolla. B\u00f6rja skratta.",
-    moodLabel: "V\u00e4lj mood",
-    footer: "En telefon. Tv\u00e5 personer. Inga konton.",
+    subtitle: "F\u00f6r par som vill skratta,\u00a0avsl\u00f6ja och \u00e5teruppkoppla.",
+    startBtn: "STARTA \u25B6",
+    howBtn: "S\u00c5 SPELAR DU",
+    packsBtn: "KORTPAKET",
+    howTitle: "S\u00c5 SPELAR DU",
+    howBody: [
+      "\u2460  V\u00e4lj ett mood: Fun, Deep, Spicy eller Mix.",
+      "\u2461  Dra ett kort och l\u00e4s h\u00f6gt.",
+      "\u2462  Vid \u2018Guess Your Partner\u2019: svara var f\u00f6r sig, sedan Reveal.",
+      "\u2463  Vid \u2018Who\u2019s More Likely\u2019: peka p\u00e5 varandra p\u00e5 3\u20132\u20131.",
+      "\u2464  Inga felaktiga svar. Inget po\u00e4ngsystem. Prata bara."
+    ],
+    backLabel: "Tillbaka",
+    moodHeading: "V\u00c4LJ DITT MOOD",
+    moodDesc: "S\u00e4tter tonen f\u00f6r hela sessionen.",
     exit: "\u2190 Avsluta",
-    next: "N\u00e4sta kort \u2192",
-    reveal: "\uD83D\uDD2E Reveal",
-    guessWait: "B\u00e5da svarar f\u00f6rst. Tryck sedan Reveal.",
-    guessReveal: "J\u00e4mf\u00f6r era svar! Matchade ni?",
-    doneTitle: "Det var alla.",
-    doneSub: function(n){ return n + " kort avklarade. Hoppas ni skrattade."; },
-    replay: function(m){ return "Spela igen (" + m + ")"; },
-    newMood: "V\u00e4lj nytt mood",
+    next: "N\u00c4STA \u2192",
+    reveal: "\uD83D\uDD2E REVEAL",
+    guessWait: "B\u00e5da svarar f\u00f6rst \u2014 sedan Reveal.",
+    guessReveal: "J\u00e4mf\u00f6r svaren. Matchade ni?",
+    doneTitle: "DET VAR ALLA.",
+    doneSub: function(n){ return n + " kort klara. Hoppas ni skrattade."; },
+    replay: function(m){ return "SPELA IGEN \u2014 " + m; },
+    newMood: "V\u00c4LJ NYTT MOOD",
     cards: "kort",
     moods: {
-      fun:  { label:"Fun",   emoji:"\uD83C\uDF89", desc:"L\u00e4tt, snabbt, skratt" },
-      deep: { label:"Deep",  emoji:"\uD83C\uDF0A", desc:"Minnen, k\u00e4nslor, framtid" },
-      spicy:{ label:"Spicy", emoji:"\uD83D\uDD25", desc:"Fl\u00f6rtigt, v\u00e5gat, hett" },
-      mix:  { label:"Mix",   emoji:"\u2728",       desc:"Lite av allt" },
+      fun:   { label:"FUN",   emoji:"\uD83C\uDF89", desc:"L\u00e4tt, snabbt, skratt" },
+      deep:  { label:"DEEP",  emoji:"\uD83C\uDF0A", desc:"Minnen, k\u00e4nslor, framtid" },
+      spicy: { label:"SPICY", emoji:"\uD83D\uDD25", desc:"Fl\u00f6rtigt, v\u00e5gat, hett" },
+      mix:   { label:"MIX",   emoji:"\u2728",       desc:"Lite av allt" },
     },
     types: {
-      hot_take:           { label:"Hot Take",           icon:"\uD83D\uDD25", hint:"Argumentera f\u00f6r eller emot." },
-      whos_more_likely:   { label:"Who's More Likely",  icon:"\uD83D\uDC49", hint:"Peka p\u00e5 varandra samtidigt. 3, 2, 1\u2026" },
-      guess_your_partner: { label:"Guess Your Partner", icon:"\uD83D\uDD2E", hint:"Svara var f\u00f6r sig. Tryck sedan Reveal." },
-      confession:         { label:"Confession",         icon:"\uD83D\uDE48", hint:"Var \u00e4rlig. Inga und\u00e4nflykter." },
-      memory_lane:        { label:"Memory Lane",        icon:"\uD83D\uDCF8", hint:"Dela minnet. L\u00e5t det sjunka in." },
-      spicy_scenario:     { label:"Spicy Scenario",     icon:"\uD83C\uDF0D", hint:"Diskutera. Inga r\u00e4tta svar." },
+      hot_take:           { label:"HOT TAKE",           icon:"\uD83D\uDD25", hint:"Argumentera f\u00f6r eller emot." },
+      whos_more_likely:   { label:"WHO'S MORE LIKELY",  icon:"\uD83D\uDC49", hint:"Peka p\u00e5 varandra. 3, 2, 1\u2026" },
+      guess_your_partner: { label:"GUESS YOUR PARTNER", icon:"\uD83D\uDD2E", hint:"Svara var f\u00f6r sig. Sedan reveal." },
+      confession:         { label:"CONFESSION",         icon:"\uD83D\uDE48", hint:"Var \u00e4rlig. Inga und\u00e4nflykter." },
+      memory_lane:        { label:"MEMORY LANE",        icon:"\uD83D\uDCF8", hint:"Dela minnet. L\u00e5t det sjunka in." },
+      spicy_scenario:     { label:"SPICY SCENARIO",     icon:"\uD83C\uDF0D", hint:"Diskutera. Inga r\u00e4tta svar." },
     },
   },
 };
 
-// ─── CARDS (both languages) ───
+var MOOD_COLORS = { fun:"#FFB347", deep:"#7EC8E3", spicy:"#FF6B6B", mix:"#C9A0DC" };
+
+// ── CARDS ──
 var CARDS = [
   {id:1,type:"hot_take",mood:"fun",en:"Breakfast in bed is completely overrated.",sv:"Frukost p\u00e5 s\u00e4ngen \u00e4r helt \u00f6verskattat."},
   {id:2,type:"hot_take",mood:"fun",en:"Whoever drives picks the music. No exceptions.",sv:"Den som k\u00f6r bilen best\u00e4mmer musiken. Inga undantag."},
@@ -348,14 +582,14 @@ var CARDS = [
   {id:101,type:"spicy_scenario",mood:"fun",en:"You get a free night at any hotel in the world. Where do you go?",sv:"Ni f\u00e5r en gratis natt p\u00e5 valfritt hotell i v\u00e4rlden. Vart \u00e5ker ni?"},
   {id:102,type:"spicy_scenario",mood:"fun",en:"You swap lives with another couple for 24 hours. Who do you pick?",sv:"Ni byter liv med ett annat par i 24 timmar. Vilka v\u00e4ljer ni?"},
   {id:103,type:"spicy_scenario",mood:"spicy",en:"You have an evening with no rules and no consequences. What do you do?",sv:"Ni har en kv\u00e4ll utan regler och utan konsekvenser. Vad g\u00f6r ni?"},
-  {id:104,type:"spicy_scenario",mood:"fun",en:"You get $10,000 to spend on an experience together \u2014 but it all has to be spent tonight. What do you do?",sv:"Ni f\u00e5r 100 000 kr att spendera p\u00e5 en upplevelse ihop \u2014 men allt m\u00e5ste spenderas ikv\u00e4ll. Vad g\u00f6r ni?"},
+  {id:104,type:"spicy_scenario",mood:"fun",en:"You get $10,000 to spend on an experience together \u2014 but all of it tonight. What do you do?",sv:"Ni f\u00e5r 100 000 kr att spendera p\u00e5 en upplevelse ihop \u2014 men allt ikv\u00e4ll. Vad g\u00f6r ni?"},
   {id:105,type:"spicy_scenario",mood:"deep",en:"If you could move anywhere tomorrow with no practical obstacles \u2014 where?",sv:"Om ni kunde flytta vart som helst imorgon utan praktiska hinder \u2014 vart?"},
   {id:106,type:"spicy_scenario",mood:"fun",en:"You wake up and you're famous as a couple \u2014 for what?",sv:"Ni vaknar och \u00e4r k\u00e4nda som par \u2014 f\u00f6r vad?"},
   {id:107,type:"spicy_scenario",mood:"spicy",en:"Plan the perfect date night with no budget. Describe it start to finish.",sv:"Ni f\u00e5r planera den perfekta date night utan budget. Beskriv den fr\u00e5n start till slut."},
   {id:108,type:"spicy_scenario",mood:"fun",en:"You start a business together. What do you sell, and who does what?",sv:"Ni startar ett f\u00f6retag ihop. Vad s\u00e4ljer ni, och vem g\u00f6r vad?"},
   {id:109,type:"spicy_scenario",mood:"deep",en:"If you could guarantee one thing for your future \u2014 what would you choose?",sv:"Om ni kunde garantera en sak f\u00f6r er framtid \u2014 vad hade ni valt?"},
   {id:110,type:"spicy_scenario",mood:"fun",en:"A time machine, one trip. Where do you go \u2014 and do you stay?",sv:"En tidmaskin, en resa. Vart \u00e5ker ni \u2014 och stannar ni?"},
-  {id:111,type:"spicy_scenario",mood:"spicy",en:"You each get a celebrity 'hall pass' \u2014 but you have to agree on one person. Who?",sv:"Ni f\u00e5r en k\u00e4ndis som 'hall pass' \u2014 men ni m\u00e5ste b\u00e5da komma \u00f6verens om vem. Vem?"},
+  {id:111,type:"spicy_scenario",mood:"spicy",en:"You each get a celebrity hall pass \u2014 but you have to agree on one person. Who?",sv:"Ni f\u00e5r en k\u00e4ndis som hall pass \u2014 men m\u00e5ste b\u00e5da komma \u00f6verens om vem. Vem?"},
   {id:112,type:"spicy_scenario",mood:"fun",en:"You're cast on a reality show. Which one, and how far do you get?",sv:"Ni \u00e4r med i en reality-show. Vilken, och hur l\u00e5ngt kommer ni?"},
   {id:113,type:"spicy_scenario",mood:"deep",en:"You get to write a letter to yourselves 10 years from now. What does it say?",sv:"Ni f\u00e5r skriva ett brev till er sj\u00e4lva om 10 \u00e5r. Vad st\u00e5r det?"},
   {id:114,type:"spicy_scenario",mood:"fun",en:"You're offered a road trip: 2 weeks, one car, no plans. Where do you drive first?",sv:"Ni blir erbjudna en roadtrip: 2 veckor, en bil, inga planer. Vart k\u00f6r ni f\u00f6rst?"},
@@ -364,171 +598,176 @@ var CARDS = [
   {id:117,type:"spicy_scenario",mood:"deep",en:"If you only had one weekend left \u2014 how do you spend it?",sv:"Om ni bara hade en helg kvar \u2014 hur spenderar ni den?"},
   {id:118,type:"spicy_scenario",mood:"fun",en:"You swap bodies for 24 hours. What do you do first?",sv:"Ni f\u00e5r byta kroppar i 24 timmar. Vad g\u00f6r ni f\u00f6rst?"},
   {id:119,type:"spicy_scenario",mood:"spicy",en:"Describe the perfect morning after a perfect night \u2014 in detail.",sv:"Beskriv den perfekta morgonen efter en perfekt kv\u00e4ll \u2014 i detalj."},
-  {id:120,type:"spicy_scenario",mood:"fun",en:"You can invite 4 people (living or dead) to dinner. Who, and why?",sv:"Ni f\u00e5r bjuda 4 personer (levande eller d\u00f6da) p\u00e5 middag. Vilka, och varf\u00f6r?"},
+  {id:120,type:"spicy_scenario",mood:"fun",en:"You can invite 4 people (living or dead) to dinner. Who, and why?",sv:"Ni f\u00e5r bjuda 4 personer (levande eller d\u00f6da) p\u00e5 middag. Vilka, och varf\u00f6r?"}
 ];
 
-var MOOD_COLORS = { fun:"#FFB347", deep:"#7EC8E3", spicy:"#FF6B6B", mix:"#C9A0DC" };
-
-// ─── STATE ───
+// ── STATE ──
 var currentMood = null;
 var deck = [];
 var idx = 0;
 var revealed = false;
 
-function t() { return UI[lang]; }
-function cardText(card) { return card[lang]; }
+function u() { return UI[lang]; }
+function ct(card) { return card[lang]; }
 
 function shuffle(arr) {
   var a = arr.slice();
-  for (var i = a.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  for (var i = a.length-1; i > 0; i--) {
+    var j = Math.floor(Math.random()*(i+1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
   }
   return a;
 }
 
-// ─── SCREENS ───
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(function(s){ s.classList.add('hidden'); });
   document.getElementById(id).classList.remove('hidden');
 }
 
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
 function toggleLang() {
   lang = lang === "en" ? "sv" : "en";
   document.getElementById('langBtn').textContent = lang === "en" ? "SV" : "EN";
-  // Re-render current screen
-  if (!document.getElementById('homeScreen').classList.contains('hidden')) renderHome();
-  if (!document.getElementById('playScreen').classList.contains('hidden')) renderCard();
-  if (!document.getElementById('doneScreen').classList.contains('hidden')) renderDone();
+  var s = document.querySelector('.screen:not(.hidden)');
+  if (s) {
+    if (s.id === 'homeScreen') renderHome();
+    else if (s.id === 'moodScreen') renderMoodSelect();
+    else if (s.id === 'playScreen') renderCard();
+    else if (s.id === 'doneScreen') renderDone();
+  }
+  // Update how-to modal
+  renderHowModal();
 }
 
-// ─── HOME ───
 function renderHome() {
-  var u = t();
-  document.getElementById('tagline').textContent = u.tagline;
-  document.getElementById('moodLabel').textContent = u.moodLabel;
-  document.getElementById('homeFooter').textContent = u.footer;
+  var ux = u();
+  document.getElementById('homeSubtitle').textContent = ux.subtitle;
+  document.getElementById('startBtn').textContent = ux.startBtn;
+  document.getElementById('howBtn').textContent = ux.howBtn;
+  document.getElementById('packsBtn').textContent = ux.packsBtn;
+  renderHowModal();
+}
 
+function renderHowModal() {
+  var ux = u();
+  document.getElementById('howTitle').textContent = ux.howTitle;
+  document.getElementById('howBody').innerHTML = ux.howBody.map(function(line){
+    return '<li>' + line + '</li>';
+  }).join('');
+}
+
+function showHome() { renderHome(); showScreen('homeScreen'); }
+function showMoodSelect() { renderMoodSelect(); showScreen('moodScreen'); }
+
+function renderMoodSelect() {
+  var ux = u();
+  document.getElementById('backLabel').textContent = ux.backLabel;
+  document.getElementById('moodHeading').textContent = ux.moodHeading;
+  document.getElementById('moodDesc').textContent = ux.moodDesc;
   var html = "";
-  var moodKeys = ["fun","deep","spicy","mix"];
-  for (var i = 0; i < moodKeys.length; i++) {
-    var key = moodKeys[i];
-    var m = u.moods[key];
-    var count = key === "mix" ? CARDS.length : CARDS.filter(function(c){ return c.mood === key; }).length;
-    html += '<button class="mood-btn" onclick="startGame(\'' + key + '\')">';
-    html += '<span class="emoji">' + m.emoji + '</span>';
-    html += '<div class="info"><div class="name">' + m.label + '</div><div class="desc">' + m.desc + '</div></div>';
-    html += '<span class="count">' + count + ' ' + u.cards + '</span>';
+  var keys = ["fun","deep","spicy","mix"];
+  for (var i=0; i<keys.length; i++) {
+    var k = keys[i];
+    var m = ux.moods[k];
+    var count = k === "mix" ? CARDS.length : CARDS.filter(function(c){ return c.mood === k; }).length;
+    var col = MOOD_COLORS[k];
+    html += '<button class="mood-btn" onclick="startGame(\''+k+'\')" style="border-color:'+col+'18;">';
+    html += '<span class="m-emoji">'+m.emoji+'</span>';
+    html += '<div class="m-info"><div class="m-name" style="color:'+col+'">'+m.label+'</div><div class="m-desc">'+m.desc+'</div></div>';
+    html += '<span class="m-count">'+count+' '+ux.cards+'</span>';
     html += '</button>';
   }
   document.getElementById('moodButtons').innerHTML = html;
 }
 
-function goHome() {
-  renderHome();
-  showScreen('homeScreen');
-}
-
-// ─── PLAY ───
 function startGame(mood) {
   currentMood = mood;
   var filtered = mood === "mix" ? CARDS : CARDS.filter(function(c){ return c.mood === mood; });
   deck = shuffle(filtered);
-  idx = 0;
-  revealed = false;
+  idx = 0; revealed = false;
   renderCard();
   showScreen('playScreen');
 }
 
+function goHome() { showHome(); showScreen('homeScreen'); }
+
 function renderCard() {
-  var u = t();
+  var ux = u();
   var card = deck[idx];
-  var meta = u.types[card.type];
+  var meta = ux.types[card.type];
   var color = MOOD_COLORS[currentMood];
-  var moodInfo = u.moods[currentMood] || u.moods.mix;
+  var moodInfo = ux.moods[currentMood];
   var isGuess = card.type === "guess_your_partner";
 
-  document.getElementById('exitBtn').innerHTML = u.exit;
-  document.getElementById('counter').textContent = (idx + 1) + " / " + deck.length;
-  document.getElementById('playMoodLabel').textContent = moodInfo.emoji + " " + moodInfo.label;
-  document.getElementById('playMoodLabel').style.color = color;
-
-  document.getElementById('cardAccent').style.background = "linear-gradient(90deg, " + color + "88, transparent)";
+  document.getElementById('exitBtn').textContent = ux.exit;
+  document.getElementById('counter').textContent = (idx+1) + " / " + deck.length;
+  document.getElementById('playMoodTag').textContent = moodInfo.emoji + " " + moodInfo.label;
+  document.getElementById('playMoodTag').style.color = color;
+  document.getElementById('cardBar').style.background = "linear-gradient(90deg,"+color+"99,transparent)";
   document.getElementById('typeIcon').textContent = meta.icon;
-  document.getElementById('typeLabel').textContent = meta.label;
-  document.getElementById('typeLabel').style.color = color;
+  document.getElementById('typeName').textContent = meta.label;
+  document.getElementById('typeName').style.color = color;
   document.getElementById('typeHint').textContent = meta.hint;
-  document.getElementById('cardText').textContent = cardText(card);
+  document.getElementById('cardText').textContent = ct(card);
 
-  var revealBtn = document.getElementById('revealBtn');
-  var nextBtn = document.getElementById('nextBtn');
-  var guessHint = document.getElementById('guessHint');
+  var revBtn = document.getElementById('revealBtn');
+  var nxtBtn = document.getElementById('nextBtn');
+  var gHint = document.getElementById('guessHint');
 
   if (isGuess && !revealed) {
-    revealBtn.classList.remove('hidden');
-    revealBtn.textContent = u.reveal;
-    revealBtn.style.background = "linear-gradient(135deg, " + color + "33, " + color + "18)";
-    revealBtn.style.color = color;
-    nextBtn.classList.add('hidden');
-    guessHint.classList.remove('hidden');
-    guessHint.textContent = u.guessWait;
-    guessHint.style.color = "#6B5F54";
+    revBtn.classList.remove('hidden');
+    revBtn.textContent = ux.reveal;
+    revBtn.style.background = color + "22";
+    revBtn.style.border = "1.5px solid " + color + "44";
+    revBtn.style.color = color;
+    nxtBtn.classList.add('hidden');
+    gHint.classList.remove('hidden');
+    gHint.textContent = ux.guessWait;
+    gHint.style.color = "#6B5F52";
   } else {
-    revealBtn.classList.add('hidden');
-    nextBtn.classList.remove('hidden');
-    nextBtn.textContent = u.next;
+    revBtn.classList.add('hidden');
+    nxtBtn.classList.remove('hidden');
+    nxtBtn.textContent = ux.next;
     if (isGuess && revealed) {
-      guessHint.classList.remove('hidden');
-      guessHint.textContent = u.guessReveal;
-      guessHint.style.color = color;
+      gHint.classList.remove('hidden');
+      gHint.textContent = ux.guessReveal;
+      gHint.style.color = color;
     } else {
-      guessHint.classList.add('hidden');
+      gHint.classList.add('hidden');
     }
   }
 
-  var pct = ((idx + 1) / deck.length * 100);
   var bar = document.getElementById('progressBar');
-  bar.style.width = pct + "%";
-  bar.style.background = "linear-gradient(90deg, " + color + "66, " + color + "33)";
+  bar.style.width = ((idx+1)/deck.length*100)+"%";
+  bar.style.background = "linear-gradient(90deg,"+color+"88,"+color+"33)";
 }
 
-function reveal() {
-  revealed = true;
-  renderCard();
-}
+function reveal() { revealed = true; renderCard(); }
 
 function nextCard() {
-  if (idx + 1 >= deck.length) {
-    renderDone();
-    showScreen('doneScreen');
-    return;
-  }
-  // Animate
-  var container = document.getElementById('cardContainer');
-  container.classList.add('animating');
+  var box = document.getElementById('cardBox');
+  box.classList.add('animating');
   setTimeout(function(){
-    idx++;
-    revealed = false;
-    renderCard();
-    container.classList.remove('animating');
-  }, 200);
+    if (idx+1 >= deck.length) { renderDone(); showScreen('doneScreen'); }
+    else { idx++; revealed = false; renderCard(); }
+    box.classList.remove('animating');
+  }, 180);
 }
 
-// ─── DONE ───
 function renderDone() {
-  var u = t();
-  var moodInfo = u.moods[currentMood] || u.moods.mix;
-  document.getElementById('doneTitle').textContent = u.doneTitle;
-  document.getElementById('doneSub').textContent = u.doneSub(deck.length);
-  document.getElementById('replayBtn').textContent = u.replay(moodInfo.label);
-  document.getElementById('newMoodBtn').textContent = u.newMood;
+  var ux = u();
+  var moodInfo = ux.moods[currentMood];
+  document.getElementById('doneTitle').textContent = ux.doneTitle;
+  document.getElementById('doneSub').textContent = ux.doneSub(deck.length);
+  document.getElementById('replayBtn').textContent = ux.replay(moodInfo.label);
+  document.getElementById('newMoodBtn').textContent = ux.newMood;
 }
 
-function replay() {
-  startGame(currentMood);
-}
+function replay() { startGame(currentMood); }
 
-// ─── INIT ───
+// Init
 renderHome();
 </script>
 </body>
