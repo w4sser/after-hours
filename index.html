@@ -14,6 +14,7 @@ html, body { height: 100%; }
 body {
   font-family: 'Inter', -apple-system, system-ui, sans-serif;
   background: #111111;
+  background-image: radial-gradient(ellipse 70% 55% at 50% 52%, #232220 0%, #111111 70%);
   color: #EDE0C8;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
@@ -65,10 +66,10 @@ button:active { transform: scale(0.97); transition: transform 0.1s; }
   margin-bottom: 40px;
 }
 .card-fan {
-  width: 180px;
-  height: 160px;
+  width: 260px;
+  height: 240px;
   position: relative;
-  margin-bottom: 44px;
+  margin-bottom: 36px;
   flex-shrink: 0;
 }
 .card-fan svg { width: 100%; height: 100%; }
@@ -301,32 +302,76 @@ button:active { transform: scale(0.97); transition: transform 0.1s; }
     <div class="home-title">After Hours</div>
     <div class="home-subtitle" id="homeSubtitle"></div>
     <div class="card-fan">
-      <svg viewBox="0 0 180 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Card 1 (far left) -->
-        <g transform="rotate(-28 90 140)">
-          <rect x="52" y="20" width="76" height="110" rx="10" fill="#1E1E1E" stroke="rgba(237,224,200,0.12)" stroke-width="1.5"/>
-          <rect x="60" y="32" width="60" height="86" rx="6" fill="#171717"/>
+      <svg viewBox="0 0 260 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Radial glow behind cards -->
+          <radialGradient id="glow" cx="50%" cy="58%" r="50%">
+            <stop offset="0%" stop-color="#3a3630" stop-opacity="1"/>
+            <stop offset="100%" stop-color="#111111" stop-opacity="0"/>
+          </radialGradient>
+          <!-- Card gradients for depth -->
+          <linearGradient id="cg1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#252420"/>
+            <stop offset="100%" stop-color="#1a1917"/>
+          </linearGradient>
+          <linearGradient id="cg2" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#2d2b26"/>
+            <stop offset="100%" stop-color="#1e1d1a"/>
+          </linearGradient>
+          <linearGradient id="cg3" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#333028"/>
+            <stop offset="100%" stop-color="#22201c"/>
+          </linearGradient>
+          <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.6"/>
+          </filter>
+        </defs>
+
+        <!-- Background radial glow -->
+        <ellipse cx="130" cy="148" rx="110" ry="80" fill="url(#glow)"/>
+
+        <!-- Fan pivot point: 130, 210 -->
+
+        <!-- Card 1 — far left, most rotated -->
+        <g transform="rotate(-38 130 210)" filter="url(#shadow)">
+          <rect x="84" y="48" width="92" height="130" rx="11" fill="url(#cg1)" stroke="rgba(237,224,200,0.09)" stroke-width="1.2"/>
+          <rect x="93" y="60" width="74" height="106" rx="7" fill="#161513"/>
         </g>
+
         <!-- Card 2 -->
-        <g transform="rotate(-14 90 140)">
-          <rect x="52" y="20" width="76" height="110" rx="10" fill="#222222" stroke="rgba(237,224,200,0.14)" stroke-width="1.5"/>
-          <rect x="60" y="32" width="60" height="86" rx="6" fill="#1A1A1A"/>
+        <g transform="rotate(-20 130 210)" filter="url(#shadow)">
+          <rect x="84" y="44" width="92" height="130" rx="11" fill="url(#cg2)" stroke="rgba(237,224,200,0.11)" stroke-width="1.2"/>
+          <rect x="93" y="56" width="74" height="106" rx="7" fill="#1a1916"/>
         </g>
-        <!-- Card 3 (center) -->
-        <g transform="rotate(0 90 140)">
-          <rect x="52" y="20" width="76" height="110" rx="10" fill="#272727" stroke="rgba(237,224,200,0.18)" stroke-width="1.5"/>
-          <rect x="60" y="32" width="60" height="86" rx="6" fill="#1E1E1E"/>
-          <text x="90" y="82" font-family="Anton, sans-serif" font-size="22" fill="rgba(237,224,200,0.25)" text-anchor="middle">AH</text>
+
+        <!-- Card 3 — center, upright -->
+        <g transform="rotate(-3 130 210)" filter="url(#shadow)">
+          <rect x="84" y="40" width="92" height="130" rx="11" fill="url(#cg3)" stroke="rgba(237,224,200,0.16)" stroke-width="1.4"/>
+          <rect x="93" y="52" width="74" height="106" rx="7" fill="#1e1d19"/>
+          <!-- Subtle AH monogram -->
+          <text x="130" y="118" font-family="Anton, sans-serif" font-size="18" fill="rgba(237,224,200,0.12)" text-anchor="middle" letter-spacing="2">AH</text>
         </g>
+
         <!-- Card 4 -->
-        <g transform="rotate(14 90 140)">
-          <rect x="52" y="20" width="76" height="110" rx="10" fill="#222222" stroke="rgba(237,224,200,0.14)" stroke-width="1.5"/>
-          <rect x="60" y="32" width="60" height="86" rx="6" fill="#1A1A1A"/>
+        <g transform="rotate(14 130 210)" filter="url(#shadow)">
+          <rect x="84" y="44" width="92" height="130" rx="11" fill="url(#cg2)" stroke="rgba(237,224,200,0.11)" stroke-width="1.2"/>
+          <rect x="93" y="56" width="74" height="106" rx="7" fill="#1a1916"/>
         </g>
-        <!-- Card 5 (far right) -->
-        <g transform="rotate(28 90 140)">
-          <rect x="52" y="20" width="76" height="110" rx="10" fill="#1E1E1E" stroke="rgba(237,224,200,0.12)" stroke-width="1.5"/>
-          <rect x="60" y="32" width="60" height="86" rx="6" fill="#171717"/>
+
+        <!-- Card 5 — far right -->
+        <g transform="rotate(30 130 210)" filter="url(#shadow)">
+          <rect x="84" y="48" width="92" height="130" rx="11" fill="url(#cg1)" stroke="rgba(237,224,200,0.09)" stroke-width="1.2"/>
+          <rect x="93" y="60" width="74" height="106" rx="7" fill="#161513"/>
+        </g>
+
+        <!-- Swoosh / motion ribbon at bottom -->
+        <g opacity="0.55">
+          <!-- Main swoosh arc -->
+          <path d="M 30 210 Q 70 170 130 185 Q 185 200 220 165" stroke="rgba(237,224,200,0.18)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <!-- Secondary thinner arc -->
+          <path d="M 45 218 Q 85 182 138 196 Q 192 210 228 176" stroke="rgba(237,224,200,0.09)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <!-- Small tail flick -->
+          <path d="M 30 210 Q 18 220 22 232" stroke="rgba(237,224,200,0.14)" stroke-width="2" fill="none" stroke-linecap="round"/>
         </g>
       </svg>
     </div>
