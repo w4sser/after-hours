@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>After Hours — For Two</title>
+<meta name="description" content="A premium card game for couples. Stop scrolling. Start laughing.">
+<meta name="theme-color" content="#0D0D0D">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  background: linear-gradient(165deg, #0D0D0D 0%, #1A1A2E 50%, #16213E 100%);
+  color: #F0E6D3;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+#app {
+  height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 24px;
+  overflow-y: auto;
+}
+button { font-family: inherit; cursor: pointer; -webkit-appearance: none; }
+button:active { transform: scale(0.97); }
+
+/* Screens */
+.screen { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 400px; }
+.screen.hidden { display: none; }
+
+/* Home */
+.home-subtitle { font-size: 13px; letter-spacing: 6px; text-transform: uppercase; color: #8B7E74; margin-bottom: 12px; }
+.home-title { font-size: 42px; font-weight: 300; letter-spacing: -1px; line-height: 1.1; color: #F0E6D3; }
+.home-tagline { font-size: 15px; color: #8B7E74; margin-top: 16px; line-height: 1.5; font-weight: 300; }
+.mood-label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #6B5F54; text-align: center; margin: 32px 0 12px; }
+.mood-btn {
+  width: 100%; padding: 18px 24px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px; color: #F0E6D3; font-size: 16px;
+  display: flex; align-items: center; gap: 16px;
+  text-align: left; margin-bottom: 10px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.mood-btn:hover, .mood-btn:focus { background: rgba(255,255,255,0.08); }
+.mood-btn .emoji { font-size: 24px; flex-shrink: 0; }
+.mood-btn .info .name { font-weight: 500; font-size: 16px; }
+.mood-btn .info .desc { font-size: 13px; color: #8B7E74; margin-top: 2px; }
+.mood-btn .count { margin-left: auto; font-size: 13px; color: #6B5F54; flex-shrink: 0; }
+.home-footer { font-size: 11px; color: #4A4440; text-align: center; line-height: 1.6; margin-top: 24px; }
+.lang-toggle {
+  position: fixed; top: 16px; right: 16px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px; padding: 8px 14px;
+  color: #8B7E74; font-size: 13px; font-weight: 500;
+  z-index: 10; letter-spacing: 0.5px;
+  transition: background 0.2s;
+}
+.lang-toggle:hover { background: rgba(255,255,255,0.1); }
+
+/* Play */
+.play-header { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 20px; }
+.play-exit { background: none; border: none; color: #6B5F54; font-size: 14px; padding: 8px 0; }
+.play-counter { font-size: 13px; color: #6B5F54; }
+.play-mood { font-size: 13px; opacity: 0.7; }
+.card-container {
+  width: 100%; min-height: 380px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 24px; padding: 36px 28px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  position: relative; overflow: hidden;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.card-container.animating { opacity: 0; transform: translateX(30px); }
+.card-accent { position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 24px 24px 0 0; }
+.card-type-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.card-type-icon { font-size: 20px; }
+.card-type-label { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.8; }
+.card-hint { font-size: 11px; color: #6B5F54; margin: 0 0 0 30px; font-style: italic; }
+.card-text { font-size: 22px; font-weight: 400; line-height: 1.5; text-align: center; padding: 0 8px; letter-spacing: -0.3px; }
+.action-row { display: flex; gap: 12px; width: 100%; margin-top: 20px; }
+.btn-reveal, .btn-next {
+  flex: 1; padding: 16px; border-radius: 14px;
+  font-size: 15px; font-weight: 500;
+}
+.btn-next {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #F0E6D3;
+  transition: background 0.2s;
+}
+.btn-next:hover { background: rgba(255,255,255,0.1); }
+.btn-reveal { border: none; }
+.guess-hint { font-size: 12px; text-align: center; margin-top: 8px; opacity: 0.7; }
+.progress-track { width: 100%; height: 2px; background: rgba(255,255,255,0.04); border-radius: 1px; margin-top: 16px; }
+.progress-bar { height: 100%; border-radius: 1px; transition: width 0.4s ease; }
+
+/* Done */
+.done-icon { font-size: 48px; margin-bottom: 8px; }
+.done-title { font-size: 28px; font-weight: 300; letter-spacing: -0.5px; margin-bottom: 12px; }
+.done-sub { font-size: 15px; color: #8B7E74; line-height: 1.6; }
+.done-actions { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 32px; }
+.btn-replay {
+  width: 100%; padding: 16px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px; color: #F0E6D3;
+  font-size: 15px; font-weight: 500;
+}
+.btn-home {
+  width: 100%; padding: 16px;
+  background: none;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px; color: #8B7E74; font-size: 15px;
+}
+</style>
+</head>
+<body>
+<button class="lang-toggle" id="langBtn" onclick="toggleLang()">SV</button>
+<div id="app">
+  <!-- Home Screen -->
+  <div class="screen" id="homeScreen">
+    <div style="text-align:center">
+      <div class="home-subtitle">For Two</div>
+      <h1 class="home-title">After Hours</h1>
+      <p class="home-tagline" id="tagline"></p>
+    </div>
+    <p class="mood-label" id="moodLabel"></p>
+    <div id="moodButtons"></div>
+    <p class="home-footer" id="homeFooter"></p>
+  </div>
+
+  <!-- Play Screen -->
+  <div class="screen hidden" id="playScreen">
+    <div class="play-header">
+      <button class="play-exit" id="exitBtn" onclick="goHome()"></button>
+      <span class="play-counter" id="counter"></span>
+      <span class="play-mood" id="playMoodLabel"></span>
+    </div>
+    <div class="card-container" id="cardContainer">
+      <div class="card-accent" id="cardAccent"></div>
+      <div>
+        <div class="card-type-row">
+          <span class="card-type-icon" id="typeIcon"></span>
+          <span class="card-type-label" id="typeLabel"></span>
+        </div>
+        <p class="card-hint" id="typeHint"></p>
+      </div>
+      <p class="card-text" id="cardText"></p>
+      <div style="min-height:40px"></div>
+    </div>
+    <div class="action-row">
+      <button class="btn-reveal hidden" id="revealBtn" onclick="reveal()"></button>
+      <button class="btn-next" id="nextBtn" onclick="nextCard()"></button>
+    </div>
+    <p class="guess-hint hidden" id="guessHint"></p>
+    <div class="progress-track">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+  </div>
+
+  <!-- Done Screen -->
+  <div class="screen hidden" id="doneScreen">
+    <div class="done-icon">&#10024;</div>
+    <h2 class="done-title" id="doneTitle"></h2>
+    <p class="done-sub" id="doneSub"></p>
+    <div class="done-actions">
+      <button class="btn-replay" id="replayBtn" onclick="replay()"></button>
+      <button class="btn-home" id="newMoodBtn" onclick="goHome()"></button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── LANGUAGE DATA ───
+var lang = "en";
+
+var UI = {
+  en: {
+    tagline: "Stop scrolling. Start laughing.",
+    moodLabel: "Choose mood",
+    footer: "One phone. Two people. No accounts.",
+    exit: "\u2190 Exit",
+    next: "Next card \u2192",
+    reveal: "\uD83D\uDD2E Reveal",
+    guessWait: "Both answer first. Then tap Reveal.",
+    guessReveal: "Compare your answers! Did you match?",
+    doneTitle: "That's all of them.",
+    doneSub: function(n){ return n + " cards done. Hope you laughed."; },
+    replay: function(m){ return "Play again (" + m + ")"; },
+    newMood: "Choose new mood",
+    cards: "cards",
+    moods: {
+      fun:  { label:"Fun",   emoji:"\uD83C\uDF89", desc:"Light, fast, laughs" },
+      deep: { label:"Deep",  emoji:"\uD83C\uDF0A", desc:"Memories, feelings, future" },
+      spicy:{ label:"Spicy", emoji:"\uD83D\uDD25", desc:"Flirty, bold, hot" },
+      mix:  { label:"Mix",   emoji:"\u2728",       desc:"A bit of everything" },
+    },
+    types: {
+      hot_take:           { label:"Hot Take",           icon:"\uD83D\uDD25", hint:"Argue for or against." },
+      whos_more_likely:   { label:"Who's More Likely",  icon:"\uD83D\uDC49", hint:"Point at each other. 3, 2, 1\u2026" },
+      guess_your_partner: { label:"Guess Your Partner", icon:"\uD83D\uDD2E", hint:"Answer separately. Then reveal." },
+      confession:         { label:"Confession",         icon:"\uD83D\uDE48", hint:"Be honest. No excuses." },
+      memory_lane:        { label:"Memory Lane",        icon:"\uD83D\uDCF8", hint:"Share the memory. Let it sink in." },
+      spicy_scenario:     { label:"Spicy Scenario",     icon:"\uD83C\uDF0D", hint:"Discuss. No right answers." },
+    },
+  },
+  sv: {
+    tagline: "Sluta scrolla. B\u00f6rja skratta.",
+    moodLabel: "V\u00e4lj mood",
+    footer: "En telefon. Tv\u00e5 personer. Inga konton.",
+    exit: "\u2190 Avsluta",
+    next: "N\u00e4sta kort \u2192",
+    reveal: "\uD83D\uDD2E Reveal",
+    guessWait: "B\u00e5da svarar f\u00f6rst. Tryck sedan Reveal.",
+    guessReveal: "J\u00e4mf\u00f6r era svar! Matchade ni?",
+    doneTitle: "Det var alla.",
+    doneSub: function(n){ return n + " kort avklarade. Hoppas ni skrattade."; },
+    replay: function(m){ return "Spela igen (" + m + ")"; },
+    newMood: "V\u00e4lj nytt mood",
+    cards: "kort",
+    moods: {
+      fun:  { label:"Fun",   emoji:"\uD83C\uDF89", desc:"L\u00e4tt, snabbt, skratt" },
+      deep: { label:"Deep",  emoji:"\uD83C\uDF0A", desc:"Minnen, k\u00e4nslor, framtid" },
+      spicy:{ label:"Spicy", emoji:"\uD83D\uDD25", desc:"Fl\u00f6rtigt, v\u00e5gat, hett" },
+      mix:  { label:"Mix",   emoji:"\u2728",       desc:"Lite av allt" },
+    },
+    types: {
+      hot_take:           { label:"Hot Take",           icon:"\uD83D\uDD25", hint:"Argumentera f\u00f6r eller emot." },
+      whos_more_likely:   { label:"Who's More Likely",  icon:"\uD83D\uDC49", hint:"Peka p\u00e5 varandra samtidigt. 3, 2, 1\u2026" },
+      guess_your_partner: { label:"Guess Your Partner", icon:"\uD83D\uDD2E", hint:"Svara var f\u00f6r sig. Tryck sedan Reveal." },
+      confession:         { label:"Confession",         icon:"\uD83D\uDE48", hint:"Var \u00e4rlig. Inga und\u00e4nflykter." },
+      memory_lane:        { label:"Memory Lane",        icon:"\uD83D\uDCF8", hint:"Dela minnet. L\u00e5t det sjunka in." },
+      spicy_scenario:     { label:"Spicy Scenario",     icon:"\uD83C\uDF0D", hint:"Diskutera. Inga r\u00e4tta svar." },
+    },
+  },
+};
+
+// ─── CARDS (both languages) ───
+var CARDS = [
+  {id:1,type:"hot_take",mood:"fun",en:"Breakfast in bed is completely overrated.",sv:"Frukost p\u00e5 s\u00e4ngen \u00e4r helt \u00f6verskattat."},
+  {id:2,type:"hot_take",mood:"fun",en:"Whoever drives picks the music. No exceptions.",sv:"Den som k\u00f6r bilen best\u00e4mmer musiken. Inga undantag."},
+  {id:3,type:"hot_take",mood:"fun",en:"Sleeping with socks on should be grounds for a breakup.",sv:"Att sova med strumpor p\u00e5 borde vara grund f\u00f6r separation."},
+  {id:4,type:"hot_take",mood:"fun",en:"A vacation without a plan is always better than one with a schedule.",sv:"En semester utan plan \u00e4r alltid b\u00e4ttre \u00e4n en med schema."},
+  {id:5,type:"hot_take",mood:"fun",en:"Pets are better company than most people.",sv:"Husdjur \u00e4r b\u00e4ttre s\u00e4llskap \u00e4n de flesta m\u00e4nniskor."},
+  {id:6,type:"hot_take",mood:"deep",en:"You can love someone and still need alone time.",sv:"Man kan \u00e4lska n\u00e5gon och \u00e4nd\u00e5 beh\u00f6va vara ifred ibland."},
+  {id:7,type:"hot_take",mood:"deep",en:"Saying 'I was wrong' is more attractive than always being right.",sv:"Att s\u00e4ga 'jag har fel' \u00e4r mer attraktivt \u00e4n att alltid ha r\u00e4tt."},
+  {id:8,type:"hot_take",mood:"deep",en:"Long relationships are more about timing than chemistry.",sv:"L\u00e5ng relation handlar mer om timing \u00e4n om kemi."},
+  {id:9,type:"hot_take",mood:"spicy",en:"It's okay to fantasize about others \u2014 as long as you don't say who.",sv:"Det \u00e4r okej att fantisera om andra \u2014 s\u00e5 l\u00e4nge man inte ber\u00e4ttar vem."},
+  {id:10,type:"hot_take",mood:"spicy",en:"Couples who stop flirting with each other have given up.",sv:"Par som inte fl\u00f6rtar med varandra l\u00e4ngre har gett upp."},
+  {id:11,type:"hot_take",mood:"fun",en:"No adult should eat pizza with a knife and fork.",sv:"Ingen vuxen m\u00e4nniska borde \u00e4ta pizza med kniv och gaffel."},
+  {id:12,type:"hot_take",mood:"fun",en:"Watching a show without the other person is cheating.",sv:"Att titta p\u00e5 en serie utan den andra \u00e4r otrohet."},
+  {id:13,type:"hot_take",mood:"deep",en:"You shouldn't have to ask for compliments in a relationship.",sv:"Man ska inte beh\u00f6va be om komplimanger i ett f\u00f6rh\u00e5llande."},
+  {id:14,type:"hot_take",mood:"spicy",en:"Being a little jealous sometimes means you care.",sv:"Att vara lite svartsjuk ibland \u00e4r ett tecken p\u00e5 att man bryr sig."},
+  {id:15,type:"hot_take",mood:"fun",en:"A hotel room is always better when you didn't pay for it.",sv:"Hotellrummet \u00e4r alltid b\u00e4ttre n\u00e4r man inte betalade sj\u00e4lv."},
+  {id:16,type:"hot_take",mood:"deep",en:"Compromising is not the same as giving in.",sv:"Att kompromissa \u00e4r inte samma sak som att ge efter."},
+  {id:17,type:"hot_take",mood:"fun",en:"Anyone who doesn't like brunch can't be trusted.",sv:"Den som inte gillar brunch kan inte litas p\u00e5."},
+  {id:18,type:"hot_take",mood:"spicy",en:"Couples should go on dates with each other at least once a month.",sv:"Par borde dejta varandra igen minst en g\u00e5ng i m\u00e5naden."},
+  {id:19,type:"hot_take",mood:"fun",en:"Falling asleep on the couch during a movie doesn't count as watching it.",sv:"Att somna p\u00e5 soffan medan en film \u00e4r p\u00e5 \u00e4r inte samma sak som att titta p\u00e5 den."},
+  {id:20,type:"hot_take",mood:"deep",en:"The best part of a long relationship is not having to explain yourself all the time.",sv:"Det b\u00e4sta med ett l\u00e5ngt f\u00f6rh\u00e5llande \u00e4r att man slipper f\u00f6rklara sig hela tiden."},
+  {id:21,type:"whos_more_likely",mood:"fun",en:"Who would survive longer in a zombie apocalypse?",sv:"Vem av oss skulle \u00f6verleva l\u00e4ngst i en zombieapokalyps?"},
+  {id:22,type:"whos_more_likely",mood:"fun",en:"Who would get voted off first on a reality show?",sv:"Vem av oss skulle bli utr\u00f6stad f\u00f6rst i ett reality-program?"},
+  {id:23,type:"whos_more_likely",mood:"fun",en:"Who's more likely to accidentally text the wrong person?",sv:"Vem av oss \u00e4r mest trolig att r\u00e5ka skicka ett meddelande till fel person?"},
+  {id:24,type:"whos_more_likely",mood:"fun",en:"Who takes longer in the bathroom?",sv:"Vem av oss tar l\u00e4ngst tid i badrummet?"},
+  {id:25,type:"whos_more_likely",mood:"fun",en:"Who would do better on a deserted island?",sv:"Vem av oss skulle klara sig b\u00e4st p\u00e5 en \u00f6de \u00f6?"},
+  {id:26,type:"whos_more_likely",mood:"fun",en:"Who gets mad first at IKEA?",sv:"Vem av oss blir arg f\u00f6rst i IKEA?"},
+  {id:27,type:"whos_more_likely",mood:"fun",en:"Who would make a better celebrity?",sv:"Vem av oss hade blivit en b\u00e4ttre k\u00e4ndis?"},
+  {id:28,type:"whos_more_likely",mood:"deep",en:"Who needs the most quiet time after a long day?",sv:"Vem av oss beh\u00f6ver mest lugn och ro efter en l\u00e5ng dag?"},
+  {id:29,type:"whos_more_likely",mood:"deep",en:"Who's better at apologizing?",sv:"Vem av oss \u00e4r b\u00e4ttre p\u00e5 att be om f\u00f6rl\u00e5telse?"},
+  {id:30,type:"whos_more_likely",mood:"deep",en:"Who dreams the most about the future?",sv:"Vem av oss dr\u00f6mmer mest om framtiden?"},
+  {id:31,type:"whos_more_likely",mood:"spicy",en:"Who has the most secret fantasies?",sv:"Vem av oss har mest hemliga fantasier?"},
+  {id:32,type:"whos_more_likely",mood:"spicy",en:"Who flirts the most without realizing it?",sv:"Vem av oss fl\u00f6rtar mest utan att m\u00e4rka det?"},
+  {id:33,type:"whos_more_likely",mood:"fun",en:"Who would win in a cooking competition?",sv:"Vem av oss hade vunnit i en matlagnings-t\u00e4vling?"},
+  {id:34,type:"whos_more_likely",mood:"fun",en:"Who will forget our anniversary?",sv:"Vem av oss kommer gl\u00f6mma v\u00e5r br\u00f6llopsdag?"},
+  {id:35,type:"whos_more_likely",mood:"fun",en:"Who says 'I told you so' the most?",sv:"Vem av oss s\u00e4ger 'jag sa ju det' oftast?"},
+  {id:36,type:"whos_more_likely",mood:"deep",en:"Who carries the most unsaid things?",sv:"Vem av oss b\u00e4r p\u00e5 mest osagda saker?"},
+  {id:37,type:"whos_more_likely",mood:"fun",en:"Who would embarrass themselves the most at a gala?",sv:"Vem av oss hade gjort bort sig mest p\u00e5 en gala?"},
+  {id:38,type:"whos_more_likely",mood:"spicy",en:"Who could charm their way out of a speeding ticket?",sv:"Vem av oss hade kunnat charma sig ur en fartbot?"},
+  {id:39,type:"whos_more_likely",mood:"fun",en:"Who's more dramatic when they're sick?",sv:"Vem av oss \u00e4r mer dramatisk n\u00e4r vi \u00e4r sjuka?"},
+  {id:40,type:"whos_more_likely",mood:"deep",en:"Who would give up everything to follow a dream?",sv:"Vem av oss skulle ge upp allt f\u00f6r att f\u00f6lja en dr\u00f6m?"},
+  {id:41,type:"guess_your_partner",mood:"fun",en:"If your partner could have one superpower \u2014 what would they choose?",sv:"Om din partner fick v\u00e4lja en superkraft \u2014 vad hade de valt?"},
+  {id:42,type:"guess_your_partner",mood:"fun",en:"What dish would your partner choose as their last meal?",sv:"Vilken matr\u00e4tt hade din partner valt som sin sista m\u00e5ltid?"},
+  {id:43,type:"guess_your_partner",mood:"fun",en:"If your partner could switch jobs tomorrow \u2014 what would they become?",sv:"Om din partner fick byta jobb imorgon \u2014 vad hade de blivit?"},
+  {id:44,type:"guess_your_partner",mood:"fun",en:"What city would your partner most want to live in for a year?",sv:"Vilken stad hade din partner helst velat bo i ett \u00e5r?"},
+  {id:45,type:"guess_your_partner",mood:"deep",en:"What do you think your partner worries about most right now?",sv:"Vad tror du att din partner oroar sig mest f\u00f6r just nu?"},
+  {id:46,type:"guess_your_partner",mood:"deep",en:"What makes your partner the happiest without spending money?",sv:"Vad g\u00f6r din partner som gladast utan att det kostar pengar?"},
+  {id:47,type:"guess_your_partner",mood:"deep",en:"What compliment does your partner want to hear more often?",sv:"Vilken komplimang vill din partner h\u00f6ra oftare?"},
+  {id:48,type:"guess_your_partner",mood:"spicy",en:"What would your partner pick: a week at a spa alone, or a weekend trip with you?",sv:"Vad hade din partner valt: en vecka p\u00e5 spa ensam, eller en weekend-resa med dig?"},
+  {id:49,type:"guess_your_partner",mood:"fun",en:"If your partner were a sitcom character \u2014 who would they be?",sv:"Om din partner var en karakt\u00e4r i en sitcom \u2014 vilken hade det varit?"},
+  {id:50,type:"guess_your_partner",mood:"fun",en:"What's the most different thing your partner would've done if you'd never met?",sv:"Vad \u00e4r det mest annorlunda din partner hade gjort om ni aldrig tr\u00e4ffats?"},
+  {id:51,type:"guess_your_partner",mood:"deep",en:"What do you think your partner regrets the most?",sv:"Vad tror du att din partner \u00e5ngrar mest?"},
+  {id:52,type:"guess_your_partner",mood:"fun",en:"If your partner could live one day as a celebrity \u2014 who would they pick?",sv:"Om din partner fick leva en dag som en k\u00e4ndis \u2014 vem hade de valt?"},
+  {id:53,type:"guess_your_partner",mood:"spicy",en:"Where do you think your partner would most love to be surprised with a date?",sv:"Var tror du att din partner helst hade velat bli \u00f6verraskad med en dejt?"},
+  {id:54,type:"guess_your_partner",mood:"fun",en:"What song describes your partner best?",sv:"Vilken l\u00e5t beskriver din partner b\u00e4st?"},
+  {id:55,type:"guess_your_partner",mood:"deep",en:"What does your partner need more of in everyday life right now?",sv:"Vad beh\u00f6ver din partner mer av i vardagen just nu?"},
+  {id:56,type:"guess_your_partner",mood:"fun",en:"If your partner could get any pet with no consequences \u2014 which animal?",sv:"Om din partner fick ett husdjur utan konsekvenser \u2014 vilket djur?"},
+  {id:57,type:"guess_your_partner",mood:"spicy",en:"What type of vacation does your partner really prefer \u2014 adventure or luxury?",sv:"Vilken typ av semester f\u00f6redrar din partner egentligen \u2014 \u00e4ventyr eller lyx?"},
+  {id:58,type:"guess_your_partner",mood:"fun",en:"What would your partner buy first if they won 10 million?",sv:"Vad hade din partner k\u00f6pt f\u00f6rst om de vann 10 miljoner?"},
+  {id:59,type:"guess_your_partner",mood:"deep",en:"What do you think your partner is most proud of?",sv:"Vad tror du att din partner \u00e4r mest stolt \u00f6ver?"},
+  {id:60,type:"guess_your_partner",mood:"fun",en:"What historical period would your partner want to live in?",sv:"Vilken historisk period hade din partner velat leva i?"},
+  {id:61,type:"confession",mood:"fun",en:"Tell about a time you lied to get out of a social situation.",sv:"Ber\u00e4tta om en g\u00e5ng du lj\u00f6g f\u00f6r att slippa en social situation."},
+  {id:62,type:"confession",mood:"fun",en:"What's the most embarrassing thing you've googled?",sv:"Vad \u00e4r det mest pinsamma du har googlat?"},
+  {id:63,type:"confession",mood:"fun",en:"Admit a bad habit you have that you'll never change.",sv:"Erk\u00e4nn en d\u00e5lig vana du har som du aldrig t\u00e4nker \u00e4ndra."},
+  {id:64,type:"confession",mood:"fun",en:"What did you say 'yes' to when you were really thinking 'absolutely not'?",sv:"Vad sa du 'ja' till fast du egentligen t\u00e4nkte 'absolut inte'?"},
+  {id:65,type:"confession",mood:"deep",en:"What were you most afraid of as a kid that you still think about?",sv:"Vad var du mest r\u00e4dd f\u00f6r som barn som du fortfarande t\u00e4nker p\u00e5?"},
+  {id:66,type:"confession",mood:"deep",en:"Tell about a time you felt truly lonely \u2014 even with people around you.",sv:"Ber\u00e4tta om ett tillf\u00e4lle du k\u00e4nde dig riktigt ensam \u2014 fast andra var omkring dig."},
+  {id:67,type:"confession",mood:"deep",en:"Is there something you've never told me that you probably should?",sv:"Finns det n\u00e5got du aldrig har ber\u00e4ttat f\u00f6r mig som du egentligen borde?"},
+  {id:68,type:"confession",mood:"spicy",en:"Admit it: have you lied about anything in our relationship \u2014 even a white lie?",sv:"Erk\u00e4nn: finns det n\u00e5got du har ljugit om i v\u00e5r relation \u2014 \u00e4ven en vit l\u00f6gn?"},
+  {id:69,type:"confession",mood:"fun",en:"What have you eaten or drunk in secret that you've never admitted?",sv:"Vad har du \u00e4tit/druckit i hemlighet som du aldrig erk\u00e4nt?"},
+  {id:70,type:"confession",mood:"fun",en:"Tell about your most failed flirting attempt \u2014 before we met.",sv:"Ber\u00e4tta om din mest misslyckade fl\u00f6rtning \u2014 innan vi tr\u00e4ffades."},
+  {id:71,type:"confession",mood:"spicy",en:"Have you ever snooped on my phone? Be honest.",sv:"Har du n\u00e5gonsin snoopat i min telefon? Var \u00e4rlig."},
+  {id:72,type:"confession",mood:"fun",en:"What's the most irresponsible thing you've done and gotten away with?",sv:"Vad \u00e4r det mest oansvarstagande du gjort och kommit undan med?"},
+  {id:73,type:"confession",mood:"deep",en:"Tell about a time you were jealous of someone close to you.",sv:"Ber\u00e4tta om en g\u00e5ng du var avundsjuk p\u00e5 n\u00e5gon n\u00e4ra dig."},
+  {id:74,type:"confession",mood:"fun",en:"What guilty pleasure song do you only sing when no one can hear?",sv:"Vilken guilty pleasure-l\u00e5t sjunger du bara n\u00e4r ingen h\u00f6r?"},
+  {id:75,type:"confession",mood:"spicy",en:"Is there an ex you sometimes think about? What was good about them?",sv:"Finns det en ex du ibland t\u00e4nker p\u00e5? Vad var det som var bra?"},
+  {id:76,type:"confession",mood:"fun",en:"Tell about a time you pretended to like a gift you hated.",sv:"Ber\u00e4tta om en g\u00e5ng du l\u00e5tsades gilla en present du hatade."},
+  {id:77,type:"confession",mood:"deep",en:"What are you most insecure about in yourself right now?",sv:"Vad \u00e4r du mest os\u00e4ker p\u00e5 i dig sj\u00e4lv just nu?"},
+  {id:78,type:"confession",mood:"fun",en:"Admit a habit you have that you know annoys me.",sv:"Erk\u00e4nn en vana du har som du vet irriterar mig."},
+  {id:79,type:"confession",mood:"spicy",en:"If you could redo our first date \u2014 what would you do differently?",sv:"Om du fick g\u00f6ra om v\u00e5r f\u00f6rsta dejt \u2014 vad hade du gjort annorlunda?"},
+  {id:80,type:"confession",mood:"deep",en:"Tell about a dream you've given up \u2014 and why.",sv:"Ber\u00e4tta om en dr\u00f6m du har gett upp \u2014 och varf\u00f6r."},
+  {id:81,type:"memory_lane",mood:"fun",en:"Describe your best moment from last year in 3 words.",sv:"Beskriv ert b\u00e4sta \u00f6gonblick fr\u00e5n f\u00f6rra \u00e5ret med 3 ord."},
+  {id:82,type:"memory_lane",mood:"fun",en:"What's the funniest thing that's happened to you on a trip together?",sv:"Vad \u00e4r det roligaste som h\u00e4nt er p\u00e5 en resa tillsammans?"},
+  {id:83,type:"memory_lane",mood:"deep",en:"When did you last feel like you truly loved me \u2014 describe the moment.",sv:"N\u00e4r k\u00e4nde du senast att du verkligen \u00e4lskade mig \u2014 beskriv \u00f6gonblicket."},
+  {id:84,type:"memory_lane",mood:"fun",en:"What was your first impression of me \u2014 honestly?",sv:"Vad var ditt f\u00f6rsta intryck av mig \u2014 \u00e4rligt?"},
+  {id:85,type:"memory_lane",mood:"deep",en:"Tell about a fight we had that actually made us stronger.",sv:"Ber\u00e4tta om en g\u00e5ng vi br\u00e5kade som egentligen gjorde oss starkare."},
+  {id:86,type:"memory_lane",mood:"fun",en:"Which piece of decor in our home has the best story?",sv:"Vilken inredningsdetalj i v\u00e5rt hem har den b\u00e4sta historien?"},
+  {id:87,type:"memory_lane",mood:"deep",en:"What moment made you think 'this is the right person'?",sv:"Vilket \u00f6gonblick fick dig att t\u00e4nka 'det h\u00e4r \u00e4r r\u00e4tt person'?"},
+  {id:88,type:"memory_lane",mood:"fun",en:"What's the weirdest food you've eaten together?",sv:"Vad \u00e4r den konstigaste maten vi har \u00e4tit ihop?"},
+  {id:89,type:"memory_lane",mood:"fun",en:"Tell about a time you laughed so hard you couldn't stop.",sv:"Ber\u00e4tta om en g\u00e5ng vi skrattade s\u00e5 vi inte kunde sluta."},
+  {id:90,type:"memory_lane",mood:"deep",en:"What have you learned about yourself thanks to our relationship?",sv:"Vad har du l\u00e4rt dig om dig sj\u00e4lv tack vare v\u00e5r relation?"},
+  {id:91,type:"memory_lane",mood:"fun",en:"If our relationship were a movie \u2014 which scene would be the trailer?",sv:"Om v\u00e5r relation var en film \u2014 vilken scen hade varit trailern?"},
+  {id:92,type:"memory_lane",mood:"deep",en:"Tell about a time you were really proud of me.",sv:"Ber\u00e4tta om en g\u00e5ng du var riktigt stolt \u00f6ver mig."},
+  {id:93,type:"memory_lane",mood:"fun",en:"What song reminds you the most of us?",sv:"Vilken l\u00e5t p\u00e5minner dig mest om oss?"},
+  {id:94,type:"memory_lane",mood:"deep",en:"Describe a moment of total safety in our relationship.",sv:"Beskriv ett \u00f6gonblick av total trygghet i v\u00e5r relation."},
+  {id:95,type:"memory_lane",mood:"fun",en:"What's the most spontaneous thing you've ever done together?",sv:"Vad \u00e4r det mest spontana vi n\u00e5gonsin gjort tillsammans?"},
+  {id:96,type:"memory_lane",mood:"fun",en:"What's the worst hotel you've stayed at \u2014 and why was it still fun?",sv:"Vad \u00e4r det s\u00e4msta hotellet vi haft \u2014 och varf\u00f6r var det \u00e4nd\u00e5 kul?"},
+  {id:97,type:"memory_lane",mood:"deep",en:"What's a small everyday moment you never want to forget?",sv:"Vad \u00e4r ett litet \u00f6gonblick i vardagen som du aldrig vill gl\u00f6mma?"},
+  {id:98,type:"memory_lane",mood:"fun",en:"Tell about a time you totally disagreed about something ridiculous.",sv:"Ber\u00e4tta om en g\u00e5ng vi var totalt oense om n\u00e5got l\u00f6jligt."},
+  {id:99,type:"memory_lane",mood:"spicy",en:"Tell about a moment early in the relationship when you got nervous.",sv:"Ber\u00e4tta om ett \u00f6gonblick tidigt i relationen d\u00e5 du blev nerv\u00f6s."},
+  {id:100,type:"memory_lane",mood:"deep",en:"If you could relive a single day together \u2014 which one?",sv:"Om du fick \u00e5teruppleva en enda dag tillsammans \u2014 vilken?"},
+  {id:101,type:"spicy_scenario",mood:"fun",en:"You get a free night at any hotel in the world. Where do you go?",sv:"Ni f\u00e5r en gratis natt p\u00e5 valfritt hotell i v\u00e4rlden. Vart \u00e5ker ni?"},
+  {id:102,type:"spicy_scenario",mood:"fun",en:"You swap lives with another couple for 24 hours. Who do you pick?",sv:"Ni byter liv med ett annat par i 24 timmar. Vilka v\u00e4ljer ni?"},
+  {id:103,type:"spicy_scenario",mood:"spicy",en:"You have an evening with no rules and no consequences. What do you do?",sv:"Ni har en kv\u00e4ll utan regler och utan konsekvenser. Vad g\u00f6r ni?"},
+  {id:104,type:"spicy_scenario",mood:"fun",en:"You get $10,000 to spend on an experience together \u2014 but it all has to be spent tonight. What do you do?",sv:"Ni f\u00e5r 100 000 kr att spendera p\u00e5 en upplevelse ihop \u2014 men allt m\u00e5ste spenderas ikv\u00e4ll. Vad g\u00f6r ni?"},
+  {id:105,type:"spicy_scenario",mood:"deep",en:"If you could move anywhere tomorrow with no practical obstacles \u2014 where?",sv:"Om ni kunde flytta vart som helst imorgon utan praktiska hinder \u2014 vart?"},
+  {id:106,type:"spicy_scenario",mood:"fun",en:"You wake up and you're famous as a couple \u2014 for what?",sv:"Ni vaknar och \u00e4r k\u00e4nda som par \u2014 f\u00f6r vad?"},
+  {id:107,type:"spicy_scenario",mood:"spicy",en:"Plan the perfect date night with no budget. Describe it start to finish.",sv:"Ni f\u00e5r planera den perfekta date night utan budget. Beskriv den fr\u00e5n start till slut."},
+  {id:108,type:"spicy_scenario",mood:"fun",en:"You start a business together. What do you sell, and who does what?",sv:"Ni startar ett f\u00f6retag ihop. Vad s\u00e4ljer ni, och vem g\u00f6r vad?"},
+  {id:109,type:"spicy_scenario",mood:"deep",en:"If you could guarantee one thing for your future \u2014 what would you choose?",sv:"Om ni kunde garantera en sak f\u00f6r er framtid \u2014 vad hade ni valt?"},
+  {id:110,type:"spicy_scenario",mood:"fun",en:"A time machine, one trip. Where do you go \u2014 and do you stay?",sv:"En tidmaskin, en resa. Vart \u00e5ker ni \u2014 och stannar ni?"},
+  {id:111,type:"spicy_scenario",mood:"spicy",en:"You each get a celebrity 'hall pass' \u2014 but you have to agree on one person. Who?",sv:"Ni f\u00e5r en k\u00e4ndis som 'hall pass' \u2014 men ni m\u00e5ste b\u00e5da komma \u00f6verens om vem. Vem?"},
+  {id:112,type:"spicy_scenario",mood:"fun",en:"You're cast on a reality show. Which one, and how far do you get?",sv:"Ni \u00e4r med i en reality-show. Vilken, och hur l\u00e5ngt kommer ni?"},
+  {id:113,type:"spicy_scenario",mood:"deep",en:"You get to write a letter to yourselves 10 years from now. What does it say?",sv:"Ni f\u00e5r skriva ett brev till er sj\u00e4lva om 10 \u00e5r. Vad st\u00e5r det?"},
+  {id:114,type:"spicy_scenario",mood:"fun",en:"You're offered a road trip: 2 weeks, one car, no plans. Where do you drive first?",sv:"Ni blir erbjudna en roadtrip: 2 veckor, en bil, inga planer. Vart k\u00f6r ni f\u00f6rst?"},
+  {id:115,type:"spicy_scenario",mood:"spicy",en:"You create a secret rule that only applies to the two of you. What is it?",sv:"Ni skapar en hemlig regel som bara g\u00e4ller er tv\u00e5. Vad \u00e4r den?"},
+  {id:116,type:"spicy_scenario",mood:"fun",en:"You can adopt any animal. Which one, and what's its name?",sv:"Ni f\u00e5r adoptera valfritt djur. Vilket, och vad heter det?"},
+  {id:117,type:"spicy_scenario",mood:"deep",en:"If you only had one weekend left \u2014 how do you spend it?",sv:"Om ni bara hade en helg kvar \u2014 hur spenderar ni den?"},
+  {id:118,type:"spicy_scenario",mood:"fun",en:"You swap bodies for 24 hours. What do you do first?",sv:"Ni f\u00e5r byta kroppar i 24 timmar. Vad g\u00f6r ni f\u00f6rst?"},
+  {id:119,type:"spicy_scenario",mood:"spicy",en:"Describe the perfect morning after a perfect night \u2014 in detail.",sv:"Beskriv den perfekta morgonen efter en perfekt kv\u00e4ll \u2014 i detalj."},
+  {id:120,type:"spicy_scenario",mood:"fun",en:"You can invite 4 people (living or dead) to dinner. Who, and why?",sv:"Ni f\u00e5r bjuda 4 personer (levande eller d\u00f6da) p\u00e5 middag. Vilka, och varf\u00f6r?"},
+];
+
+var MOOD_COLORS = { fun:"#FFB347", deep:"#7EC8E3", spicy:"#FF6B6B", mix:"#C9A0DC" };
+
+// ─── STATE ───
+var currentMood = null;
+var deck = [];
+var idx = 0;
+var revealed = false;
+
+function t() { return UI[lang]; }
+function cardText(card) { return card[lang]; }
+
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+// ─── SCREENS ───
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.add('hidden'); });
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function toggleLang() {
+  lang = lang === "en" ? "sv" : "en";
+  document.getElementById('langBtn').textContent = lang === "en" ? "SV" : "EN";
+  // Re-render current screen
+  if (!document.getElementById('homeScreen').classList.contains('hidden')) renderHome();
+  if (!document.getElementById('playScreen').classList.contains('hidden')) renderCard();
+  if (!document.getElementById('doneScreen').classList.contains('hidden')) renderDone();
+}
+
+// ─── HOME ───
+function renderHome() {
+  var u = t();
+  document.getElementById('tagline').textContent = u.tagline;
+  document.getElementById('moodLabel').textContent = u.moodLabel;
+  document.getElementById('homeFooter').textContent = u.footer;
+
+  var html = "";
+  var moodKeys = ["fun","deep","spicy","mix"];
+  for (var i = 0; i < moodKeys.length; i++) {
+    var key = moodKeys[i];
+    var m = u.moods[key];
+    var count = key === "mix" ? CARDS.length : CARDS.filter(function(c){ return c.mood === key; }).length;
+    html += '<button class="mood-btn" onclick="startGame(\'' + key + '\')">';
+    html += '<span class="emoji">' + m.emoji + '</span>';
+    html += '<div class="info"><div class="name">' + m.label + '</div><div class="desc">' + m.desc + '</div></div>';
+    html += '<span class="count">' + count + ' ' + u.cards + '</span>';
+    html += '</button>';
+  }
+  document.getElementById('moodButtons').innerHTML = html;
+}
+
+function goHome() {
+  renderHome();
+  showScreen('homeScreen');
+}
+
+// ─── PLAY ───
+function startGame(mood) {
+  currentMood = mood;
+  var filtered = mood === "mix" ? CARDS : CARDS.filter(function(c){ return c.mood === mood; });
+  deck = shuffle(filtered);
+  idx = 0;
+  revealed = false;
+  renderCard();
+  showScreen('playScreen');
+}
+
+function renderCard() {
+  var u = t();
+  var card = deck[idx];
+  var meta = u.types[card.type];
+  var color = MOOD_COLORS[currentMood];
+  var moodInfo = u.moods[currentMood] || u.moods.mix;
+  var isGuess = card.type === "guess_your_partner";
+
+  document.getElementById('exitBtn').innerHTML = u.exit;
+  document.getElementById('counter').textContent = (idx + 1) + " / " + deck.length;
+  document.getElementById('playMoodLabel').textContent = moodInfo.emoji + " " + moodInfo.label;
+  document.getElementById('playMoodLabel').style.color = color;
+
+  document.getElementById('cardAccent').style.background = "linear-gradient(90deg, " + color + "88, transparent)";
+  document.getElementById('typeIcon').textContent = meta.icon;
+  document.getElementById('typeLabel').textContent = meta.label;
+  document.getElementById('typeLabel').style.color = color;
+  document.getElementById('typeHint').textContent = meta.hint;
+  document.getElementById('cardText').textContent = cardText(card);
+
+  var revealBtn = document.getElementById('revealBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var guessHint = document.getElementById('guessHint');
+
+  if (isGuess && !revealed) {
+    revealBtn.classList.remove('hidden');
+    revealBtn.textContent = u.reveal;
+    revealBtn.style.background = "linear-gradient(135deg, " + color + "33, " + color + "18)";
+    revealBtn.style.color = color;
+    nextBtn.classList.add('hidden');
+    guessHint.classList.remove('hidden');
+    guessHint.textContent = u.guessWait;
+    guessHint.style.color = "#6B5F54";
+  } else {
+    revealBtn.classList.add('hidden');
+    nextBtn.classList.remove('hidden');
+    nextBtn.textContent = u.next;
+    if (isGuess && revealed) {
+      guessHint.classList.remove('hidden');
+      guessHint.textContent = u.guessReveal;
+      guessHint.style.color = color;
+    } else {
+      guessHint.classList.add('hidden');
+    }
+  }
+
+  var pct = ((idx + 1) / deck.length * 100);
+  var bar = document.getElementById('progressBar');
+  bar.style.width = pct + "%";
+  bar.style.background = "linear-gradient(90deg, " + color + "66, " + color + "33)";
+}
+
+function reveal() {
+  revealed = true;
+  renderCard();
+}
+
+function nextCard() {
+  if (idx + 1 >= deck.length) {
+    renderDone();
+    showScreen('doneScreen');
+    return;
+  }
+  // Animate
+  var container = document.getElementById('cardContainer');
+  container.classList.add('animating');
+  setTimeout(function(){
+    idx++;
+    revealed = false;
+    renderCard();
+    container.classList.remove('animating');
+  }, 200);
+}
+
+// ─── DONE ───
+function renderDone() {
+  var u = t();
+  var moodInfo = u.moods[currentMood] || u.moods.mix;
+  document.getElementById('doneTitle').textContent = u.doneTitle;
+  document.getElementById('doneSub').textContent = u.doneSub(deck.length);
+  document.getElementById('replayBtn').textContent = u.replay(moodInfo.label);
+  document.getElementById('newMoodBtn').textContent = u.newMood;
+}
+
+function replay() {
+  startGame(currentMood);
+}
+
+// ─── INIT ───
+renderHome();
+</script>
+</body>
+</html>
