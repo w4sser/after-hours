@@ -102,6 +102,47 @@ button:active { transform: scale(0.97); transition: transform 0.1s; }
 }
 .home-nav button:hover { color: #9A8E7E; }
 
+/* ── NAMES ── */
+.names-heading {
+  font-family: 'Anton', sans-serif;
+  font-size: 30px; letter-spacing: 1px; text-transform: uppercase;
+  text-align: center; margin-bottom: 8px;
+}
+.names-desc {
+  font-size: 13px; color: #9A8E7E; text-align: center;
+  margin-bottom: 36px; line-height: 1.5;
+}
+.name-field {
+  width: 100%; margin-bottom: 14px;
+}
+.name-label {
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  color: #6B5F52; display: block; margin-bottom: 8px;
+}
+.name-input {
+  width: 100%; padding: 16px 18px;
+  background: rgba(237,224,200,0.05);
+  border: 1px solid rgba(237,224,200,0.12);
+  border-radius: 14px;
+  color: #EDE0C8; font-size: 17px; font-family: inherit;
+  outline: none; transition: border-color 0.2s;
+  -webkit-appearance: none;
+}
+.name-input::placeholder { color: #4A4440; }
+.name-input:focus { border-color: rgba(237,224,200,0.3); }
+.btn-names-continue {
+  width: 100%; padding: 18px;
+  background: #EDE0C8; border-radius: 50px;
+  color: #111111; font-family: 'Anton', sans-serif;
+  font-size: 20px; letter-spacing: 2px; text-transform: uppercase;
+  margin-top: 10px; transition: background 0.2s;
+}
+.btn-names-continue:hover { background: #F5EDD8; }
+.names-back {
+  align-self: flex-start; background: none; color: #6B5F52;
+  font-size: 13px; padding: 0 0 24px 0;
+}
+
 /* ── MOOD SELECT ── */
 .mood-back {
   align-self: flex-start;
@@ -375,11 +416,27 @@ button:active { transform: scale(0.97); transition: transform 0.1s; }
         </g>
       </svg>
     </div>
-    <button class="btn-start" id="startBtn" onclick="showMoodSelect()"></button>
+    <button class="btn-start" id="startBtn" onclick="showNames()">START &#9654;</button>
     <div class="home-nav">
-      <button onclick="openModal('howModal')" id="howBtn"></button>
-      <button onclick="openModal('packsModal')" id="packsBtn"></button>
+      <button onclick="openModal('howModal')" id="howBtn">HOW TO PLAY</button>
+      <button onclick="openModal('packsModal')" id="packsBtn">CARD PACKS</button>
     </div>
+  </div>
+
+  <!-- Names -->
+  <div class="screen hidden" id="namesScreen">
+    <button class="names-back" id="namesBackBtn" onclick="showHome()">&#8592; <span id="namesBackLabel"></span></button>
+    <div class="names-heading" id="namesHeading"></div>
+    <div class="names-desc" id="namesDesc"></div>
+    <div class="name-field">
+      <label class="name-label" id="p1Label"></label>
+      <input class="name-input" id="p1Input" type="text" maxlength="20" autocomplete="off" autocorrect="off" spellcheck="false">
+    </div>
+    <div class="name-field">
+      <label class="name-label" id="p2Label"></label>
+      <input class="name-input" id="p2Input" type="text" maxlength="20" autocomplete="off" autocorrect="off" spellcheck="false">
+    </div>
+    <button class="btn-names-continue" id="namesContinueBtn" onclick="submitNames()">LET'S PLAY &#9654;</button>
   </div>
 
   <!-- Mood Select -->
@@ -393,7 +450,7 @@ button:active { transform: scale(0.97); transition: transform 0.1s; }
   <!-- Play -->
   <div class="screen hidden" id="playScreen">
     <div class="play-header">
-      <button class="play-exit" id="exitBtn" onclick="goHome()"></button>
+      <button class="play-exit" id="exitBtn" onclick="goHome()">&#8592; Exit</button>
       <span class="play-counter" id="counter"></span>
       <span class="play-mood-tag" id="playMoodTag"></span>
     </div>
@@ -410,8 +467,8 @@ button:active { transform: scale(0.97); transition: transform 0.1s; }
       <div class="card-spacer"></div>
     </div>
     <div class="action-row">
-      <button class="btn-reveal hidden" id="revealBtn" onclick="reveal()"></button>
-      <button class="btn-next" id="nextBtn" onclick="nextCard()"></button>
+      <button class="btn-reveal hidden" id="revealBtn" onclick="reveal()">&#128302; REVEAL</button>
+      <button class="btn-next" id="nextBtn" onclick="nextCard()">NEXT &#8594;</button>
     </div>
     <p class="guess-hint hidden" id="guessHint"></p>
     <div class="progress-track">
@@ -425,8 +482,8 @@ button:active { transform: scale(0.97); transition: transform 0.1s; }
     <div class="done-title" id="doneTitle"></div>
     <p class="done-sub" id="doneSub"></p>
     <div class="done-actions">
-      <button class="btn-replay" id="replayBtn" onclick="replay()"></button>
-      <button class="btn-home-outline" id="newMoodBtn" onclick="showHome()"></button>
+      <button class="btn-replay" id="replayBtn" onclick="replay()">PLAY AGAIN</button>
+      <button class="btn-home-outline" id="newMoodBtn" onclick="showHome()">CHOOSE NEW MOOD</button>
     </div>
   </div>
 </div>
@@ -652,6 +709,23 @@ var deck = [];
 var idx = 0;
 var revealed = false;
 
+// ── PLAYERS ──
+var players = { p1: "", p2: "" };
+
+function loadPlayers() {
+  try {
+    var saved = localStorage.getItem("ah_players");
+    if (saved) { players = JSON.parse(saved); }
+  } catch(e) {}
+}
+
+function savePlayers() {
+  try { localStorage.setItem("ah_players", JSON.stringify(players)); } catch(e) {}
+}
+
+function p1() { return players.p1 || (lang === "sv" ? "Spelare 1" : "Player 1"); }
+function p2() { return players.p2 || (lang === "sv" ? "Spelare 2" : "Player 2"); }
+
 function u() { return UI[lang]; }
 function ct(card) { return card[lang]; }
 
@@ -678,6 +752,7 @@ function toggleLang() {
   var s = document.querySelector('.screen:not(.hidden)');
   if (s) {
     if (s.id === 'homeScreen') renderHome();
+    else if (s.id === 'namesScreen') showNames();
     else if (s.id === 'moodScreen') renderMoodSelect();
     else if (s.id === 'playScreen') renderCard();
     else if (s.id === 'doneScreen') renderDone();
@@ -704,6 +779,35 @@ function renderHowModal() {
 }
 
 function showHome() { renderHome(); showScreen('homeScreen'); }
+
+function showNames() {
+  var ux = u();
+  var isSv = lang === "sv";
+  document.getElementById('namesBackLabel').textContent = isSv ? "Tillbaka" : "Back";
+  document.getElementById('namesHeading').textContent = isSv ? "VILKA SPELAR?" : "WHO'S PLAYING?";
+  document.getElementById('namesDesc').textContent = isSv
+    ? "Skriv era namn s\u00e5 blir det mer personligt."
+    : "Add your names to make it personal.";
+  document.getElementById('p1Label').textContent = isSv ? "DITT NAMN" : "YOUR NAME";
+  document.getElementById('p2Label').textContent = isSv ? "PARTNERNS NAMN" : "PARTNER'S NAME";
+  document.getElementById('namesContinueBtn').textContent = isSv ? "SPELA \u25B6" : "LET'S PLAY \u25B6";
+  document.getElementById('p1Input').placeholder = isSv ? "t.ex. Robert" : "e.g. Robert";
+  document.getElementById('p2Input').placeholder = isSv ? "t.ex. Anna" : "e.g. Anna";
+  document.getElementById('p1Input').value = players.p1;
+  document.getElementById('p2Input').value = players.p2;
+  showScreen('namesScreen');
+  setTimeout(function(){ document.getElementById('p1Input').focus(); }, 100);
+}
+
+function submitNames() {
+  var n1 = document.getElementById('p1Input').value.trim();
+  var n2 = document.getElementById('p2Input').value.trim();
+  players.p1 = n1;
+  players.p2 = n2;
+  savePlayers();
+  showMoodSelect();
+}
+
 function showMoodSelect() { renderMoodSelect(); showScreen('moodScreen'); }
 
 function renderMoodSelect() {
@@ -769,7 +873,7 @@ function renderCard() {
     revBtn.style.color = color;
     nxtBtn.classList.add('hidden');
     gHint.classList.remove('hidden');
-    gHint.textContent = ux.guessWait;
+    gHint.textContent = p1() + " & " + p2() + (lang === "sv" ? " — svara f\u00f6rst, sedan Reveal." : " — both answer first, then Reveal.");
     gHint.style.color = "#6B5F52";
   } else {
     revBtn.classList.add('hidden');
@@ -777,7 +881,7 @@ function renderCard() {
     nxtBtn.textContent = ux.next;
     if (isGuess && revealed) {
       gHint.classList.remove('hidden');
-      gHint.textContent = ux.guessReveal;
+      gHint.textContent = lang === "sv" ? "J\u00e4mf\u00f6r svaren. Matchade ni?" : "Compare answers. Did you match?";
       gHint.style.color = color;
     } else {
       gHint.classList.add('hidden');
@@ -805,7 +909,8 @@ function renderDone() {
   var ux = u();
   var moodInfo = ux.moods[currentMood];
   document.getElementById('doneTitle').textContent = ux.doneTitle;
-  document.getElementById('doneSub').textContent = ux.doneSub(deck.length);
+  var names = (players.p1 && players.p2) ? players.p1 + " & " + players.p2 + " — " : "";
+  document.getElementById('doneSub').textContent = names + ux.doneSub(deck.length);
   document.getElementById('replayBtn').textContent = ux.replay(moodInfo.label);
   document.getElementById('newMoodBtn').textContent = ux.newMood;
 }
@@ -813,6 +918,7 @@ function renderDone() {
 function replay() { startGame(currentMood); }
 
 // Init
+loadPlayers();
 renderHome();
 </script>
 </body>
