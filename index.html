@@ -383,9 +383,15 @@ button:active { transform: scale(0.97); transition: transform 0.1s; }
 .hand-prompt-text {
   font-size: 17px; color: #EDE0C8; line-height: 1.5; font-weight: 300;
 }
-.hand-turn-label {
-  font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
-  color: #9A8E7E; text-align: center; margin-bottom: 14px;
+.hand-turn-heading {
+  font-family: 'Anton', sans-serif;
+  font-size: 26px; color: #EDE0C8; text-align: center;
+  margin-bottom: 18px; line-height: 1.2;
+  letter-spacing: 0.5px;
+}
+.hand-turn-heading.reveal-heading {
+  font-size: 14px; letter-spacing: 2px; text-transform: uppercase;
+  color: #9A8E7E; font-family: 'Inter', sans-serif; font-weight: 400;
 }
 .hand-cards { display: flex; flex-direction: column; gap: 8px; width: 100%; margin-bottom: 16px; }
 .hand-card {
@@ -646,11 +652,11 @@ button:active { transform: scale(0.97); transition: transform 0.1s; }
 
     <!-- Play area (pick + reveal) -->
     <div class="hand-play" id="handPlay">
+      <div class="hand-turn-heading" id="handTurnLabel"></div>
       <div class="hand-prompt-card">
         <div class="hand-prompt-label">PROMPT</div>
         <p class="hand-prompt-text" id="handPromptText"></p>
       </div>
-      <div class="hand-turn-label" id="handTurnLabel"></div>
       <div class="hand-cards" id="handCards"></div>
       <div class="hand-reveal hidden" id="handReveal"></div>
       <button class="btn-hand-continue hidden" id="handContinueBtn" onclick="handContinue()">NEXT ROUND &#8594;</button>
@@ -1183,7 +1189,8 @@ function renderHand() {
       : (players.p2 || (isSv ? 'Spelare 2' : 'Player 2'));
     var pickedIdx = isP1 ? hs.p1Pick : hs.p2Pick;
 
-    turnLabel.textContent = name.toUpperCase() + (isSv ? ' \u2014 V\u00e4lj ditt kort' : ' \u2014 Pick your card');
+    turnLabel.className = 'hand-turn-heading';
+    turnLabel.textContent = name + (isSv ? ' \u2014 v\u00e4lj ditt kort' : '\u2019s turn \u2014 pick your card');
 
     var html = '';
     for (var j = 0; j < hs.sharedHand.length; j++) {
@@ -1216,6 +1223,7 @@ function renderHand() {
     var p2card = hs.sharedHand[hs.p2Pick];
 
     if (isMatch) {
+      turnLabel.className = 'hand-turn-heading reveal-heading';
       turnLabel.textContent = isSv ? '\uD83C\uDFC5 SAMMA KORT!' : '\uD83C\uDFC5 SAME CARD!';
       revealEl.innerHTML = '<div class="hand-reveal-row">'
         + '<div class="hand-reveal-item" style="border-color:rgba(237,224,200,0.35);text-align:center;">'
@@ -1223,6 +1231,7 @@ function renderHand() {
         + '<div class="hand-reveal-text" style="text-align:center;">' + cardText(p1card, isSv) + '</div>'
         + '</div></div>';
     } else {
+      turnLabel.className = 'hand-turn-heading reveal-heading';
       turnLabel.textContent = isSv ? 'AVSL\u00d6JA' : 'REVEAL';
       revealEl.innerHTML = '<div class="hand-reveal-row">'
         + '<div class="hand-reveal-item"><div class="hand-reveal-name">' + name1.toUpperCase() + '</div>'
