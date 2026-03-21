@@ -1169,7 +1169,7 @@ function renderHand() {
   var hs = handState;
 
   document.getElementById('handRound').textContent = (isSv ? 'RUNDA ' : 'ROUND ') + hs.round;
-  document.getElementById('handPromptText').textContent = isSv ? hs.prompt.sv : hs.prompt.en;
+  document.getElementById('handPromptText').textContent = cardText(hs.prompt, isSv);
 
   var turnLabel = document.getElementById('handTurnLabel');
   var cardsEl = document.getElementById('handCards');

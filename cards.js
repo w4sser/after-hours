@@ -4,34 +4,34 @@
 // Mood tags: "fun" | "deep" | "spicy" | "mix"
 
 var PROMPTS = [
-  // fun
-  { mood:"fun", en:"If we got stranded at an airport for 6 hours, it would definitely involve\u2026", sv:"Om vi fastnade p\u00e5 en flygplats i 6 timmar skulle det definitivt involvera\u2026" },
-  { mood:"fun", en:"Our most ridiculous argument was definitely about\u2026", sv:"V\u00e5rt mest absurda br\u00e5k handlade definitivt om\u2026" },
+  // fun — some prompts use {p1} and {p2} which are replaced with player names at runtime
+  { mood:"fun", en:"If {p1} and {p2} got stranded at an airport for 6 hours, it would definitely involve\u2026", sv:"Om {p1} och {p2} fastnade p\u00e5 en flygplats i 6 timmar skulle det definitivt involvera\u2026" },
+  { mood:"fun", en:"The most ridiculous thing {p1} and {p2} have ever argued about is\u2026", sv:"Det mest absurda {p1} och {p2} n\u00e5gonsin br\u00e5kat om \u00e4r\u2026" },
   { mood:"fun", en:"If a reality show filmed us for a week, the highlight reel would include\u2026", sv:"Om ett reality-program filmade oss en vecka skulle h\u00f6jdpunkterna inkludera\u2026" },
   { mood:"fun", en:"Our perfect terrible night in always involves\u2026", sv:"V\u00e5r perfekta hemmakvalls-katastrof involverar alltid\u2026" },
-  { mood:"fun", en:"If we had to survive a week in the wilderness, we\u2019d fail because of\u2026", sv:"Om vi beh\u00f6vde \u00f6verleva en vecka i vildmarken skulle vi misslyckas p\u00e5 grund av\u2026" },
+  { mood:"fun", en:"If {p1} and {p2} had to survive a week in the wilderness, we\u2019d fail because of\u2026", sv:"Om {p1} och {p2} beh\u00f6vde \u00f6verleva en vecka i vildmarken skulle vi misslyckas p\u00e5 grund av\u2026" },
   { mood:"fun", en:"The most chaotic thing about us as a couple is\u2026", sv:"Det mest kaotiska med oss som par \u00e4r\u2026" },
   { mood:"fun", en:"We\u2019d never survive a cooking show because of\u2026", sv:"Vi skulle aldrig \u00f6verleva ett matlagningsprogram p\u00e5 grund av\u2026" },
   { mood:"fun", en:"What makes our neighbors slightly suspicious is probably\u2026", sv:"Det som f\u00e5r v\u00e5ra grannar att bli misst\u00e4nksamma \u00e4r f\u00f6rmodligen\u2026" },
   { mood:"fun", en:"On our last trip, things went sideways because of\u2026", sv:"P\u00e5 v\u00e5r senaste resa sp\u00e5rade det ur p\u00e5 grund av\u2026" },
-  { mood:"fun", en:"If someone followed us around for a day, the weirdest part would be\u2026", sv:"Om n\u00e5gon f\u00f6ljde oss under en dag skulle det konstiga vara\u2026" },
+  { mood:"fun", en:"If someone followed {p1} and {p2} around for a day, the weirdest part would be\u2026", sv:"Om n\u00e5gon f\u00f6ljde {p1} och {p2} under en dag skulle det konstiga vara\u2026" },
   // deep
-  { mood:"deep", en:"If we wrote a book together, the first chapter would be called\u2026", sv:"Om vi skrev en bok tillsammans skulle f\u00f6rsta kapitlet heta\u2026" },
+  { mood:"deep", en:"If {p1} and {p2} wrote a book together, the first chapter would be called\u2026", sv:"Om {p1} och {p2} skrev en bok tillsammans skulle f\u00f6rsta kapitlet heta\u2026" },
   { mood:"deep", en:"Our love language, if we\u2019re being truly honest, is\u2026", sv:"V\u00e5rt k\u00e4rleksspr\u00e5k, om vi \u00e4r helt \u00e4rliga, \u00e4r\u2026" },
   { mood:"deep", en:"If we made a documentary about this relationship, the tagline would be\u2026", sv:"Om vi gjorde en dokument\u00e4r om det h\u00e4r f\u00f6rh\u00e5llandet skulle taglinjen vara\u2026" },
   { mood:"deep", en:"If we had a couple\u2019s theme song, it would be about\u2026", sv:"Om vi hade en gemensam temal\u00e5t skulle den handla om\u2026" },
   { mood:"deep", en:"The most honest thing I could say about our morning routine is\u2026", sv:"Det mest \u00e4rliga jag kan s\u00e4ga om v\u00e5r morgonrutin \u00e4r\u2026" },
   { mood:"deep", en:"If we explained our relationship to a therapist, we\u2019d start with\u2026", sv:"Om vi f\u00f6rklarade v\u00e5r relation f\u00f6r en terapeut skulle vi b\u00f6rja med\u2026" },
-  { mood:"deep", en:"The thing about us I think will still be true in ten years is\u2026", sv:"Det med oss som jag tror fortfarande st\u00e4mmer om tio \u00e5r \u00e4r\u2026" },
-  { mood:"deep", en:"The thing I noticed about you first that I\u2019ve never told you is\u2026", sv:"Det jag m\u00e4rkte hos dig f\u00f6rst som jag aldrig ber\u00e4ttat \u00e4r\u2026" },
-  { mood:"deep", en:"If I had to describe what makes us work in one sentence, I\u2019d say\u2026", sv:"Om jag med en mening skulle beskriva vad som g\u00f6r att vi fungerar, skulle jag s\u00e4ga\u2026" },
+  { mood:"deep", en:"The thing about {p1} and {p2} that I think will still be true in ten years is\u2026", sv:"Det med {p1} och {p2} som jag tror fortfarande st\u00e4mmer om tio \u00e5r \u00e4r\u2026" },
+  { mood:"deep", en:"The thing I noticed about {p2} first that I\u2019ve never said out loud is\u2026", sv:"Det jag m\u00e4rkte hos {p2} f\u00f6rst som jag aldrig sagt h\u00f6gt \u00e4r\u2026" },
+  { mood:"deep", en:"If {p1} had to describe what makes us work in one sentence, they\u2019d say\u2026", sv:"Om {p1} med en mening skulle beskriva vad som g\u00f6r att vi fungerar, skulle de s\u00e4ga\u2026" },
   // spicy
-  { mood:"spicy", en:"If we had a whole evening with no plans and no phones, it would definitely involve\u2026", sv:"Om vi hade en hel kv\u00e4ll utan planer och utan telefoner skulle det definitivt involvera\u2026" },
-  { mood:"spicy", en:"The thing one of us does that the other finds impossible to resist is\u2026", sv:"Det som en av oss g\u00f6r som den andre om\u00f6jligt kan mots\u00e5 \u00e4r\u2026" },
-  { mood:"spicy", en:"Our most unexpectedly good night together always started with\u2026", sv:"V\u00e5r mest ov\u00e4ntat bra kv\u00e4ll tillsammans b\u00f6rjade alltid med\u2026" },
-  { mood:"spicy", en:"If we checked into a hotel right now with zero agenda, the first thing on the agenda would be\u2026", sv:"Om vi checkade in p\u00e5 ett hotell just nu utan plan, det f\u00f6rsta p\u00e5 agendan skulle vara\u2026" },
-  { mood:"spicy", en:"The thing we both think about more than we admit is\u2026", sv:"Det vi b\u00e5da t\u00e4nker p\u00e5 mer \u00e4n vi erk\u00e4nner \u00e4r\u2026" },
-  { mood:"spicy", en:"The version of us I like most always involves\u2026", sv:"Den version av oss jag gillar mest involverar alltid\u2026" }
+  { mood:"spicy", en:"If {p1} and {p2} had a whole evening with no plans and no phones, it would definitely involve\u2026", sv:"Om {p1} och {p2} hade en hel kv\u00e4ll utan planer och utan telefoner skulle det definitivt involvera\u2026" },
+  { mood:"spicy", en:"The thing {p1} does that {p2} finds impossible to resist is\u2026", sv:"Det som {p1} g\u00f6r som {p2} om\u00f6jligt kan mots\u00e5 \u00e4r\u2026" },
+  { mood:"spicy", en:"The most unexpectedly good night {p1} and {p2} had together always started with\u2026", sv:"Den mest ov\u00e4ntat bra kv\u00e4llen {p1} och {p2} haft tillsammans b\u00f6rjade alltid med\u2026" },
+  { mood:"spicy", en:"If {p1} and {p2} checked into a hotel right now with zero agenda, the first thing would be\u2026", sv:"Om {p1} och {p2} checkade in p\u00e5 ett hotell just nu utan plan, det f\u00f6rsta som skulle h\u00e4nda \u00e4r\u2026" },
+  { mood:"spicy", en:"The thing {p1} and {p2} both think about more than they admit is\u2026", sv:"Det {p1} och {p2} b\u00e5da t\u00e4nker p\u00e5 mer \u00e4n de erk\u00e4nner \u00e4r\u2026" },
+  { mood:"spicy", en:"The version of {p1} and {p2} that I like most always involves\u2026", sv:"Den version av {p1} och {p2} som jag gillar mest involverar alltid\u2026" }
 ];
 
 var ANSWERS = [
