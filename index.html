@@ -1140,13 +1140,26 @@ var handState = {
   round: 1
 };
 
-function dealHandCards(n) {
+function dealHandCards(n, accepts) {
+  // Deal n answer cards whose type matches the prompt's accepts list
   var hand = [];
-  for (var i = 0; i < n; i++) {
+  var tries = 0;
+  while (hand.length < n && tries < 200) {
     if (handState.answerDeck.length === 0) {
       handState.answerDeck = shuffle(ANSWERS.slice());
     }
-    hand.push(handState.answerDeck.pop());
+    var card = handState.answerDeck.pop();
+    if (!accepts || accepts.indexOf(card.type) !== -1) {
+      hand.push(card);
+    }
+    tries++;
+  }
+  // Fallback: if we couldn't find enough matching cards, fill from full deck
+  if (hand.length < n) {
+    var fallback = shuffle(ANSWERS.slice());
+    while (hand.length < n && fallback.length > 0) {
+      hand.push(fallback.pop());
+    }
   }
   return hand;
 }
@@ -1160,8 +1173,8 @@ function initHandMode(mood) {
   };
   handState.promptDeck = shuffle(filterCards(PROMPTS));
   handState.answerDeck = shuffle(filterCards(ANSWERS));
-  handState.sharedHand = dealHandCards(5);
   handState.prompt = handState.promptDeck.pop();
+  handState.sharedHand = dealHandCards(5, handState.prompt.accepts);
   handState.p1Pick = null;
   handState.p2Pick = null;
   handState.phase = 'p1pick';
@@ -1277,7 +1290,7 @@ function nextHandRound() {
     hs.promptDeck = shuffle(PROMPTS.slice());
   }
   hs.prompt = hs.promptDeck.pop();
-  hs.sharedHand = dealHandCards(5);
+  hs.sharedHand = dealHandCards(5, hs.prompt.accepts);
   hs.p1Pick = null;
   hs.p2Pick = null;
   hs.phase = 'p1pick';

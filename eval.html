@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After Hours — Card Evaluator</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #111; color: #EDE0C8; font-family: 'Inter', system-ui, sans-serif; padding: 24px; max-width: 800px; margin: 0 auto; }
+  h1 { font-family: 'Anton', sans-serif; font-size: 28px; margin-bottom: 8px; }
+  .subtitle { color: #9A8E7E; font-size: 13px; margin-bottom: 24px; }
+  .controls { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+  button { background: #1A1917; border: 1px solid rgba(237,224,200,0.15); color: #EDE0C8; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; }
+  button:hover { border-color: rgba(237,224,200,0.3); }
+  button.active { border-color: #EDE0C8; background: #252420; }
+  .combo { background: #1A1917; border: 1px solid rgba(237,224,200,0.1); border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; }
+  .combo-prompt { color: #9A8E7E; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .combo-text { font-size: 16px; line-height: 1.5; }
+  .combo-text .prompt-part { color: #9A8E7E; }
+  .combo-text .answer-part { color: #EDE0C8; font-weight: 500; }
+  .combo-meta { margin-top: 8px; font-size: 11px; color: #6B5F52; }
+  .lane-tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; letter-spacing: 0.5px; }
+  .lane-np { background: rgba(100,149,237,0.15); color: #6495ED; }
+  .lane-gp { background: rgba(50,205,50,0.15); color: #32CD32; }
+  .stats { background: #1A1917; border: 1px solid rgba(237,224,200,0.1); border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; font-size: 13px; color: #9A8E7E; }
+  .stats span { color: #EDE0C8; }
+  #combos { margin-top: 16px; }
+  .filter-row { display: flex; gap: 16px; align-items: center; margin-bottom: 16px; font-size: 13px; color: #9A8E7E; }
+  select { background: #1A1917; border: 1px solid rgba(237,224,200,0.15); color: #EDE0C8; padding: 6px 10px; border-radius: 6px; font-size: 13px; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<h1>Card Evaluator</h1>
+<p class="subtitle">Test prompt + answer combinations. Check grammar, tone, and fun factor.</p>
+
+<div class="stats" id="stats"></div>
+
+<div class="filter-row">
+  <label>Mood: <select id="moodFilter">
+    <option value="all">All</option>
+    <option value="fun">Fun</option>
+    <option value="deep">Deep</option>
+    <option value="spicy">Spicy</option>
+    <option value="mix">Mix</option>
+  </select></label>
+  <label>Lane: <select id="laneFilter">
+    <option value="all">All</option>
+    <option value="np">Noun phrases only</option>
+    <option value="gp">Gerund phrases only</option>
+  </select></label>
+  <label>Names: <input id="p1name" value="Robert" style="width:70px;background:#1A1917;border:1px solid rgba(237,224,200,0.15);color:#EDE0C8;padding:4px 8px;border-radius:4px;font-size:13px"> &amp; <input id="p2name" value="Jannika" style="width:70px;background:#1A1917;border:1px solid rgba(237,224,200,0.15);color:#EDE0C8;padding:4px 8px;border-radius:4px;font-size:13px"></label>
+</div>
+
+<div class="controls">
+  <button onclick="generateCombos(10)">Generate 10 combos</button>
+  <button onclick="generateCombos(25)">Generate 25</button>
+  <button onclick="showAllForPrompt()">All answers for random prompt</button>
+  <button onclick="document.getElementById('combos').innerHTML=''">Clear</button>
+</div>
+
+<div id="combos"></div>
+
+<script src="cards.js"></script>
+<script>
+function sub(text) {
+  var p1 = document.getElementById('p1name').value || 'Player 1';
+  var p2 = document.getElementById('p2name').value || 'Player 2';
+  return text.replace(/\{p1\}/g, p1).replace(/\{p2\}/g, p2);
+}
+
+function getFiltered() {
+  var mood = document.getElementById('moodFilter').value;
+  var lane = document.getElementById('laneFilter').value;
+
+  var prompts = PROMPTS.filter(function(p) {
+    if (mood !== 'all' && mood !== 'mix' && p.mood !== mood && p.mood !== 'mix') return false;
+    if (lane !== 'all' && p.accepts.indexOf(lane) === -1) return false;
+    return true;
+  });
+
+  var answers = ANSWERS.filter(function(a) {
+    if (mood !== 'all' && mood !== 'mix' && a.mood !== mood && a.mood !== 'mix') return false;
+    if (lane !== 'all' && a.type !== lane) return false;
+    return true;
+  });
+
+  return { prompts: prompts, answers: answers };
+}
+
+function updateStats() {
+  var npCount = ANSWERS.filter(function(a){ return a.type === 'np'; }).length;
+  var gpCount = ANSWERS.filter(function(a){ return a.type === 'gp'; }).length;
+  var npPrompts = PROMPTS.filter(function(p){ return p.accepts.indexOf('np') !== -1; }).length;
+  var gpPrompts = PROMPTS.filter(function(p){ return p.accepts.indexOf('gp') !== -1; }).length;
+  var npOnly = PROMPTS.filter(function(p){ return p.accepts.length === 1 && p.accepts[0] === 'np'; }).length;
+
+  document.getElementById('stats').innerHTML =
+    '<span>' + PROMPTS.length + '</span> prompts · <span>' + ANSWERS.length + '</span> answers · ' +
+    '<span class="lane-tag lane-np">NP</span> <span>' + npCount + '</span> answers / <span>' + npPrompts + '</span> prompts · ' +
+    '<span class="lane-tag lane-gp">GP</span> <span>' + gpCount + '</span> answers / <span>' + gpPrompts + '</span> prompts · ' +
+    '<span>' + npOnly + '</span> NP-only prompts';
+}
+
+function renderCombo(prompt, answer) {
+  var promptText = sub(prompt.en).replace(/\u2026$/, '');
+  var answerText = sub(answer.en);
+
+  return '<div class="combo">' +
+    '<div class="combo-text"><span class="prompt-part">' + promptText + ' </span>' +
+    '<span class="answer-part">' + answerText + '</span></div>' +
+    '<div class="combo-meta">' +
+    '<span class="lane-tag lane-' + answer.type + '">' + answer.type.toUpperCase() + '</span> ' +
+    'prompt: ' + prompt.mood + ' · answer: ' + answer.mood +
+    '</div></div>';
+}
+
+function generateCombos(n) {
+  var data = getFiltered();
+  var html = '';
+  for (var i = 0; i < n; i++) {
+    var p = data.prompts[Math.floor(Math.random() * data.prompts.length)];
+    // Only pick answers that match this prompt's accepts
+    var validAnswers = data.answers.filter(function(a) {
+      return p.accepts.indexOf(a.type) !== -1;
+    });
+    if (validAnswers.length === 0) continue;
+    var a = validAnswers[Math.floor(Math.random() * validAnswers.length)];
+    html += renderCombo(p, a);
+  }
+  document.getElementById('combos').innerHTML = html;
+}
+
+function showAllForPrompt() {
+  var data = getFiltered();
+  var p = data.prompts[Math.floor(Math.random() * data.prompts.length)];
+  var validAnswers = data.answers.filter(function(a) {
+    return p.accepts.indexOf(a.type) !== -1;
+  });
+
+  var html = '<div style="margin-bottom:16px;padding:12px 16px;background:#252420;border-radius:8px;">' +
+    '<div style="font-size:11px;color:#6B5F52;margin-bottom:4px;">PROMPT (accepts: ' + p.accepts.join(', ') + ')</div>' +
+    '<div style="font-size:16px;">' + sub(p.en) + '</div></div>';
+
+  for (var i = 0; i < validAnswers.length; i++) {
+    html += renderCombo(p, validAnswers[i]);
+  }
+  document.getElementById('combos').innerHTML = html;
+}
+
+updateStats();
+</script>
+</body>
+</html>
