@@ -383,6 +383,10 @@ button:active { transform: scale(0.97); transition: transform 0.1s; }
 .hand-prompt-text {
   font-size: 17px; color: #EDE0C8; line-height: 1.5; font-weight: 300;
 }
+.blank-slot {
+  display: inline-block; min-width: 80px; border-bottom: 2px solid #EDE0C8;
+  margin: 0 2px; vertical-align: baseline;
+}
 .hand-turn-heading {
   font-family: 'Anton', sans-serif;
   font-size: 26px; color: #EDE0C8; text-align: center;
@@ -1069,7 +1073,7 @@ function renderCard() {
   document.getElementById('typeName').textContent = meta.label;
   document.getElementById('typeName').style.color = color;
   document.getElementById('typeHint').textContent = meta.hint;
-  document.getElementById('cardText').textContent = ct(card);
+  document.getElementById('cardText').innerHTML = ct(card).replace(/___/g, '<span class="blank-slot"></span>');
 
   var revBtn = document.getElementById('revealBtn');
   var nxtBtn = document.getElementById('nextBtn');
@@ -1188,7 +1192,7 @@ function renderHand() {
   var hs = handState;
 
   document.getElementById('handRound').textContent = (isSv ? 'RUNDA ' : 'ROUND ') + hs.round;
-  document.getElementById('handPromptText').textContent = cardText(hs.prompt, isSv);
+  document.getElementById('handPromptText').innerHTML = cardText(hs.prompt, isSv).replace(/___/g, '<span class="blank-slot"></span>');
 
   var turnLabel = document.getElementById('handTurnLabel');
   var cardsEl = document.getElementById('handCards');
