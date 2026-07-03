@@ -1144,8 +1144,10 @@ var handState = {
   round: 1
 };
 
-function dealHandCards(n, accepts) {
-  // Deal n answer cards whose type matches the prompt's accepts list
+function dealHandCards(n, accepts, skip) {
+  // Deal n answer cards whose type matches the prompt's accepts list,
+  // excluding answers the prompt skips (skip holds indices into ANSWERS)
+  var skipCards = (skip || []).map(function(i) { return ANSWERS[i]; });
   var hand = [];
   var tries = 0;
   while (hand.length < n && tries < 200) {
@@ -1153,7 +1155,7 @@ function dealHandCards(n, accepts) {
       handState.answerDeck = shuffle(ANSWERS.slice());
     }
     var card = handState.answerDeck.pop();
-    if (!accepts || accepts.indexOf(card.type) !== -1) {
+    if ((!accepts || accepts.indexOf(card.type) !== -1) && skipCards.indexOf(card) === -1) {
       hand.push(card);
     }
     tries++;
@@ -1162,7 +1164,8 @@ function dealHandCards(n, accepts) {
   if (hand.length < n) {
     var fallback = shuffle(ANSWERS.slice());
     while (hand.length < n && fallback.length > 0) {
-      hand.push(fallback.pop());
+      var fb = fallback.pop();
+      if (skipCards.indexOf(fb) === -1) hand.push(fb);
     }
   }
   return hand;
@@ -1178,7 +1181,7 @@ function initHandMode(mood) {
   handState.promptDeck = shuffle(filterCards(PROMPTS));
   handState.answerDeck = shuffle(filterCards(ANSWERS));
   handState.prompt = handState.promptDeck.pop();
-  handState.sharedHand = dealHandCards(5, handState.prompt.accepts);
+  handState.sharedHand = dealHandCards(5, handState.prompt.accepts, handState.prompt.skip);
   handState.p1Pick = null;
   handState.p2Pick = null;
   handState.phase = 'p1pick';
@@ -1294,7 +1297,7 @@ function nextHandRound() {
     hs.promptDeck = shuffle(PROMPTS.slice());
   }
   hs.prompt = hs.promptDeck.pop();
-  hs.sharedHand = dealHandCards(5, hs.prompt.accepts);
+  hs.sharedHand = dealHandCards(5, hs.prompt.accepts, hs.prompt.skip);
   hs.p1Pick = null;
   hs.p2Pick = null;
   hs.phase = 'p1pick';
