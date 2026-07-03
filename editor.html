@@ -189,6 +189,76 @@ button { font-family: inherit; cursor: pointer; }
 .btn-add:hover { border-color: rgba(237,224,200,0.6); }
 #add-hint { font-size: 10px; color: #6B5F52; margin-top: 6px; }
 
+/* REVIEW MODE */
+#review-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 20px;
+  gap: 16px;
+  overflow-y: auto;
+}
+#review-progress {
+  font-size: 12px;
+  color: #9A8E7E;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+#review-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #1A1917;
+  border: 1px solid rgba(237,224,200,0.1);
+  border-radius: 14px;
+  padding: 28px 24px;
+  text-align: center;
+  gap: 14px;
+  min-height: 0;
+}
+#review-meta { display: flex; gap: 8px; }
+#review-mood {
+  background: rgba(237,224,200,0.08);
+  color: #9A8E7E;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+#review-type { font-size: 10px; color: #6B5F52; padding: 2px 0; letter-spacing: 1px; }
+#review-sentence { font-size: 19px; line-height: 1.6; color: #EDE0C8; max-width: 560px; }
+#review-sentence strong { color: #F5EDD8; }
+#review-done { text-align: center; color: #9A8E7E; font-size: 15px; line-height: 1.8; padding: 40px 0; }
+#review-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  flex-shrink: 0;
+}
+.rate-btn {
+  background: #1A1917;
+  border: 1px solid rgba(237,224,200,0.15);
+  color: #EDE0C8;
+  padding: 16px 8px;
+  border-radius: 10px;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: border-color 0.15s;
+}
+.rate-btn:hover { border-color: rgba(237,224,200,0.35); }
+.key-hint { font-size: 10px; color: #6B5F52; }
+@media (max-width: 600px) {
+  #review-buttons { grid-template-columns: 1fr 1fr; }
+  .rate-btn { padding: 18px 8px; }
+  .key-hint { display: none; }
+  #review-sentence { font-size: 17px; }
+}
+
 /* FOOTER */
 #footer {
   flex-shrink: 0;
@@ -243,7 +313,23 @@ button { font-family: inherit; cursor: pointer; }
 
 <div id="answers-area"></div>
 
-<div id="review-area" style="display:none;"></div>
+<div id="review-area" style="display:none;">
+  <div id="review-progress"></div>
+  <div id="review-card">
+    <div id="review-meta">
+      <span id="review-mood"></span>
+      <span id="review-type"></span>
+    </div>
+    <div id="review-sentence"></div>
+  </div>
+  <div id="review-done" style="display:none;">All combos reviewed 🎉<br>Export cards.js to save your keepers.</div>
+  <div id="review-buttons">
+    <button class="rate-btn" onclick="rateCombo('funny')">😂 Funny<span class="key-hint">1</span></button>
+    <button class="rate-btn" onclick="rateCombo('ok')">👍 OK<span class="key-hint">2</span></button>
+    <button class="rate-btn" onclick="rateCombo('doesntwork')">🔧 Doesn't work<span class="key-hint">3</span></button>
+    <button class="rate-btn" onclick="rateCombo('notfunny')">😐 Not funny<span class="key-hint">4</span></button>
+  </div>
+</div>
 
 <div id="add-panel">
   <div id="add-panel-label">+ Add new answer</div>
@@ -822,6 +908,89 @@ function addAnswer() {
   document.getElementById('add-en').value = '';
   render();
 }
+
+var currentCombo = null;
+
+function moodCompatible(a, b) {
+  return a === b || a === 'mix' || b === 'mix';
+}
+
+function candidateRatedMap() {
+  var m = {};
+  Object.keys(state.ratings).forEach(function(k) { m[k.split('|')[0]] = true; });
+  return m;
+}
+
+function unratedCombos() {
+  var out = [];
+  CANDIDATES.forEach(function(c) {
+    if (state.candidateStatus[c.id] === 'killed') return;
+    PROMPTS.forEach(function(p, pi) {
+      if (p.accepts.indexOf(c.type) === -1) return;
+      if (!moodCompatible(c.mood, p.mood)) return;
+      if (state.ratings[c.id + '|' + pi]) return;
+      out.push({ c: c, pi: pi });
+    });
+  });
+  return out;
+}
+
+function pickNextCombo() {
+  var combos = unratedCombos();
+  if (combos.length === 0) return null;
+  var rated = candidateRatedMap();
+  var fresh = combos.filter(function(x) { return !rated[x.c.id]; });
+  var pool = fresh.length ? fresh : combos;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function reviewCounts() {
+  var approved = 0, killed = 0;
+  CANDIDATES.forEach(function(c) {
+    if (state.candidateStatus[c.id] === 'approved') approved++;
+    else if (state.candidateStatus[c.id] === 'killed') killed++;
+  });
+  var rated = candidateRatedMap();
+  var unseen = CANDIDATES.filter(function(c) { return !rated[c.id]; }).length;
+  return { approved: approved, killed: killed, unseen: unseen };
+}
+
+function renderReview() {
+  var counts = reviewCounts();
+  document.getElementById('review-progress').textContent =
+    'approved ' + counts.approved + ' · killed ' + counts.killed + ' · unseen ' + counts.unseen;
+  currentCombo = pickNextCombo();
+  var done = !currentCombo;
+  document.getElementById('review-card').style.display = done ? 'none' : 'flex';
+  document.getElementById('review-buttons').style.display = done ? 'none' : 'grid';
+  document.getElementById('review-done').style.display = done ? 'block' : 'none';
+  if (done) return;
+  var p = PROMPTS[currentCombo.pi];
+  var c = currentCombo.c;
+  document.getElementById('review-mood').textContent = p.mood.toUpperCase();
+  document.getElementById('review-type').textContent = (TYPE_LABELS[c.type] || c.type) + ' · ' + c.id;
+  document.getElementById('review-sentence').innerHTML = buildSentence(p.en, c.en);
+}
+
+function rateCombo(rating) {
+  if (!currentCombo) return;
+  var c = currentCombo.c, pi = currentCombo.pi;
+  state.ratings[c.id + '|' + pi] = rating;
+  if (rating === 'funny' || rating === 'ok') {
+    state.candidateStatus[c.id] = 'approved';
+  } else if (rating === 'notfunny' && state.candidateStatus[c.id] !== 'approved') {
+    state.candidateStatus[c.id] = 'killed';
+  }
+  saveState();
+  renderReview();
+}
+
+document.addEventListener('keydown', function(e) {
+  if (state.mode !== 'review') return;
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  var map = { '1': 'funny', '2': 'ok', '3': 'doesntwork', '4': 'notfunny' };
+  if (map[e.key]) rateCombo(map[e.key]);
+});
 
 function setMode(m) {
   state.mode = m;
