@@ -280,6 +280,7 @@ button { font-family: inherit; cursor: pointer; }
   transition: border-color 0.15s;
 }
 .btn-export:hover { border-color: #EDE0C8; }
+#copy-flash { color: #32CD32; font-size: 11px; opacity: 0; transition: opacity 0.3s; }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
@@ -348,7 +349,11 @@ button { font-family: inherit; cursor: pointer; }
 
 <div id="footer">
   <span id="footer-status">Skips are per-prompt · progress saved in browser</span>
-  <button class="btn-export" onclick="exportCards()">⬇ Export cards.js</button>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <span id="copy-flash">Copied ✓</span>
+    <button class="btn-export" onclick="copyCards()">📋 Copy cards.js</button>
+    <button class="btn-export" onclick="exportCards()">⬇ Export cards.js</button>
+  </div>
 </div>
 
 <script>
@@ -1013,16 +1018,27 @@ document.getElementById('add-en').addEventListener('keydown', function(e) {
 document.getElementById('p1name').addEventListener('input', render);
 document.getElementById('p2name').addEventListener('input', render);
 
-function exportCards() {
-  var prompts = PROMPTS.map(function(p, i) {
-    var skips = getSkips(i);
+function buildExportText() {
+  var approved = CANDIDATES.filter(function(c) { return state.candidateStatus[c.id] === 'approved'; });
+  var base = ANSWERS.length + state.newAnswers.length;
+  var candIdx = {};
+  approved.forEach(function(c, i) { candIdx[c.id] = base + i; });
+
+  var prompts = PROMPTS.map(function(p, pi) {
+    var skips = getSkips(pi).slice();
+    approved.forEach(function(c) {
+      var r = state.ratings[c.id + '|' + pi];
+      if (r === 'doesntwork' || r === 'notfunny') skips.push(candIdx[c.id]);
+    });
     if (skips.length === 0) return p;
     var copy = Object.assign({}, p);
-    copy.skip = skips.slice();
+    copy.skip = skips;
     return copy;
   });
 
-  var answers = ANSWERS.concat(state.newAnswers);
+  var answers = ANSWERS.concat(state.newAnswers).concat(approved.map(function(c) {
+    return { mood: c.mood, type: c.type, en: c.en, sv: c.sv };
+  }));
 
   var lines = [];
   lines.push('// ── AFTER HOURS — CARD DATA ──');
@@ -1037,14 +1053,27 @@ function exportCards() {
   lines.push('var PROMPTS = ' + JSON.stringify(prompts, null, 2) + ';');
   lines.push('');
   lines.push('var ANSWERS = ' + JSON.stringify(answers, null, 2) + ';');
+  return lines.join('\n');
+}
 
-  var blob = new Blob([lines.join('\n')], { type: 'text/javascript' });
+function exportCards() {
+  var blob = new Blob([buildExportText()], { type: 'text/javascript' });
   var url = URL.createObjectURL(blob);
   var a = document.createElement('a');
   a.href = url;
   a.download = 'cards.js';
   a.click();
   URL.revokeObjectURL(url);
+}
+
+function copyCards() {
+  navigator.clipboard.writeText(buildExportText()).then(function() {
+    var flash = document.getElementById('copy-flash');
+    flash.style.opacity = '1';
+    setTimeout(function() { flash.style.opacity = '0'; }, 1500);
+  }, function() {
+    alert('Copy failed — use the download button instead.');
+  });
 }
 
 loadState();
