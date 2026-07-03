@@ -512,17 +512,163 @@ var ANSWERS = [
   { mood:"mix", type:"ap", en:"suspiciously synchronized", sv:"misstänkt synkade" }
 ];
 
+// New AI-written answer candidates, rated in Review mode.
+// Stable ids: future batches continue numbering (c-121, ...). Never renumber.
+var CANDIDATES = [
+  // ── FUN · things (np) ──
+  { id:"c-001", mood:"fun", type:"np", en:"a laminated list of grievances", sv:"" },
+  { id:"c-002", mood:"fun", type:"np", en:"an emotional support shopping cart", sv:"" },
+  { id:"c-003", mood:"fun", type:"np", en:"a PowerPoint titled 'Why We Should Get a Dog'", sv:"" },
+  { id:"c-004", mood:"fun", type:"np", en:"the vacation spreadsheet with 14 tabs", sv:"" },
+  { id:"c-005", mood:"fun", type:"np", en:"a candle that costs more than the electric bill", sv:"" },
+  { id:"c-006", mood:"fun", type:"np", en:"the good scissors, missing since 2019", sv:"" },
+  { id:"c-007", mood:"fun", type:"np", en:"the emergency snack drawer", sv:"" },
+  { id:"c-008", mood:"fun", type:"np", en:"a conspiracy theory about the neighbors' recycling", sv:"" },
+  { id:"c-009", mood:"fun", type:"np", en:"the phrase 'we should host more'", sv:"" },
+  { id:"c-010", mood:"fun", type:"np", en:"a receipt hidden like a state secret", sv:"" },
+  { id:"c-011", mood:"fun", type:"np", en:"two competing weather apps", sv:"" },
+  { id:"c-012", mood:"fun", type:"np", en:"a betrayal involving the last of the oat milk", sv:"" },
+  { id:"c-013", mood:"fun", type:"np", en:"the 'quick stop' that lasted three hours", sv:"" },
+  { id:"c-014", mood:"fun", type:"np", en:"a fitted sheet and two broken spirits", sv:"" },
+  { id:"c-015", mood:"fun", type:"np", en:"the seventh 'last episode' of the night", sv:"" },
+  { id:"c-016", mood:"fun", type:"np", en:"a vendetta against the self-checkout machine", sv:"" },
+  { id:"c-017", mood:"fun", type:"np", en:"the fourth attempt at sourdough", sv:"" },
+  { id:"c-018", mood:"fun", type:"np", en:"an argument neither of us remembers starting", sv:"" },
+  { id:"c-019", mood:"fun", type:"np", en:"a decorative towel nobody is allowed to use", sv:"" },
+  { id:"c-020", mood:"fun", type:"np", en:"the world's most passive-aggressive calendar invite", sv:"" },
+  { id:"c-021", mood:"fun", type:"np", en:"a nap that was supposed to be twenty minutes", sv:"" },
+  { id:"c-022", mood:"fun", type:"np", en:"the 'we'll eat it before it goes bad' produce drawer", sv:"" },
+  // ── FUN · activities (gp) ──
+  { id:"c-023", mood:"fun", type:"gp", en:"rating other couples' arguments at restaurants", sv:"" },
+  { id:"c-024", mood:"fun", type:"gp", en:"practicing fake laughs for the work party", sv:"" },
+  { id:"c-025", mood:"fun", type:"gp", en:"arguing about the plot of a movie neither of us finished", sv:"" },
+  { id:"c-026", mood:"fun", type:"gp", en:"{p1} explaining the offside rule with condiments", sv:"" },
+  { id:"c-027", mood:"fun", type:"gp", en:"executing a synchronized Irish exit", sv:"" },
+  { id:"c-028", mood:"fun", type:"gp", en:"getting emotionally attached to the robot vacuum", sv:"" },
+  { id:"c-029", mood:"fun", type:"gp", en:"whispering 'we're leaving in five minutes' for two hours", sv:"" },
+  { id:"c-030", mood:"fun", type:"gp", en:"hyping each other up to make one (1) phone call", sv:"" },
+  { id:"c-031", mood:"fun", type:"gp", en:"confidently checking the oil like we know things", sv:"" },
+  { id:"c-032", mood:"fun", type:"gp", en:"starting a diet in the morning and folding by lunch", sv:"" },
+  { id:"c-033", mood:"fun", type:"gp", en:"narrating the dog's inner monologue", sv:"" },
+  { id:"c-034", mood:"fun", type:"gp", en:"{p2} reorganizing the fridge mid-argument", sv:"" },
+  { id:"c-035", mood:"fun", type:"gp", en:"googling 'is it normal to...' and immediately closing the tab", sv:"" },
+  { id:"c-036", mood:"fun", type:"gp", en:"reading one-star reviews of places we love, out loud", sv:"" },
+  // ── FUN · quotes (qf) ──
+  { id:"c-037", mood:"fun", type:"qf", en:"I know a shortcut", sv:"" },
+  { id:"c-038", mood:"fun", type:"qf", en:"we're never drinking again", sv:"" },
+  { id:"c-039", mood:"fun", type:"qf", en:"don't make it weird", sv:"" },
+  { id:"c-040", mood:"fun", type:"qf", en:"this is why we can't have nice things", sv:"" },
+  { id:"c-041", mood:"fun", type:"qf", en:"I'm just resting my eyes", sv:"" },
+  { id:"c-042", mood:"fun", type:"qf", en:"define 'expensive'", sv:"" },
+  { id:"c-043", mood:"fun", type:"qf", en:"the parking was free though", sv:"" },
+  { id:"c-044", mood:"fun", type:"qf", en:"I've been saying that for years", sv:"" },
+  // ── FUN · descriptions (ap) ──
+  { id:"c-045", mood:"fun", type:"ap", en:"aggressively punctual", sv:"" },
+  { id:"c-046", mood:"fun", type:"ap", en:"politely furious", sv:"" },
+  { id:"c-047", mood:"fun", type:"ap", en:"two espressos past reasonable", sv:"" },
+  { id:"c-048", mood:"fun", type:"ap", en:"financially optimistic", sv:"" },
+  { id:"c-049", mood:"fun", type:"ap", en:"wrong at full volume", sv:"" },
+  { id:"c-050", mood:"fun", type:"ap", en:"athletically lazy", sv:"" },
+  // ── MIX · things (np) ──
+  { id:"c-051", mood:"mix", type:"np", en:"the last slice, cut into two suspiciously unequal halves", sv:"" },
+  { id:"c-052", mood:"mix", type:"np", en:"a six-second slow dance in the parking lot", sv:"" },
+  { id:"c-053", mood:"mix", type:"np", en:"matching hangovers", sv:"" },
+  { id:"c-054", mood:"mix", type:"np", en:"a shared calendar neither of us checks", sv:"" },
+  { id:"c-055", mood:"mix", type:"np", en:"breakfast for dinner and zero regrets", sv:"" },
+  { id:"c-056", mood:"mix", type:"np", en:"the same story, told with two very different villains", sv:"" },
+  { id:"c-057", mood:"mix", type:"np", en:"an anniversary we both pretended not to forget", sv:"" },
+  { id:"c-058", mood:"mix", type:"np", en:"the couch dent shaped like us", sv:"" },
+  { id:"c-059", mood:"mix", type:"np", en:"a secret handshake we're too old for", sv:"" },
+  { id:"c-060", mood:"mix", type:"np", en:"the blanket fort that took two hours and one argument", sv:"" },
+  { id:"c-061", mood:"mix", type:"np", en:"a plan B that was always the real plan", sv:"" },
+  { id:"c-062", mood:"mix", type:"np", en:"the 'you hang up first' standoff, ten years in", sv:"" },
+  // ── MIX · activities (gp) ──
+  { id:"c-063", mood:"mix", type:"gp", en:"cancelling plans and celebrating like we won something", sv:"" },
+  { id:"c-064", mood:"mix", type:"gp", en:"planning a whole future in the cereal aisle", sv:"" },
+  { id:"c-065", mood:"mix", type:"gp", en:"sending memes instead of apologizing", sv:"" },
+  { id:"c-066", mood:"mix", type:"gp", en:"re-telling the same story and tag-teaming the punchline", sv:"" },
+  { id:"c-067", mood:"mix", type:"gp", en:"judging house-hunting shows like we own property", sv:"" },
+  { id:"c-068", mood:"mix", type:"gp", en:"walking the long way home on purpose", sv:"" },
+  { id:"c-069", mood:"mix", type:"gp", en:"staging interventions for each other's online shopping", sv:"" },
+  { id:"c-070", mood:"mix", type:"gp", en:"slow-blinking at each other like house cats", sv:"" },
+  // ── MIX · quotes (qf) ──
+  { id:"c-071", mood:"mix", type:"qf", en:"one of us has to be the adult and it's not me", sv:"" },
+  { id:"c-072", mood:"mix", type:"qf", en:"same time tomorrow?", sv:"" },
+  { id:"c-073", mood:"mix", type:"qf", en:"you're lucky you're cute", sv:"" },
+  { id:"c-074", mood:"mix", type:"qf", en:"it's us versus the instructions", sv:"" },
+  { id:"c-075", mood:"mix", type:"qf", en:"we'll sleep when we're dead", sv:"" },
+  // ── MIX · descriptions (ap) ──
+  { id:"c-076", mood:"mix", type:"ap", en:"annoyingly each other's favorite", sv:"" },
+  { id:"c-077", mood:"mix", type:"ap", en:"co-dependent in a fun way", sv:"" },
+  { id:"c-078", mood:"mix", type:"ap", en:"unsupervised and thriving", sv:"" },
+  { id:"c-079", mood:"mix", type:"ap", en:"fluent in eyebrow", sv:"" },
+  { id:"c-080", mood:"mix", type:"ap", en:"dramatic about soup", sv:"" },
+  // ── SPICY · things (np) ──
+  { id:"c-081", mood:"spicy", type:"np", en:"a bathrobe worn as a threat", sv:"" },
+  { id:"c-082", mood:"spicy", type:"np", en:"the ten minutes before the guests arrived", sv:"" },
+  { id:"c-083", mood:"spicy", type:"np", en:"a very specific playlist titled 'chores'", sv:"" },
+  { id:"c-084", mood:"spicy", type:"np", en:"the good perfume on a random Tuesday", sv:"" },
+  { id:"c-085", mood:"spicy", type:"np", en:"a countdown that started at dinner", sv:"" },
+  { id:"c-086", mood:"spicy", type:"np", en:"one raised eyebrow from across the party", sv:"" },
+  { id:"c-087", mood:"spicy", type:"np", en:"the laundry that stayed unfolded for a reason", sv:"" },
+  { id:"c-088", mood:"spicy", type:"np", en:"a 'work from home' day with air quotes", sv:"" },
+  { id:"c-089", mood:"spicy", type:"np", en:"the hotel key card held up without a word", sv:"" },
+  // ── SPICY · activities (gp) ──
+  { id:"c-090", mood:"spicy", type:"gp", en:"turning 'help me with this zipper' into a whole event", sv:"" },
+  { id:"c-091", mood:"spicy", type:"gp", en:"taking the scenic route to bed", sv:"" },
+  { id:"c-092", mood:"spicy", type:"gp", en:"losing at strip poker on purpose", sv:"" },
+  { id:"c-093", mood:"spicy", type:"gp", en:"answering the door slightly too composed", sv:"" },
+  { id:"c-094", mood:"spicy", type:"gp", en:"calling it an early night at 8pm with witnesses", sv:"" },
+  { id:"c-095", mood:"spicy", type:"gp", en:"making 'getting ready' take twice as long together", sv:"" },
+  { id:"c-096", mood:"spicy", type:"gp", en:"testing whether the new couch was a good investment", sv:"" },
+  { id:"c-097", mood:"spicy", type:"gp", en:"reappearing from the bathroom in the other one's shirt", sv:"" },
+  // ── SPICY · quotes (qf) ──
+  { id:"c-098", mood:"spicy", type:"qf", en:"the meeting ran long, I swear", sv:"" },
+  { id:"c-099", mood:"spicy", type:"qf", en:"wear the thing", sv:"" },
+  { id:"c-100", mood:"spicy", type:"qf", en:"we can be a little late", sv:"" },
+  { id:"c-101", mood:"spicy", type:"qf", en:"shhh, the walls are thin", sv:"" },
+  { id:"c-102", mood:"spicy", type:"qf", en:"breakfast can wait", sv:"" },
+  // ── SPICY · descriptions (ap) ──
+  { id:"c-103", mood:"spicy", type:"ap", en:"criminally distracting in sweatpants", sv:"" },
+  { id:"c-104", mood:"spicy", type:"ap", en:"suspiciously well-rested", sv:"" },
+  { id:"c-105", mood:"spicy", type:"ap", en:"unfairly kissable before coffee", sv:"" },
+  // ── DEEP · things (np) ──
+  { id:"c-106", mood:"deep", type:"np", en:"the pep talk in the car before family dinner", sv:"" },
+  { id:"c-107", mood:"deep", type:"np", en:"the nod that means 'we're leaving in ten'", sv:"" },
+  { id:"c-108", mood:"deep", type:"np", en:"the grudge we gave a retirement party", sv:"" },
+  { id:"c-109", mood:"deep", type:"np", en:"the world's smallest apology that fixed everything", sv:"" },
+  { id:"c-110", mood:"deep", type:"np", en:"the eight-second hug that fixed a whole Tuesday", sv:"" },
+  { id:"c-111", mood:"deep", type:"np", en:"a therapy breakthrough in a parking garage", sv:"" },
+  { id:"c-112", mood:"deep", type:"np", en:"the joke that saved the worst day of the year", sv:"" },
+  { id:"c-113", mood:"deep", type:"np", en:"your laugh in a room full of strangers", sv:"" },
+  // ── DEEP · activities (gp) ──
+  { id:"c-114", mood:"deep", type:"gp", en:"apologizing with snacks because words are hard", sv:"" },
+  { id:"c-115", mood:"deep", type:"gp", en:"keeping each other's secrets like a tiny two-person cult", sv:"" },
+  { id:"c-116", mood:"deep", type:"gp", en:"learning to fight fair on the twelfth try", sv:"" },
+  { id:"c-117", mood:"deep", type:"gp", en:"loving the 7am version of each other anyway", sv:"" },
+  // ── DEEP · quotes (qf) ──
+  { id:"c-118", mood:"deep", type:"qf", en:"stay anyway", sv:"" },
+  { id:"c-119", mood:"deep", type:"qf", en:"we figured it out, didn't we", sv:"" },
+  // ── DEEP · descriptions (ap) ──
+  { id:"c-120", mood:"deep", type:"ap", en:"softer than we admit in public", sv:"" }
+];
+
 var TYPE_LABELS = { np: 'Thing', gp: 'Activity', qf: 'Quote', ap: 'Description' };
 var TYPE_CODES  = { 'Thing': 'np', 'Activity': 'gp', 'Quote': 'qf', 'Description': 'ap' };
 var STATE_KEY = 'after-hours-editor-state';
 
-var state = { currentIdx: 0, skips: {}, newAnswers: [] };
+var state = { currentIdx: 0, skips: {}, newAnswers: [], ratings: {}, candidateStatus: {}, mode: 'browse' };
 
 function loadState() {
   try {
     var saved = localStorage.getItem(STATE_KEY);
     if (saved) state = JSON.parse(saved);
   } catch(e) {}
+  if (!state.skips) state.skips = {};
+  if (!state.newAnswers) state.newAnswers = [];
+  if (!state.ratings) state.ratings = {};
+  if (!state.candidateStatus) state.candidateStatus = {};
+  if (!state.mode) state.mode = 'browse';
 }
 
 function saveState() {
