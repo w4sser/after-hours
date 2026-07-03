@@ -29,6 +29,19 @@
   #combos { margin-top: 16px; }
   .filter-row { display: flex; gap: 16px; align-items: center; margin-bottom: 16px; font-size: 13px; color: #9A8E7E; }
   select { background: #1A1917; border: 1px solid rgba(237,224,200,0.15); color: #EDE0C8; padding: 6px 10px; border-radius: 6px; font-size: 13px; }
+  .edit-btn { padding: 2px 8px; font-size: 11px; border-radius: 4px; margin-left: 8px; color: #6B5F52; background: transparent; border-color: transparent; cursor: pointer; }
+  .edit-btn:hover { color: #EDE0C8; border-color: rgba(237,224,200,0.2); background: #252420; }
+  .edit-form { margin-top: 12px; border-top: 1px solid rgba(237,224,200,0.08); padding-top: 12px; display: none; }
+  .edit-form label { font-size: 10px; letter-spacing: 1px; color: #6B5F52; text-transform: uppercase; }
+  .edit-form input { display: block; width: 100%; background: #111; border: 1px solid rgba(237,224,200,0.2); color: #EDE0C8; padding: 6px 8px; border-radius: 6px; font-size: 14px; font-family: inherit; margin: 4px 0 10px; }
+  .edit-form input:focus { outline: none; border-color: rgba(237,224,200,0.4); }
+  .edit-form .save-btn { background: #252420; border: 1px solid rgba(237,224,200,0.3); color: #EDE0C8; padding: 5px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+  .edit-form .save-btn:hover { border-color: #EDE0C8; }
+  .edit-form .cancel-btn { background: transparent; border: 1px solid transparent; color: #6B5F52; padding: 5px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; margin-left: 4px; }
+  .edit-form .cancel-btn:hover { color: #9A8E7E; }
+  .saved-flash { color: #32CD32; font-size: 11px; margin-left: 8px; opacity: 0; transition: opacity 0.3s; }
+  button.export-btn { border-color: rgba(237,224,200,0.3); color: #EDE0C8; }
+  button.export-btn:hover { border-color: #EDE0C8; background: #252420; }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
@@ -62,6 +75,7 @@
   <button onclick="generateCombos(25)">Generate 25</button>
   <button onclick="showAllForPrompt()">All answers for random prompt</button>
   <button onclick="document.getElementById('combos').innerHTML=''">Clear</button>
+  <button class="export-btn" onclick="exportCards()">⬇ Export cards.js</button>
 </div>
 
 <div id="combos"></div>
@@ -413,10 +427,16 @@ var ANSWERS = [
 
 </script>
 <script>
+var comboCounter = 0;
+
 function sub(text) {
   var p1 = document.getElementById('p1name').value || 'Player 1';
   var p2 = document.getElementById('p2name').value || 'Player 2';
   return text.replace(/\{p1\}/g, p1).replace(/\{p2\}/g, p2);
+}
+
+function escapeAttr(s) {
+  return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 function getFiltered() {
@@ -429,7 +449,9 @@ function getFiltered() {
     return true;
   });
 
-  var answers = ANSWERS.filter(function(a) {
+  // Keep original index from ANSWERS array
+  var answers = ANSWERS.map(function(a, i) { return { a: a, idx: i }; }).filter(function(obj) {
+    var a = obj.a;
     if (mood !== 'all' && mood !== 'mix' && a.mood !== mood && a.mood !== 'mix') return false;
     if (lane !== 'all' && a.type !== lane) return false;
     return true;
@@ -443,8 +465,6 @@ function updateStats() {
   var gpCount = ANSWERS.filter(function(a){ return a.type === 'gp'; }).length;
   var npPrompts = PROMPTS.filter(function(p){ return p.accepts.indexOf('np') !== -1; }).length;
   var gpPrompts = PROMPTS.filter(function(p){ return p.accepts.indexOf('gp') !== -1; }).length;
-  var npOnly = PROMPTS.filter(function(p){ return p.accepts.length === 1 && p.accepts[0] === 'np'; }).length;
-
   var qfCount = ANSWERS.filter(function(a){ return a.type === 'qf'; }).length;
   var apCount = ANSWERS.filter(function(a){ return a.type === 'ap'; }).length;
   var qfPrompts = PROMPTS.filter(function(p){ return p.accepts.indexOf('qf') !== -1; }).length;
@@ -458,24 +478,65 @@ function updateStats() {
     '<span class="lane-tag lane-ap">AP</span> <span>' + apCount + '</span> answers / <span>' + apPrompts + '</span> prompts';
 }
 
-function renderCombo(prompt, answer) {
+function renderCombo(prompt, answer, aidx) {
+  var cid = 'c' + (++comboCounter);
   var promptText = sub(prompt.en);
   var answerText = sub(answer.en);
 
-  // If prompt has ___, replace it with the answer inline
   var combined;
   if (promptText.indexOf('___') !== -1) {
-    combined = promptText.replace('___', '<span class="answer-part">' + answerText + '</span>');
+    combined = promptText.replace('___', '<span class="answer-part" id="display-en-' + cid + '">' + answerText + '</span>');
   } else {
-    combined = '<span class="prompt-part">' + promptText + ' </span><span class="answer-part">' + answerText + '</span>';
+    combined = '<span class="prompt-part">' + promptText + ' </span><span class="answer-part" id="display-en-' + cid + '">' + answerText + '</span>';
   }
 
-  return '<div class="combo">' +
+  return '<div class="combo" id="combo-' + cid + '">' +
     '<div class="combo-text">' + combined + '</div>' +
     '<div class="combo-meta">' +
     '<span class="lane-tag lane-' + answer.type + '">' + answer.type.toUpperCase() + '</span> ' +
     'prompt: ' + prompt.mood + ' · answer: ' + answer.mood +
-    '</div></div>';
+    '<button class="edit-btn" onclick="toggleEdit(\'' + cid + '\', ' + aidx + ')">✏ edit</button>' +
+    '<span class="saved-flash" id="flash-' + cid + '">saved ✓</span>' +
+    '</div>' +
+    '<div class="edit-form" id="edit-' + cid + '">' +
+      '<label>EN</label>' +
+      '<input id="en-' + cid + '" value="' + escapeAttr(answer.en) + '">' +
+      '<label>SV</label>' +
+      '<input id="sv-' + cid + '" value="' + escapeAttr(answer.sv || '') + '">' +
+      '<button class="save-btn" onclick="saveEdit(\'' + cid + '\', ' + aidx + ')">Save</button>' +
+      '<button class="cancel-btn" onclick="toggleEdit(\'' + cid + '\', ' + aidx + ')">Cancel</button>' +
+    '</div>' +
+    '</div>';
+}
+
+function toggleEdit(cid, aidx) {
+  var form = document.getElementById('edit-' + cid);
+  var isOpen = form.style.display === 'block';
+  form.style.display = isOpen ? 'none' : 'block';
+  if (!isOpen) {
+    // Reset inputs to current values in case they were changed and cancelled
+    document.getElementById('en-' + cid).value = ANSWERS[aidx].en;
+    document.getElementById('sv-' + cid).value = ANSWERS[aidx].sv || '';
+    document.getElementById('en-' + cid).focus();
+  }
+}
+
+function saveEdit(cid, aidx) {
+  var newEn = document.getElementById('en-' + cid).value.trim();
+  var newSv = document.getElementById('sv-' + cid).value.trim();
+  if (!newEn) return;
+  ANSWERS[aidx].en = newEn;
+  ANSWERS[aidx].sv = newSv;
+
+  // Update displayed text
+  var displayEl = document.getElementById('display-en-' + cid);
+  if (displayEl) displayEl.textContent = sub(newEn);
+
+  // Hide form and flash saved
+  document.getElementById('edit-' + cid).style.display = 'none';
+  var flash = document.getElementById('flash-' + cid);
+  flash.style.opacity = '1';
+  setTimeout(function() { flash.style.opacity = '0'; }, 1500);
 }
 
 function generateCombos(n) {
@@ -483,13 +544,12 @@ function generateCombos(n) {
   var html = '';
   for (var i = 0; i < n; i++) {
     var p = data.prompts[Math.floor(Math.random() * data.prompts.length)];
-    // Only pick answers that match this prompt's accepts
-    var validAnswers = data.answers.filter(function(a) {
-      return p.accepts.indexOf(a.type) !== -1;
+    var validAnswers = data.answers.filter(function(obj) {
+      return p.accepts.indexOf(obj.a.type) !== -1;
     });
     if (validAnswers.length === 0) continue;
-    var a = validAnswers[Math.floor(Math.random() * validAnswers.length)];
-    html += renderCombo(p, a);
+    var picked = validAnswers[Math.floor(Math.random() * validAnswers.length)];
+    html += renderCombo(p, picked.a, picked.idx);
   }
   document.getElementById('combos').innerHTML = html;
 }
@@ -497,8 +557,8 @@ function generateCombos(n) {
 function showAllForPrompt() {
   var data = getFiltered();
   var p = data.prompts[Math.floor(Math.random() * data.prompts.length)];
-  var validAnswers = data.answers.filter(function(a) {
-    return p.accepts.indexOf(a.type) !== -1;
+  var validAnswers = data.answers.filter(function(obj) {
+    return p.accepts.indexOf(obj.a.type) !== -1;
   });
 
   var html = '<div style="margin-bottom:16px;padding:12px 16px;background:#252420;border-radius:8px;">' +
@@ -506,9 +566,33 @@ function showAllForPrompt() {
     '<div style="font-size:16px;">' + sub(p.en) + '</div></div>';
 
   for (var i = 0; i < validAnswers.length; i++) {
-    html += renderCombo(p, validAnswers[i]);
+    html += renderCombo(p, validAnswers[i].a, validAnswers[i].idx);
   }
   document.getElementById('combos').innerHTML = html;
+}
+
+function exportCards() {
+  var lines = [];
+  lines.push('// ── AFTER HOURS — CARD DATA ──');
+  lines.push('// Blanks: ___ in prompts are rendered as highlighted gaps');
+  lines.push('// Name tokens: {p1} and {p2} replaced with player names at runtime');
+  lines.push('// Mood tags: "fun" | "deep" | "spicy" | "mix"');
+  lines.push('// Grammar lanes: "np" | "gp" | "qf" | "ap"');
+  lines.push('// Prompts have "accepts" — which answer types they pair with');
+  lines.push('// Answers have "type" — their grammar lane');
+  lines.push('');
+  lines.push('var PROMPTS = ' + JSON.stringify(PROMPTS, null, 2) + ';');
+  lines.push('');
+  lines.push('var ANSWERS = ' + JSON.stringify(ANSWERS, null, 2) + ';');
+
+  var content = lines.join('\n');
+  var blob = new Blob([content], { type: 'text/javascript' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'cards.js';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 updateStats();

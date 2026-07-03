@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After Hours — Card Editor</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #111; color: #EDE0C8; font-family: 'Inter', system-ui, sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+button { font-family: inherit; cursor: pointer; }
+
+/* TOP BAR */
+#topbar {
+  background: #111;
+  border-bottom: 1px solid rgba(237,224,200,0.08);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+#prompt-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+#prompt-counter { font-size: 12px; color: #9A8E7E; font-variant-numeric: tabular-nums; }
+#mood-badge { background: rgba(237,224,200,0.08); color: #9A8E7E; padding: 2px 8px; border-radius: 4px; font-size: 10px; letter-spacing: 1px; }
+#accepts-label { font-size: 11px; color: #9A8E7E; }
+#accepts-label strong { color: #EDE0C8; }
+
+#topbar-right { display: flex; align-items: center; gap: 8px; }
+.name-input {
+  width: 72px;
+  background: #1A1917;
+  border: 1px solid rgba(237,224,200,0.15);
+  color: #EDE0C8;
+  padding: 4px 7px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-family: inherit;
+}
+.name-input:focus { outline: none; border-color: rgba(237,224,200,0.35); }
+.sep { color: #6B5F52; font-size: 11px; }
+#nav-btns { display: flex; gap: 6px; }
+.btn-nav {
+  background: #1A1917;
+  border: 1px solid rgba(237,224,200,0.15);
+  color: #9A8E7E;
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  transition: border-color 0.15s;
+}
+.btn-nav:hover { border-color: rgba(237,224,200,0.3); color: #EDE0C8; }
+.btn-nav.primary { background: #EDE0C8; color: #111; border-color: #EDE0C8; font-weight: 600; }
+.btn-nav.primary:hover { background: #F5EDD8; }
+
+/* PROMPT */
+#prompt-area {
+  background: #151412;
+  border-bottom: 1px solid rgba(237,224,200,0.06);
+  padding: 16px 20px;
+  flex-shrink: 0;
+}
+#prompt-text { font-size: 16px; line-height: 1.65; color: #EDE0C8; }
+#prompt-text .blank {
+  background: rgba(237,224,200,0.12);
+  padding: 0 8px;
+  border-radius: 4px;
+  color: #EDE0C8;
+}
+
+/* ANSWERS */
+#answers-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.answer-row {
+  background: #1A1917;
+  border: 1px solid rgba(237,224,200,0.08);
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: opacity 0.15s;
+}
+.answer-row.skipped {
+  opacity: 0.35;
+  border-color: rgba(237,224,200,0.04);
+}
+.answer-row.is-new {
+  border-color: rgba(237,224,200,0.22);
+}
+.answer-left { flex: 1; min-width: 0; }
+.answer-sentence {
+  font-size: 13px;
+  color: #EDE0C8;
+  line-height: 1.5;
+}
+.answer-sentence.struck { text-decoration: line-through; }
+.answer-sentence strong { color: #EDE0C8; }
+.answer-type {
+  font-size: 10px;
+  color: #6B5F52;
+  margin-top: 3px;
+}
+.answer-type .new-badge { color: #9A8E7E; }
+
+.btn-skip {
+  background: transparent;
+  border: 1px solid rgba(237,224,200,0.12);
+  color: #6B5F52;
+  padding: 4px 12px;
+  border-radius: 5px;
+  font-size: 11px;
+  flex-shrink: 0;
+  transition: border-color 0.15s, color 0.15s;
+}
+.btn-skip:hover { border-color: rgba(237,224,200,0.3); color: #9A8E7E; }
+
+/* ADD PANEL */
+#add-panel {
+  flex-shrink: 0;
+  margin: 0 20px 10px;
+  border: 1px dashed rgba(237,224,200,0.15);
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: #131211;
+}
+#add-panel-label {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #6B5F52;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+#add-form { display: flex; gap: 8px; align-items: flex-end; flex-wrap: wrap; }
+#add-en {
+  flex: 1;
+  min-width: 200px;
+  background: #1A1917;
+  border: 1px solid rgba(237,224,200,0.2);
+  color: #EDE0C8;
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-size: 13px;
+  font-family: inherit;
+}
+#add-en:focus { outline: none; border-color: rgba(237,224,200,0.4); }
+#add-en::placeholder { color: #6B5F52; }
+#add-type {
+  background: #1A1917;
+  border: 1px solid rgba(237,224,200,0.2);
+  color: #EDE0C8;
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-size: 13px;
+  font-family: inherit;
+}
+#add-type:focus { outline: none; }
+.btn-add {
+  background: #252420;
+  border: 1px solid rgba(237,224,200,0.3);
+  color: #EDE0C8;
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  transition: border-color 0.15s;
+}
+.btn-add:hover { border-color: rgba(237,224,200,0.6); }
+#add-hint { font-size: 10px; color: #6B5F52; margin-top: 6px; }
+
+/* FOOTER */
+#footer {
+  flex-shrink: 0;
+  border-top: 1px solid rgba(237,224,200,0.06);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #111;
+}
+#footer-status { font-size: 11px; color: #6B5F52; }
+.btn-export {
+  background: #1A1917;
+  border: 1px solid rgba(237,224,200,0.3);
+  color: #EDE0C8;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  transition: border-color 0.15s;
+}
+.btn-export:hover { border-color: #EDE0C8; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="topbar">
+  <div id="prompt-meta">
+    <span id="prompt-counter">PROMPT 1 / 64</span>
+    <span id="mood-badge">FUN</span>
+    <span id="accepts-label"></span>
+  </div>
+  <div id="topbar-right">
+    <input class="name-input" id="p1name" value="Robert">
+    <span class="sep">&amp;</span>
+    <input class="name-input" id="p2name" value="Jannika">
+    <div class="sep" style="width:1px;height:18px;background:rgba(237,224,200,0.1);margin:0 2px;"></div>
+    <div id="nav-btns">
+      <button class="btn-nav" id="btn-prev" onclick="navigate(-1)">← Prev</button>
+      <button class="btn-nav primary" id="btn-next" onclick="navigate(1)">Next →</button>
+    </div>
+  </div>
+</div>
+
+<div id="prompt-area">
+  <div id="prompt-text"></div>
+</div>
+
+<div id="answers-area"></div>
+
+<div id="add-panel">
+  <div id="add-panel-label">+ Add new answer</div>
+  <div id="add-form">
+    <input id="add-en" type="text" placeholder="Write a new answer...">
+    <select id="add-type">
+      <option value="np">Thing</option>
+      <option value="gp">Activity</option>
+      <option value="qf">Quote</option>
+      <option value="ap">Description</option>
+    </select>
+    <button class="btn-add" onclick="addAnswer()">Add ↵</button>
+  </div>
+  <div id="add-hint"></div>
+</div>
+
+<div id="footer">
+  <span id="footer-status">Skips are per-prompt · progress saved in browser</span>
+  <button class="btn-export" onclick="exportCards()">⬇ Export cards.js</button>
+</div>
+
+<script>
+var PROMPTS = [
+  // ── FUN PROMPTS ──
+  { mood:"fun", accepts:["np","gp"], en:"If {p1} and {p2} got stranded at an airport for 6 hours, it would definitely involve ___", sv:"Om {p1} och {p2} fastnade på en flygplats i 6 timmar skulle det definitivt involvera ___" },
+  { mood:"fun", accepts:["np","gp"], en:"The most ridiculous thing {p1} and {p2} have ever argued about is ___", sv:"Det mest absurda {p1} och {p2} någonsin bråkat om är ___" },
+  { mood:"fun", accepts:["np","gp"], en:"If a reality show filmed us for a week, the highlight reel would include ___", sv:"Om ett reality-program filmade oss en vecka skulle höjdpunkterna inkludera ___" },
+  { mood:"fun", accepts:["np","gp"], en:"Our perfect terrible night in always involves ___", sv:"Vår perfekta hemmakvalls-katastrof involverar alltid ___" },
+  { mood:"fun", accepts:["np","gp"], en:"If {p1} and {p2} had to survive a week in the wilderness, we'd fail because of ___", sv:"Om {p1} och {p2} behövde överleva en vecka i vildmarken skulle vi misslyckas på grund av ___" },
+  { mood:"fun", accepts:["np","gp"], en:"The most chaotic thing about us as a couple is ___", sv:"Det mest kaotiska med oss som par är ___" },
+  { mood:"fun", accepts:["np","gp"], en:"We'd never survive a cooking show because of ___", sv:"Vi skulle aldrig överleva ett matlagningsprogram på grund av ___" },
+  { mood:"fun", accepts:["np","gp"], en:"What makes our neighbors slightly suspicious is probably ___", sv:"Det som får våra grannar att bli misstänksamma är förmodligen ___" },
+  { mood:"fun", accepts:["np","gp"], en:"On our last trip, things went sideways because of ___", sv:"På vår senaste resa spårade det ur på grund av ___" },
+  { mood:"fun", accepts:["np","gp"], en:"If someone followed {p1} and {p2} around for a day, the weirdest part would be ___", sv:"Om någon följde {p1} och {p2} under en dag skulle det konstiga vara ___" },
+  { mood:"fun", accepts:["np","gp","qf"], en:"{p1} getting angry at someone online would sound like ___", sv:"{p1} som blir arg på någon online skulle låta som ___" },
+  { mood:"fun", accepts:["np","gp"], en:"The thing {p2} does that makes {p1} laugh despite everything is ___", sv:"Det som {p2} gör som får {p1} att skratta trots allt är ___" },
+  { mood:"fun", accepts:["np","gp","qf"], en:"If {p1} had to explain why we're late to literally everything, they'd say ___", sv:"Om {p1} skulle förklara varför vi är sen överallt, skulle de säga ___" },
+  { mood:"fun", accepts:["np","gp"], en:"The absolute worst decision we've made together as a couple is ___", sv:"Det absolut värsta beslutet vi har gjort tillsammans som par är ___" },
+  { mood:"fun", accepts:["np","gp"], en:"After a few drinks, {p2} always wants to talk about ___", sv:"Efter några drinkar vill {p2} alltid prata om ___" },
+  { mood:"fun", accepts:["np"], en:"If we made a couples playlist, the first song would be by artists doing ___", sv:"Om vi gjorde en pars-spellista skulle första låten vara av artister som gör ___" },
+  // ── DEEP PROMPTS ──
+  { mood:"deep", accepts:["np","gp"], en:"If {p1} and {p2} wrote a book together, the first chapter would be about ___", sv:"Om {p1} och {p2} skrev en bok tillsammans skulle första kapitlet handla om ___" },
+  { mood:"deep", accepts:["np","gp"], en:"Our love language, if we're being truly honest, is ___", sv:"Vårt kärleksspråk, om vi är helt ärliga, är ___" },
+  { mood:"deep", accepts:["np"], en:"If we made a documentary about this relationship, the tagline would be ___", sv:"Om vi gjorde en dokumentär om det här förhållandet skulle taglinjen vara ___" },
+  { mood:"deep", accepts:["np","gp"], en:"If we had a couple's theme song, it would be about ___", sv:"Om vi hade en gemensam temalåt skulle den handla om ___" },
+  { mood:"deep", accepts:["np","gp","qf"], en:"The most honest thing I could say about our morning routine is ___", sv:"Det mest ärliga jag kan säga om vår morgonrutin är ___" },
+  { mood:"deep", accepts:["np","gp"], en:"If we explained our relationship to a therapist, we'd start with ___", sv:"Om vi förklarade vår relation för en terapeut skulle vi börja med ___" },
+  { mood:"deep", accepts:["np","gp"], en:"The thing about {p1} and {p2} that I think will still be true in ten years is ___", sv:"Det med {p1} och {p2} som jag tror fortfarande stämmer om tio år är ___" },
+  { mood:"deep", accepts:["np","gp","qf"], en:"The thing I noticed about {p2} first that I've never said out loud is ___", sv:"Det jag märkte hos {p2} först som jag aldrig sagt högt är ___" },
+  { mood:"deep", accepts:["np","gp"], en:"If {p1} had to describe what makes us work in one sentence, they'd say ___", sv:"Om {p1} med en mening skulle beskriva vad som gör att vi fungerar, skulle de säga ___" },
+  { mood:"deep", accepts:["np","gp"], en:"The fight that actually brought us closer was about ___", sv:"Bråket som faktiskt förenade oss var om ___" },
+  // ── SPICY PROMPTS ──
+  { mood:"spicy", accepts:["np","gp"], en:"If {p1} and {p2} had a whole evening with no plans and no phones, it would definitely involve ___", sv:"Om {p1} och {p2} hade en hel kväll utan planer och utan telefoner skulle det definitivt involvera ___" },
+  { mood:"spicy", accepts:["np","gp"], en:"The thing {p1} does that {p2} finds impossible to resist is ___", sv:"Det som {p1} gör som {p2} omöjligt kan motstå är ___" },
+  { mood:"spicy", accepts:["np","gp"], en:"The most unexpectedly good night {p1} and {p2} had together always started with ___", sv:"Den mest oväntat bra kvällen {p1} och {p2} haft tillsammans började alltid med ___" },
+  { mood:"spicy", accepts:["np","gp"], en:"If {p1} and {p2} checked into a hotel right now with zero agenda, the first thing would be ___", sv:"Om {p1} och {p2} checkade in på ett hotell just nu utan plan, det första som skulle hända är ___" },
+  { mood:"spicy", accepts:["np","gp"], en:"The thing {p1} and {p2} both think about more than they admit is ___", sv:"Det {p1} och {p2} båda tänker på mer än de erkänner är ___" },
+  { mood:"spicy", accepts:["np","gp"], en:"The version of {p1} and {p2} that I like most always involves ___", sv:"Den version av {p1} och {p2} som jag gillar mest involverar alltid ___" },
+  { mood:"spicy", accepts:["np","gp","qf"], en:"When we're alone and the door closes, {p2} becomes ___", sv:"När vi är ensamma och dörren stängs, blir {p2} ___" },
+  { mood:"spicy", accepts:["np","gp"], en:"The most reckless thing {p1} wants to do with {p2} is ___", sv:"Det mest sorglösa {p1} vill göra med {p2} är ___" },
+  { mood:"spicy", accepts:["np","gp"], en:"If nobody would ever find out, {p1} and {p2} would definitely ___", sv:"Om ingen någonsin skulle ta reda på det, skulle {p1} och {p2} definitivt ___" },
+  // ── MIX PROMPTS ──
+  { mood:"mix", accepts:["np","gp","qf"], en:"___ is weirdly romantic when it's us", sv:"___ är märkligt romantiskt när det är vi" },
+  { mood:"mix", accepts:["np","gp"], en:"The thing about {p1} that {p2} pretends not to love is ___", sv:"Det med {p1} som {p2} låtsas inte älska är ___" },
+  { mood:"mix", accepts:["np","gp"], en:"If we had to explain our vibe to someone new, we'd say it's like ___", sv:"Om vi skulle förklara vår energi för någon ny, skulle vi säga att det är som ___" },
+  { mood:"mix", accepts:["np","gp","qf"], en:"{p1} gets that look when {p2} ___", sv:"{p1} får det där uttrycket när {p2} ___" },
+  { mood:"mix", accepts:["np","gp"], en:"The weirdest inside joke between us is definitely ___", sv:"Det konstiga interna skämtet mellan oss är definitivt ___" },
+  { mood:"mix", accepts:["np","gp"], en:"If someone asked what we do all night, the honest answer is ___", sv:"Om någon frågade vad vi gör hela natten, skulle det ärliga svaret vara ___" },
+  { mood:"mix", accepts:["np","gp"], en:"The time we were the worst version of ourselves together was when ___", sv:"Gången vi var den värsta versionen av oss tillsammans var när ___" },
+  { mood:"mix", accepts:["np","gp"], en:"If we could go back and change one thing about us, it would be ___", sv:"Om vi kunde gå tillbaka och ändra något om oss skulle det vara ___" },
+  // ── SCENE PROMPTS ──
+  { mood:"fun", accepts:["np","gp"], en:"{p1}, I swear to God, if you bring home ___ one more time, we're done.", sv:"{p1}, jag svär, om du tar hem ___ en gång till så är vi slut." },
+  { mood:"fun", accepts:["np"], en:"Breaking news: local couple found guilty of ___ in broad daylight.", sv:"Extrainsatt: lokalt par bekände sig skyldiga till ___ mitt på ljusa dagen." },
+  { mood:"fun", accepts:["np","gp"], en:"Hey Siri, why does {p2} keep ___ at 2am?", sv:"Hej Siri, varför håller {p2} på med ___ klockan två på natten?" },
+  { mood:"fun", accepts:["np","gp"], en:"Our therapist said we need to stop ___. We said no.", sv:"Vår terapeut sa att vi måste sluta med ___. Vi sa nej." },
+  { mood:"fun", accepts:["np"], en:"Welcome to IKEA. Today's couple fight will be in the ___ department.", sv:"Välkommen till IKEA. Dagens parabråk utspelar sig på ___-avdelningen." },
+  { mood:"fun", accepts:["np","gp"], en:"{p2} keeps a secret stash of ___ and thinks {p1} doesn't know.", sv:"{p2} har ett hemligt förråd av ___ och tror att {p1} inte vet." },
+  { mood:"fun", accepts:["qf"], en:"The last text {p1} sent before the argument was just \"___\"", sv:"Det sista meddelandet {p1} skickade före bråket var bara \"___\"" },
+  { mood:"fun", accepts:["np","gp"], en:"If we wrote a Yelp review of our relationship, the one-star part would be ___", sv:"Om vi skrev en Yelp-recension av vårt förhållande skulle enstjärn-delen vara ___" },
+  { mood:"deep", accepts:["np","gp"], en:"The thing {p1} carries that nobody else sees is ___", sv:"Det {p1} bär på som ingen annan ser är ___" },
+  { mood:"deep", accepts:["qf"], en:"The thing {p2} said that I'll never forget is \"___\"", sv:"Det {p2} sa som jag aldrig glömmer är \"___\"" },
+  { mood:"deep", accepts:["np","gp"], en:"At 3am when neither of us could sleep, we ended up ___ and it changed everything.", sv:"Klockan tre på natten när ingen av oss kunde sova, slutade vi med att ___ och det förändrade allt." },
+  { mood:"deep", accepts:["np"], en:"If our love was a place, it would look like ___", sv:"Om vår kärlek var en plats, skulle den se ut som ___" },
+  { mood:"spicy", accepts:["np","gp"], en:"{p1} just whispered \"come here\" and now the plan is ___ apparently.", sv:"{p1} viskade just \"kom hit\" och nu är planen tydligen ___." },
+  { mood:"spicy", accepts:["qf"], en:"The thing {p2} whispers when nobody's around is \"___\"", sv:"Det {p2} viskar när ingen är i närheten är \"___\"" },
+  { mood:"spicy", accepts:["np","gp"], en:"That outfit {p1} wore last Saturday was basically ___", sv:"Den där outfiten {p1} hade på sig i lördags var i princip ___" },
+  { mood:"spicy", accepts:["np","gp"], en:"{p2} says they're going to bed early but actually they mean ___", sv:"{p2} säger att de ska lägga sig tidigt men menar egentligen ___" },
+  { mood:"mix", accepts:["np","gp"], en:"Our friends think we're normal but behind closed doors it's all ___", sv:"Våra vänner tror vi är normala men bakom stängda dörrar är det bara ___" },
+  { mood:"mix", accepts:["qf"], en:"If our relationship had a tagline it would be \"___\"", sv:"Om vårt förhållande hade en tagline skulle det vara \"___\"" },
+  { mood:"mix", accepts:["ap"], en:"After a long day, {p1} gets very ___", sv:"Efter en lång dag blir {p1} väldigt ___" },
+  { mood:"mix", accepts:["ap"], en:"Our energy as a couple is best described as ___", sv:"Vår energi som par beskrivs bäst som ___" },
+  { mood:"mix", accepts:["ap"], en:"When {p2} hasn't eaten in four hours, they become ___", sv:"När {p2} inte ätit på fyra timmar blir de ___" }
+];
+
+var ANSWERS = [
+  { mood:"fun", type:"np", en:"47 throw pillows", sv:"47 prydnadskuddar" },
+  { mood:"fun", type:"np", en:"a passive-aggressive Post-it note", sv:"en passiv-aggressiv Post-it-lapp" },
+  { mood:"fun", type:"np", en:"the thermostat", sv:"termostaten" },
+  { mood:"fun", type:"np", en:"three bottles of rosé", sv:"tre flaskor rosé" },
+  { mood:"fun", type:"np", en:"{p2}'s 400 unread emails", sv:"{p2}s 400 olästa mejl" },
+  { mood:"fun", type:"np", en:"an IKEA bookshelf and a broken marriage", sv:"en IKEA-bokhylla och ett trasigt äktenskap" },
+  { mood:"fun", type:"np", en:"the Wi-Fi password argument", sv:"Wi-Fi-lösenordsbråket" },
+  { mood:"fun", type:"np", en:"{p1}'s snoring", sv:"{p1}s snarkande" },
+  { mood:"fun", type:"np", en:"a parking lot meltdown", sv:"ett parkeringsplatshaveri" },
+  { mood:"fun", type:"np", en:"four different food delivery apps", sv:"fyra olika matleveransappar" },
+  { mood:"fun", type:"np", en:"the duvet", sv:"täcket" },
+  { mood:"fun", type:"np", en:"a cart full of things we don't need", sv:"en vagn full med saker vi inte behöver" },
+  { mood:"fun", type:"np", en:"{p2}'s screen time report", sv:"{p2}s skärmtidsrapport" },
+  { mood:"fun", type:"np", en:"the wrong IKEA bag", sv:"fel IKEA-kasse" },
+  { mood:"fun", type:"np", en:"{p1}'s Spotify Wrapped", sv:"{p1}s Spotify Wrapped" },
+  { mood:"fun", type:"np", en:"another candle", sv:"ännu ett ljus" },
+  { mood:"fun", type:"np", en:"a very loud wrong opinion", sv:"en väldigt högljudd fel åsikt" },
+  { mood:"fun", type:"np", en:"eleven Amazon packages", sv:"elva Amazon-paket" },
+  { mood:"fun", type:"np", en:"the shared Netflix account", sv:"det delade Netflix-kontot" },
+  { mood:"fun", type:"np", en:"a 90-minute parking job", sv:"en 90-minuters parkering" },
+  { mood:"fun", type:"np", en:"{p2}'s mom calling at the worst moment", sv:"{p2}s mamma som ringer i värsta ögonblicket" },
+  { mood:"fun", type:"np", en:"leftover pizza at 7am", sv:"kvarglömd pizza klockan sju" },
+  { mood:"fun", type:"np", en:"a toilet seat left up", sv:"en toalettsits som lämnats uppe" },
+  { mood:"fun", type:"np", en:"matching Crocs", sv:"matchande Crocs" },
+  { mood:"fun", type:"np", en:"a suspiciously specific Google search", sv:"en misstänkt specifik Google-sökning" },
+  { mood:"fun", type:"np", en:"one shared brain cell", sv:"en delad hjärncell" },
+  { mood:"fun", type:"np", en:"{p1}'s 'I'm fine' face", sv:"{p1}s 'det är lugnt'-ansikte" },
+  { mood:"fun", type:"np", en:"the group chat screenshot", sv:"skärmdumpen från gruppchatten" },
+  { mood:"fun", type:"np", en:"an extremely passive-aggressive playlist", sv:"en extremt passiv-aggressiv spellista" },
+  { mood:"fun", type:"np", en:"{p2}'s 47 alarms that never work", sv:"{p2}s 47 alarm som aldrig fungerar" },
+  { mood:"fun", type:"np", en:"a dramatic exit to the balcony", sv:"en dramatisk sorti till balkongen" },
+  { mood:"fun", type:"np", en:"the world's longest grocery list", sv:"världens längsta inköpslista" },
+  { mood:"fun", type:"gp", en:"{p2} refusing to pick a restaurant", sv:"{p2} vägrar välja restaurang" },
+  { mood:"fun", type:"gp", en:"googling symptoms at 3am", sv:"googla symptom klockan tre på natten" },
+  { mood:"fun", type:"gp", en:"{p1} eating the last piece and denying it", sv:"{p1} äter sista biten och förnekar det" },
+  { mood:"fun", type:"gp", en:"ordering Uber Eats twice in one night", sv:"beställa Uber Eats två gånger på en kväll" },
+  { mood:"fun", type:"gp", en:"{p1} dramatically reading the receipt out loud", sv:"{p1} som dramatiskt läser kvittot högt" },
+  { mood:"fun", type:"gp", en:"stress-buying candles", sv:"stressköpa ljus" },
+  { mood:"fun", type:"gp", en:"both blaming the GPS", sv:"båda skyller på GPS:en" },
+  { mood:"fun", type:"gp", en:"{p2} hiding shopping bags in the trunk", sv:"{p2} gömmer shoppingkassar i bagaget" },
+  { mood:"fun", type:"gp", en:"{p1} falling asleep during the movie", sv:"{p1} somnar under filmen" },
+  { mood:"fun", type:"gp", en:"watching true crime and side-eyeing each other", sv:"titta på true crime och snegla på varandra" },
+  { mood:"fun", type:"gp", en:"{p2} taking 45 minutes to get ready", sv:"{p2} tar 45 minuter att bli klar" },
+  { mood:"fun", type:"gp", en:"arguing about whose turn it is to cook", sv:"bråka om vems tur det är att laga mat" },
+  { mood:"fun", type:"gp", en:"{p1} assembling furniture without the manual", sv:"{p1} monterar möbler utan manualen" },
+  { mood:"fun", type:"gp", en:"drunk-texting each other from the same couch", sv:"fylletexa varandra från samma soffa" },
+  { mood:"fun", type:"gp", en:"fighting over the aux cord", sv:"slåss om aux-sladden" },
+  { mood:"fun", type:"gp", en:"pretending to be asleep to avoid the conversation", sv:"låtsas sova för att slippa samtalet" },
+  { mood:"fun", type:"gp", en:"{p2} narrating everything like a documentary", sv:"{p2} som kommenterar allt som en dokumentär" },
+  { mood:"fun", type:"gp", en:"{p1} panic-cleaning before guests arrive", sv:"{p1} panikstädar innan gästerna kommer" },
+  { mood:"fun", type:"gp", en:"blaming each other for the missing remote", sv:"skylla på varandra för den försvunna fjärrkontrollen" },
+  { mood:"fun", type:"gp", en:"{p2} starting a new series without {p1}", sv:"{p2} börjar en ny serie utan {p1}" },
+  { mood:"fun", type:"gp", en:"aggressively loading the dishwasher to prove a point", sv:"aggressivt ladda diskmaskinen för att bevisa en poäng" },
+  { mood:"fun", type:"qf", en:"I'm almost ready", sv:"jag är nästan klar" },
+  { mood:"fun", type:"qf", en:"we need to talk", sv:"vi behöver prata" },
+  { mood:"fun", type:"qf", en:"it was on sale", sv:"det var på rea" },
+  { mood:"fun", type:"qf", en:"I already told you this", sv:"jag har redan sagt det här" },
+  { mood:"fun", type:"qf", en:"fine. do whatever you want.", sv:"okej. gör vad du vill." },
+  { mood:"fun", type:"qf", en:"that's not what happened", sv:"det är inte vad som hände" },
+  { mood:"fun", type:"qf", en:"I'm not the one who", sv:"det är inte jag som" },
+  { mood:"fun", type:"qf", en:"you always do this", sv:"du gör alltid så här" },
+  { mood:"fun", type:"qf", en:"I said I was sorry", sv:"jag sa att jag var ledsen" },
+  { mood:"fun", type:"qf", en:"whatever. I'm going to bed.", sv:"skärsansen. jag går och lägger mig." },
+  { mood:"fun", type:"qf", en:"I literally just said that", sv:"jag sa precis det" },
+  { mood:"fun", type:"qf", en:"Google says I'm dying", sv:"Google säger att jag dör" },
+  { mood:"fun", type:"qf", en:"are you even listening", sv:"lyssnar du ens" },
+  { mood:"fun", type:"qf", en:"that's not how you load a dishwasher", sv:"det är inte så man laddar en diskmaskin" },
+  { mood:"fun", type:"qf", en:"I'll do it tomorrow", sv:"jag gör det imorgon" },
+  { mood:"fun", type:"qf", en:"we should probably talk about this", sv:"vi borde nog prata om det här" },
+  { mood:"fun", type:"ap", en:"suspiciously quiet", sv:"misstänkt tyst" },
+  { mood:"fun", type:"ap", en:"aggressively wrong", sv:"aggressivt fel" },
+  { mood:"fun", type:"ap", en:"dangerously hangry", sv:"farligt hungrig" },
+  { mood:"fun", type:"ap", en:"offensively late", sv:"kränkande sen" },
+  { mood:"fun", type:"ap", en:"painfully stubborn", sv:"pinsamt envis" },
+  { mood:"fun", type:"ap", en:"unreasonably competitive", sv:"orimligt tävlingsinriktad" },
+  { mood:"fun", type:"ap", en:"emotionally unavailable (about dinner plans)", sv:"emotionellt otillgänglig (om middagsplaner)" },
+  { mood:"fun", type:"ap", en:"confidently incorrect", sv:"självsäkert felaktig" },
+  { mood:"fun", type:"ap", en:"tragically overdressed", sv:"tragiskt överklädda" },
+  { mood:"fun", type:"ap", en:"petty beyond repair", sv:"småaktig bortom räddning" },
+  { mood:"deep", type:"np", en:"the ugly cry on a Tuesday", sv:"fulbölet en tisdag" },
+  { mood:"deep", type:"np", en:"the 3am kitchen conversation", sv:"kökssamtalet klockan tre" },
+  { mood:"deep", type:"np", en:"your voice when you're actually scared", sv:"din röst när du är på riktigt rädd" },
+  { mood:"deep", type:"np", en:"the apology that took a year", sv:"ursäkten som tog ett år" },
+  { mood:"deep", type:"np", en:"your parents' divorce", sv:"dina föräldrars skilsmässa" },
+  { mood:"deep", type:"np", en:"the first night you stayed over", sv:"första natten du sov över" },
+  { mood:"deep", type:"np", en:"the fight in the car after the party", sv:"bråket i bilen efter festen" },
+  { mood:"deep", type:"np", en:"the voicemail I never deleted", sv:"röstmeddelandet jag aldrig raderade" },
+  { mood:"deep", type:"np", en:"the silence after the door closed", sv:"tystnaden efter att dörren stängdes" },
+  { mood:"deep", type:"np", en:"{p2}'s face when they think nobody's watching", sv:"{p2}s ansikte när de tror ingen ser" },
+  { mood:"deep", type:"np", en:"that one photo from the first year", sv:"det där fotot från första året" },
+  { mood:"deep", type:"np", en:"the song that still hurts a little", sv:"låten som fortfarande gör lite ont" },
+  { mood:"deep", type:"np", en:"your toothbrush at my place", sv:"din tandborste hos mig" },
+  { mood:"deep", type:"np", en:"{p1}'s hands when they're nervous", sv:"{p1}s händer när de är nervösa" },
+  { mood:"deep", type:"gp", en:"crying in the bathroom and pretending you didn't", sv:"gråta på badrummet och låtsas att du inte gjorde det" },
+  { mood:"deep", type:"gp", en:"sleeping on the couch after the fight", sv:"sova på soffan efter bråket" },
+  { mood:"deep", type:"gp", en:"holding hands at the hospital", sv:"hålla händer på sjukhuset" },
+  { mood:"deep", type:"gp", en:"reading each other's faces across the room", sv:"läsa varandras ansikten över rummet" },
+  { mood:"deep", type:"gp", en:"forgiving before they even ask", sv:"förlåta innan de ens frågar" },
+  { mood:"deep", type:"gp", en:"driving home in silence after a hard day", sv:"köra hem i tystnad efter en tung dag" },
+  { mood:"deep", type:"gp", en:"choosing this even when it's hard", sv:"välja det här även när det är svårt" },
+  { mood:"deep", type:"gp", en:"letting {p2} see the worst version", sv:"låta {p2} se den värsta versionen" },
+  { mood:"deep", type:"gp", en:"saying sorry and actually meaning it", sv:"säga förlåt och faktiskt mena det" },
+  { mood:"deep", type:"gp", en:"building a life without a blueprint", sv:"bygga ett liv utan ritning" },
+  { mood:"deep", type:"gp", en:"{p1} picking up {p2} from a bad night without asking questions", sv:"{p1} hämtar {p2} efter en dålig kväll utan frågor" },
+  { mood:"deep", type:"qf", en:"I didn't mean it", sv:"jag menade inte det" },
+  { mood:"deep", type:"qf", en:"please don't leave", sv:"snälla gå inte" },
+  { mood:"deep", type:"qf", en:"I'm trying my best", sv:"jag gör så gott jag kan" },
+  { mood:"deep", type:"qf", en:"I should have said something sooner", sv:"jag borde ha sagt något tidigare" },
+  { mood:"deep", type:"qf", en:"you're the only one who knows", sv:"du är den enda som vet" },
+  { mood:"deep", type:"qf", en:"that's the nicest thing anyone's ever said", sv:"det är det finaste någon någonsin sagt" },
+  { mood:"deep", type:"ap", en:"terrifyingly honest", sv:"skrämmande ärlig" },
+  { mood:"deep", type:"ap", en:"quietly falling apart", sv:"tyst faller isär" },
+  { mood:"deep", type:"ap", en:"finally ready", sv:"äntligen redo" },
+  { mood:"deep", type:"ap", en:"annoyingly right", sv:"irriterande rätt" },
+  { mood:"deep", type:"ap", en:"stubbornly in love", sv:"envist kär" },
+  { mood:"spicy", type:"np", en:"that one outfit from the third date", sv:"den där outfiten från tredje dejten" },
+  { mood:"spicy", type:"np", en:"a hotel minibar and no checkout time", sv:"en hotellminibar och ingen utcheckning" },
+  { mood:"spicy", type:"np", en:"the shower with the good water pressure", sv:"duschen med bra vattentryck" },
+  { mood:"spicy", type:"np", en:"{p2}'s neck", sv:"{p2}s nacke" },
+  { mood:"spicy", type:"np", en:"two glasses of wine and no kids", sv:"två glas vin och inga barn" },
+  { mood:"spicy", type:"np", en:"the back seat of the car", sv:"baksätet i bilen" },
+  { mood:"spicy", type:"np", en:"the dress that caused the car accident", sv:"klänningen som orsakade bilolyckan" },
+  { mood:"spicy", type:"np", en:"{p1}'s gym selfie", sv:"{p1}s gym-selfie" },
+  { mood:"spicy", type:"np", en:"the 'do not disturb' sign", sv:"'stör ej'-skylten" },
+  { mood:"spicy", type:"np", en:"a bathtub for two", sv:"ett badkar för två" },
+  { mood:"spicy", type:"np", en:"that message at 11:47pm", sv:"det där meddelandet klockan 23:47" },
+  { mood:"spicy", type:"np", en:"an empty apartment and zero plans", sv:"en tom lägenhet och noll planer" },
+  { mood:"spicy", type:"np", en:"{p2} in that white t-shirt", sv:"{p2} i den där vita t-shirten" },
+  { mood:"spicy", type:"gp", en:"{p2} biting their lip like that", sv:"{p2} som biter sig i läppen så där" },
+  { mood:"spicy", type:"gp", en:"skipping dessert and going straight home", sv:"skippa desserten och åka rakt hem" },
+  { mood:"spicy", type:"gp", en:"texting 'come over' at midnight", sv:"sms:a 'kom över' vid midnatt" },
+  { mood:"spicy", type:"gp", en:"{p1} cooking shirtless", sv:"{p1} lagar mat utan tröja" },
+  { mood:"spicy", type:"gp", en:"making eye contact a little too long", sv:"ha ögonkontakt lite för länge" },
+  { mood:"spicy", type:"gp", en:"forgetting to close the blinds", sv:"glömma att stänga persiennerna" },
+  { mood:"spicy", type:"gp", en:"whispering something at the dinner party", sv:"viska något på middagsfesten" },
+  { mood:"spicy", type:"gp", en:"staying in bed until checkout", sv:"stanna i sängen till utcheckning" },
+  { mood:"spicy", type:"gp", en:"{p2} walking out of the bathroom in just a towel", sv:"{p2} som går ut från badrummet i bara en handduk" },
+  { mood:"spicy", type:"gp", en:"playing footsie under the table at {p2}'s parents' house", sv:"leka fotleken under bordet hos {p2}s föräldrar" },
+  { mood:"spicy", type:"gp", en:"booking a hotel room for no reason", sv:"boka ett hotellrum utan anledning" },
+  { mood:"spicy", type:"qf", en:"do that again", sv:"gör det igen" },
+  { mood:"spicy", type:"qf", en:"don't stop", sv:"sluta inte" },
+  { mood:"spicy", type:"qf", en:"we have ten minutes", sv:"vi har tio minuter" },
+  { mood:"spicy", type:"qf", en:"lock the door", sv:"lås dörren" },
+  { mood:"spicy", type:"qf", en:"what are you wearing", sv:"vad har du på dig" },
+  { mood:"spicy", type:"qf", en:"get over here", sv:"kom hit" },
+  { mood:"spicy", type:"qf", en:"I was thinking about last Tuesday", sv:"jag tänkte på i tisdags" },
+  { mood:"spicy", type:"qf", en:"the kids are asleep", sv:"barnen sover" },
+  { mood:"spicy", type:"qf", en:"leave the lights on", sv:"låt lamporna vara på" },
+  { mood:"spicy", type:"ap", en:"dangerously attractive", sv:"farligt attraktiv" },
+  { mood:"spicy", type:"ap", en:"deliberately slow", sv:"avsiktligt långsam" },
+  { mood:"spicy", type:"ap", en:"barely dressed", sv:"knappt klädd" },
+  { mood:"spicy", type:"ap", en:"extremely distracting", sv:"extremt distraherande" },
+  { mood:"mix", type:"np", en:"cheese and wine at 11pm", sv:"ost och vin klockan 23" },
+  { mood:"mix", type:"np", en:"a takeaway on the kitchen floor", sv:"takeaway på köksgolvet" },
+  { mood:"mix", type:"np", en:"that one song in the car", sv:"den där låten i bilen" },
+  { mood:"mix", type:"np", en:"the couch, a blanket, and silence", sv:"soffan, en filt, och tystnad" },
+  { mood:"mix", type:"np", en:"a plan that went perfectly wrong", sv:"en plan som gick perfekt fel" },
+  { mood:"mix", type:"np", en:"{p2}'s cold feet at 3am", sv:"{p2}s kalla fötter klockan tre" },
+  { mood:"mix", type:"np", en:"the grocery store on a Sunday", sv:"matbutiken på en söndag" },
+  { mood:"mix", type:"np", en:"{p1}'s terrible cooking", sv:"{p1}s hemska matlagning" },
+  { mood:"mix", type:"np", en:"the wrong exit on the highway", sv:"fel avfart på motorvägen" },
+  { mood:"mix", type:"np", en:"a shared Spotify queue", sv:"en delad Spotify-kö" },
+  { mood:"mix", type:"np", en:"the 'we should try something new' conversation", sv:"'vi borde testa något nytt'-samtalet" },
+  { mood:"mix", type:"np", en:"a two-person blanket burrito", sv:"en tvåpersons-filtburrito" },
+  { mood:"mix", type:"np", en:"{p1}'s face during family dinners", sv:"{p1}s ansikte under familjemiddagar" },
+  { mood:"mix", type:"np", en:"the bathroom door that doesn't lock", sv:"badrumsdörren som inte låser" },
+  { mood:"mix", type:"np", en:"a midnight kebab run", sv:"en midnatts-kebabrunda" },
+  { mood:"mix", type:"gp", en:"laughing until one of us can't breathe", sv:"skratta tills en av oss inte kan andas" },
+  { mood:"mix", type:"gp", en:"arguing about where to eat (again)", sv:"bråka om var vi ska äta (igen)" },
+  { mood:"mix", type:"gp", en:"being embarrassing in public together", sv:"vara pinsamma offentligt ihop" },
+  { mood:"mix", type:"gp", en:"falling asleep on the couch mid-sentence", sv:"somna på soffan mitt i en mening" },
+  { mood:"mix", type:"gp", en:"{p1} making {p2} laugh at the worst time", sv:"{p1} får {p2} att skratta vid värsta tillfället" },
+  { mood:"mix", type:"gp", en:"slow-dancing in the kitchen to nothing", sv:"dansa långsamt i köket utan musik" },
+  { mood:"mix", type:"gp", en:"sharing a toothbrush and pretending it's fine", sv:"dela tandborste och låtsas att det är ok" },
+  { mood:"mix", type:"gp", en:"holding hands in the supermarket like teenagers", sv:"hålla hand i mataffären som tonåringar" },
+  { mood:"mix", type:"gp", en:"{p2} stealing all the covers and denying it", sv:"{p2} som stjäl hela täcket och förnekar det" },
+  { mood:"mix", type:"gp", en:"ugly-laughing at something nobody else finds funny", sv:"fulskratta åt något ingen annan tycker är roligt" },
+  { mood:"mix", type:"qf", en:"you're stuck with me", sv:"du är fast med mig" },
+  { mood:"mix", type:"qf", en:"whose turn is it", sv:"vems tur är det" },
+  { mood:"mix", type:"qf", en:"just five more minutes", sv:"bara fem minuter till" },
+  { mood:"mix", type:"qf", en:"I can explain", sv:"jag kan förklara" },
+  { mood:"mix", type:"qf", en:"that was your idea", sv:"det var din idé" },
+  { mood:"mix", type:"qf", en:"we're not doing this again", sv:"vi gör inte det här igen" },
+  { mood:"mix", type:"qf", en:"I love you but absolutely not", sv:"jag älskar dig men absolut inte" },
+  { mood:"mix", type:"ap", en:"weirdly compatible", sv:"märkligt kompatibla" },
+  { mood:"mix", type:"ap", en:"chaotically wholesome", sv:"kaotiskt gulliga" },
+  { mood:"mix", type:"ap", en:"completely unhinged together", sv:"helt galna ihop" },
+  { mood:"mix", type:"ap", en:"disgustingly cute", sv:"vedervärdigt söta" },
+  { mood:"mix", type:"ap", en:"absolutely feral at home", sv:"helt vilda hemma" },
+  { mood:"mix", type:"ap", en:"suspiciously synchronized", sv:"misstänkt synkade" }
+];
+
+var TYPE_LABELS = { np: 'Thing', gp: 'Activity', qf: 'Quote', ap: 'Description' };
+var TYPE_CODES  = { 'Thing': 'np', 'Activity': 'gp', 'Quote': 'qf', 'Description': 'ap' };
+var STATE_KEY = 'after-hours-editor-state';
+
+var state = { currentIdx: 0, skips: {}, newAnswers: [] };
+
+function loadState() {
+  try {
+    var saved = localStorage.getItem(STATE_KEY);
+    if (saved) state = JSON.parse(saved);
+  } catch(e) {}
+}
+
+function saveState() {
+  localStorage.setItem(STATE_KEY, JSON.stringify(state));
+}
+
+function sub(text) {
+  var p1 = document.getElementById('p1name').value || 'Player 1';
+  var p2 = document.getElementById('p2name').value || 'Player 2';
+  return text.replace(/\{p1\}/g, p1).replace(/\{p2\}/g, p2);
+}
+
+function allAnswers() {
+  return ANSWERS.concat(state.newAnswers);
+}
+
+function getSkips(promptIdx) {
+  return state.skips[promptIdx] || [];
+}
+
+function toggleSkip(promptIdx, answerIdx) {
+  var skips = getSkips(promptIdx);
+  var pos = skips.indexOf(answerIdx);
+  if (pos === -1) skips.push(answerIdx);
+  else skips.splice(pos, 1);
+  state.skips[promptIdx] = skips;
+  saveState();
+  render();
+}
+
+function navigate(dir) {
+  state.currentIdx = (state.currentIdx + dir + PROMPTS.length) % PROMPTS.length;
+  saveState();
+  render();
+}
+
+function buildSentence(promptEn, answerEn) {
+  var p = sub(promptEn);
+  var a = sub(answerEn);
+  if (p.indexOf('___') !== -1) {
+    return p.replace('___', '<strong>' + a + '</strong>');
+  }
+  return p + ' <strong>' + a + '</strong>';
+}
+
+function countCompatible(type) {
+  var count = 0;
+  PROMPTS.forEach(function(p) { if (p.accepts.indexOf(type) !== -1) count++; });
+  return count;
+}
+
+function render() {
+  var idx = state.currentIdx;
+  var prompt = PROMPTS[idx];
+  var skips = getSkips(idx);
+  var answers = allAnswers();
+
+  // Counter
+  document.getElementById('prompt-counter').textContent = 'PROMPT ' + (idx + 1) + ' / ' + PROMPTS.length;
+
+  // Mood
+  document.getElementById('mood-badge').textContent = prompt.mood.toUpperCase();
+
+  // Accepts label
+  var labels = prompt.accepts.map(function(t) { return '<strong>' + (TYPE_LABELS[t] || t) + '</strong>'; });
+  document.getElementById('accepts-label').innerHTML = 'accepts: ' + labels.join(' · ');
+
+  // Prompt text
+  var pText = sub(prompt.en).replace('___', '<span class="blank">___</span>');
+  document.getElementById('prompt-text').innerHTML = pText;
+
+  // Add hint
+  var moodLabel = prompt.mood.charAt(0).toUpperCase() + prompt.mood.slice(1);
+  document.getElementById('add-hint').textContent =
+    'Mood auto-set from this prompt (' + moodLabel + '). New answer appears in all prompts accepting this type.';
+
+  // Answers: compatible ones first, then skipped
+  var active = [];
+  var skipped = [];
+
+  answers.forEach(function(a, i) {
+    if (prompt.accepts.indexOf(a.type) === -1) return;
+    if (skips.indexOf(i) !== -1) skipped.push({ a: a, i: i });
+    else active.push({ a: a, i: i });
+  });
+
+  var html = '';
+
+  active.forEach(function(obj) {
+    var isNew = obj.i >= ANSWERS.length;
+    var newNote = isNew ? ' · <span class="new-badge">new · also in ' + countCompatible(obj.a.type) + ' prompts</span>' : '';
+    html += '<div class="answer-row' + (isNew ? ' is-new' : '') + '">' +
+      '<div class="answer-left">' +
+        '<div class="answer-sentence">' + buildSentence(prompt.en, obj.a.en) + '</div>' +
+        '<div class="answer-type">' + (TYPE_LABELS[obj.a.type] || obj.a.type) + newNote + '</div>' +
+      '</div>' +
+      '<button class="btn-skip" onclick="toggleSkip(' + idx + ',' + obj.i + ')">Skip here</button>' +
+    '</div>';
+  });
+
+  skipped.forEach(function(obj) {
+    html += '<div class="answer-row skipped">' +
+      '<div class="answer-left">' +
+        '<div class="answer-sentence struck">' + buildSentence(prompt.en, obj.a.en) + '</div>' +
+        '<div class="answer-type">' + (TYPE_LABELS[obj.a.type] || obj.a.type) + ' · skipped for this prompt</div>' +
+      '</div>' +
+      '<button class="btn-skip" onclick="toggleSkip(' + idx + ',' + obj.i + ')">Restore</button>' +
+    '</div>';
+  });
+
+  if (html === '') {
+    html = '<div style="color:#6B5F52;font-size:13px;padding:12px 0;">No compatible answers for this prompt.</div>';
+  }
+
+  document.getElementById('answers-area').innerHTML = html;
+
+  // Footer status
+  var skipCount = 0;
+  Object.values(state.skips).forEach(function(arr) { skipCount += arr.length; });
+  document.getElementById('footer-status').textContent =
+    'Skips are per-prompt · ' + skipCount + ' total skips · ' + state.newAnswers.length + ' new answers added';
+}
+
+function addAnswer() {
+  var en = document.getElementById('add-en').value.trim();
+  if (!en) return;
+  var typeLabel = document.getElementById('add-type').value;
+  var type = TYPE_CODES[typeLabel] || typeLabel;
+  var mood = PROMPTS[state.currentIdx].mood;
+  state.newAnswers.push({ mood: mood, type: type, en: en, sv: '' });
+  saveState();
+  document.getElementById('add-en').value = '';
+  render();
+}
+
+document.getElementById('add-en').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') addAnswer();
+});
+
+document.getElementById('p1name').addEventListener('input', render);
+document.getElementById('p2name').addEventListener('input', render);
+
+function exportCards() {
+  var prompts = PROMPTS.map(function(p, i) {
+    var skips = getSkips(i);
+    if (skips.length === 0) return p;
+    var copy = Object.assign({}, p);
+    copy.skip = skips.slice();
+    return copy;
+  });
+
+  var answers = ANSWERS.concat(state.newAnswers);
+
+  var lines = [];
+  lines.push('// ── AFTER HOURS — CARD DATA ──');
+  lines.push('// Blanks: ___ in prompts are rendered as highlighted gaps');
+  lines.push('// Name tokens: {p1} and {p2} replaced with player names at runtime');
+  lines.push('// Mood tags: "fun" | "deep" | "spicy" | "mix"');
+  lines.push('// Grammar lanes: "np" | "gp" | "qf" | "ap"');
+  lines.push('// Prompts have "accepts" — which answer types they pair with');
+  lines.push('// Prompts have "skip" — answer indices excluded for this prompt');
+  lines.push('// Answers have "type" — their grammar lane');
+  lines.push('');
+  lines.push('var PROMPTS = ' + JSON.stringify(prompts, null, 2) + ';');
+  lines.push('');
+  lines.push('var ANSWERS = ' + JSON.stringify(answers, null, 2) + ';');
+
+  var blob = new Blob([lines.join('\n')], { type: 'text/javascript' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'cards.js';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+loadState();
+render();
+</script>
+</body>
+</html>
