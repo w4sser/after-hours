@@ -54,6 +54,19 @@ button { font-family: inherit; cursor: pointer; }
 .btn-nav.primary { background: #EDE0C8; color: #111; border-color: #EDE0C8; font-weight: 600; }
 .btn-nav.primary:hover { background: #F5EDD8; }
 
+#mode-tabs { display: flex; gap: 4px; margin-right: 12px; }
+.tab {
+  background: transparent;
+  border: 1px solid rgba(237,224,200,0.15);
+  color: #9A8E7E;
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  transition: border-color 0.15s;
+}
+.tab:hover { border-color: rgba(237,224,200,0.3); }
+.tab.active { background: #EDE0C8; color: #111; border-color: #EDE0C8; font-weight: 600; }
+
 /* PROMPT */
 #prompt-area {
   background: #151412;
@@ -203,6 +216,10 @@ button { font-family: inherit; cursor: pointer; }
 <body>
 
 <div id="topbar">
+  <div id="mode-tabs">
+    <button class="tab active" id="tab-browse" onclick="setMode('browse')">Browse</button>
+    <button class="tab" id="tab-review" onclick="setMode('review')">Review</button>
+  </div>
   <div id="prompt-meta">
     <span id="prompt-counter">PROMPT 1 / 64</span>
     <span id="mood-badge">FUN</span>
@@ -225,6 +242,8 @@ button { font-family: inherit; cursor: pointer; }
 </div>
 
 <div id="answers-area"></div>
+
+<div id="review-area" style="display:none;"></div>
 
 <div id="add-panel">
   <div id="add-panel-label">+ Add new answer</div>
@@ -804,6 +823,20 @@ function addAnswer() {
   render();
 }
 
+function setMode(m) {
+  state.mode = m;
+  saveState();
+  var isReview = m === 'review';
+  document.getElementById('tab-browse').className = 'tab' + (isReview ? '' : ' active');
+  document.getElementById('tab-review').className = 'tab' + (isReview ? ' active' : '');
+  ['prompt-meta', 'nav-btns', 'prompt-area', 'answers-area', 'add-panel'].forEach(function(id) {
+    document.getElementById(id).style.display = isReview ? 'none' : '';
+  });
+  document.getElementById('review-area').style.display = isReview ? 'flex' : 'none';
+  if (isReview) renderReview();
+  else render();
+}
+
 document.getElementById('add-en').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') addAnswer();
 });
@@ -846,7 +879,7 @@ function exportCards() {
 }
 
 loadState();
-render();
+setMode(state.mode);
 </script>
 </body>
 </html>
