@@ -351,6 +351,7 @@ button { font-family: inherit; cursor: pointer; }
   <span id="footer-status">Skips are per-prompt · progress saved in browser</span>
   <div style="display:flex;align-items:center;gap:8px;">
     <span id="copy-flash">Copied ✓</span>
+    <button class="btn-export" onclick="copyRatings()">💬 Copy ratings</button>
     <button class="btn-export" onclick="copyCards()">📋 Copy cards.js</button>
     <button class="btn-export" onclick="exportCards()">⬇ Export cards.js</button>
   </div>
@@ -395,7 +396,7 @@ var PROMPTS = [
   { mood:"spicy", accepts:["np","gp"], en:"If nobody would ever find out, {p1} and {p2} would definitely ___", sv:"Om ingen någonsin skulle ta reda på det, skulle {p1} och {p2} definitivt ___" },
   { mood:"mix", accepts:["np","gp","qf"], en:"___ is weirdly romantic when it's us", sv:"___ är märkligt romantiskt när det är vi" },
   { mood:"mix", accepts:["np","gp"], en:"The thing about {p1} that {p2} pretends not to love is ___", sv:"Det med {p1} som {p2} låtsas inte älska är ___" },
-  { mood:"mix", accepts:["np","gp"], en:"If we had to explain our vibe to someone new, we'd say it's like ___", sv:"Om vi skulle förklara vår energi för någon ny, skulle vi säga att det är som ___" },
+  { mood:"mix", accepts:["np","gp"], skip:[247], en:"If we had to explain our vibe to someone new, we'd say it's like ___", sv:"Om vi skulle förklara vår energi för någon ny, skulle vi säga att det är som ___" },
   { mood:"mix", accepts:["np","gp","qf"], en:"{p1} gets that look when {p2} ___", sv:"{p1} får det där uttrycket när {p2} ___" },
   { mood:"mix", accepts:["np","gp"], en:"The weirdest inside joke between us is definitely ___", sv:"Det konstiga internskämtet mellan oss är definitivt ___" },
   { mood:"mix", accepts:["np","gp"], en:"If someone asked what we do all night, the honest answer is ___", sv:"Om någon frågade vad vi gör hela natten, skulle det ärliga svaret vara ___" },
@@ -404,7 +405,7 @@ var PROMPTS = [
   { mood:"fun", accepts:["np","gp"], en:"{p1}, I swear to God, if you bring home ___ one more time, we’re done.", sv:"{p1}, jag svär, om du tar hem ___ en gång till så är vi slut." },
   { mood:"fun", accepts:["np"], en:"Breaking news: local couple found guilty of ___ in broad daylight.", sv:"Extrainsatt: lokalt par bekände sig skyldiga till ___ mitt på ljusa dagen." },
   { mood:"fun", accepts:["np","gp"], en:"Hey Siri, why does {p2} keep ___ at 2am?", sv:"Hej Siri, varför håller {p2} på med ___ klockan två på natten?" },
-  { mood:"fun", accepts:["np","gp"], en:"Our therapist said we need to stop ___. We said no.", sv:"Vår terapeut sa att vi måste sluta med ___. Vi sa nej." },
+  { mood:"fun", accepts:["np","gp"], skip:[284], en:"Our therapist said we need to stop ___. We said no.", sv:"Vår terapeut sa att vi måste sluta med ___. Vi sa nej." },
   { mood:"fun", accepts:["np"], en:"Welcome to IKEA. Today’s couple fight will be in the ___ department.", sv:"Välkommen till IKEA. Dagens parbråk utspelar sig på ___-avdelningen." },
   { mood:"fun", accepts:["np","gp"], en:"{p2} keeps a secret stash of ___ and thinks {p1} doesn’t know.", sv:"{p2} har ett hemligt förråd av ___ och tror att {p1} inte vet." },
   { mood:"fun", accepts:["qf"], en:"The last text {p1} sent before the argument was just “___”", sv:"Det sista meddelandet {p1} skickade före bråket var bara “___”" },
@@ -615,8 +616,6 @@ var ANSWERS = [
   { mood:"mix", type:"ap", en:"disgustingly cute", sv:"vedervärdigt söta" },
   { mood:"mix", type:"ap", en:"absolutely feral at home", sv:"helt vilda hemma" },
   { mood:"mix", type:"ap", en:"suspiciously synchronized", sv:"misstänkt synkade" },
-
-  // ── APPROVED FROM REVIEW (2026-07-03) ──
   { mood:"fun", type:"np", en:"an emotional support shopping cart", sv:"en kundvagn för emotionellt stöd" },
   { mood:"fun", type:"np", en:"a PowerPoint titled 'Why We Should Get a Dog'", sv:"en PowerPoint med titeln 'Därför borde vi skaffa hund'" },
   { mood:"fun", type:"np", en:"the vacation spreadsheet with 14 tabs", sv:"semester-kalkylarket med 14 flikar" },
@@ -673,17 +672,76 @@ var ANSWERS = [
   { mood:"deep", type:"gp", en:"apologizing with snacks because words are hard", sv:"be om förlåtelse med snacks för att ord är svårt" },
   { mood:"deep", type:"gp", en:"learning to fight fair on the twelfth try", sv:"lära sig bråka schysst på tolfte försöket" },
   { mood:"deep", type:"gp", en:"loving the 7am version of each other anyway", sv:"älska klockan-sju-versionen av varandra ändå" },
-  { mood:"deep", type:"qf", en:"we figured it out, didn't we", sv:"vi löste det ju, eller hur" }
+  { mood:"deep", type:"qf", en:"we figured it out, didn't we", sv:"vi löste det ju, eller hur" },
+  { mood:"fun", type:"np", en:"a receipt hidden like a state secret", sv:"ett kvitto gömt som en statshemlighet" },
+  { mood:"fun", type:"gp", en:"{p2} reorganizing the fridge mid-argument", sv:"{p2} som möblerar om i kylen mitt i bråket" },
+  { mood:"fun", type:"qf", en:"I'm just resting my eyes", sv:"jag vilar bara ögonen" },
+  { mood:"fun", type:"ap", en:"aggressively punctual", sv:"aggressivt punktlig" },
+  { mood:"fun", type:"ap", en:"two espressos past reasonable", sv:"två espresso bortom det rimliga" },
+  { mood:"fun", type:"ap", en:"wrong at full volume", sv:"fel på högsta volym" },
+  { mood:"fun", type:"ap", en:"athletically lazy", sv:"atletiskt lat" },
+  { mood:"mix", type:"qf", en:"one of us has to be the adult and it's not me", sv:"en av oss måste vara vuxen och det är inte jag" },
+  { mood:"mix", type:"ap", en:"unsupervised and thriving", sv:"oövervakade och blomstrande" },
+  { mood:"mix", type:"ap", en:"dramatic about soup", sv:"dramatisk kring soppa" },
+  { mood:"spicy", type:"qf", en:"shhh, the walls are thin", sv:"schh, väggarna är tunna" },
+  { mood:"spicy", type:"qf", en:"breakfast can wait", sv:"frukosten kan vänta" },
+  { mood:"spicy", type:"ap", en:"suspiciously well-rested", sv:"misstänkt utvilad" },
+  { mood:"deep", type:"np", en:"the eight-second hug that fixed a whole Tuesday", sv:"den åtta sekunder långa kramen som räddade en hel tisdag" },
+  { mood:"deep", type:"gp", en:"keeping each other's secrets like a tiny two-person cult", sv:"bevara varandras hemligheter som en liten tvåpersonssekt" },
+  { mood:"deep", type:"ap", en:"softer than we admit in public", sv:"mjukare än vi erkänner offentligt" },
+  { mood:"fun", type:"np", en:"the spreadsheet where {p1} tracks being right", sv:"kalkylarket där {p1} för statistik över att ha rätt" },
+  { mood:"fun", type:"np", en:"a second fridge just for beverages and secrets", sv:"en extra kyl bara för drycker och hemligheter" },
+  { mood:"fun", type:"np", en:"the phone call {p2} rehearsed for twenty minutes and never made", sv:"telefonsamtalet {p2} övade på i tjugo minuter och aldrig ringde" },
+  { mood:"fun", type:"np", en:"the extension cord that solves everything", sv:"förlängningssladden som löser allt" },
+  { mood:"fun", type:"np", en:"a 'quick question' with 45 minutes of follow-ups", sv:"en 'snabb fråga' med 45 minuters följdfrågor" },
+  { mood:"fun", type:"np", en:"the drawer of cables we're afraid to throw away", sv:"lådan med sladdar vi inte vågar slänga" },
+  { mood:"fun", type:"np", en:"the book club book nobody in the book club read", sv:"bokcirkelboken ingen i bokcirkeln läste" },
+  { mood:"fun", type:"gp", en:"renaming the Wi-Fi to send the neighbors a message", sv:"döpa om Wi-Fi:t för att skicka ett budskap till grannarna" },
+  { mood:"fun", type:"gp", en:"reviewing the evening like sports commentators on the drive home", sv:"recensera kvällen som sportkommentatorer på vägen hem" },
+  { mood:"fun", type:"gp", en:"waving goodbye to guests and immediately discussing them", sv:"vinka hejdå till gästerna och genast börja diskutera dem" },
+  { mood:"fun", type:"gp", en:"applauding ourselves for cancelling the same plans twice", sv:"applådera oss själva för att ha ställt in samma planer två gånger" },
+  { mood:"fun", type:"gp", en:"teaching the smart speaker to take {p1}'s side", sv:"lära den smarta högtalaren att ta {p1}s parti" },
+  { mood:"fun", type:"gp", en:"switching to polite voices when the neighbors appear", sv:"byta till artiga röster när grannarna dyker upp" },
+  { mood:"fun", type:"qf", en:"it's technically an investment", sv:"det är tekniskt sett en investering" },
+  { mood:"fun", type:"qf", en:"we said no more projects", sv:"vi sa inga fler projekt" },
+  { mood:"fun", type:"qf", en:"who is 'they' in this story", sv:"vem är 'dom' i den här historien" },
+  { mood:"fun", type:"qf", en:"the dog agrees with me", sv:"hunden håller med mig" },
+  { mood:"fun", type:"ap", en:"spiritually retired", sv:"andligt pensionerad" },
+  { mood:"fun", type:"ap", en:"professionally offended", sv:"professionellt kränkt" },
+  { mood:"mix", type:"np", en:"the good spot on the couch, surrendered voluntarily", sv:"bästa platsen i soffan, frivilligt överlämnad" },
+  { mood:"mix", type:"np", en:"the playlist that fixes long car silences", sv:"spellistan som fixar långa biltystnader" },
+  { mood:"mix", type:"np", en:"a doorway kiss that made us late", sv:"en kyss i hallen som gjorde oss sena" },
+  { mood:"mix", type:"gp", en:"getting weirdly competitive about the crossword", sv:"bli konstigt tävlingsinriktade om korsordet" },
+  { mood:"mix", type:"gp", en:"assigning backstories to people at the airport", sv:"hitta på bakgrundshistorier åt folk på flygplatsen" },
+  { mood:"mix", type:"gp", en:"saying 'we should leave' and staying two more hours", sv:"säga 'vi borde gå' och stanna två timmar till" },
+  { mood:"mix", type:"gp", en:"winning an argument by making the other one laugh", sv:"vinna ett bråk genom att få den andra att skratta" },
+  { mood:"mix", type:"gp", en:"keeping score in a game neither of us admits exists", sv:"hålla räkningen i ett spel ingen av oss erkänner finns" },
+  { mood:"mix", type:"gp", en:"translating each other's moods for confused waiters", sv:"översätta varandras humör för förvirrade servitörer" },
+  { mood:"mix", type:"qf", en:"ask me again after coffee", sv:"fråga mig igen efter kaffet" },
+  { mood:"mix", type:"qf", en:"we're a package deal", sv:"vi kommer som ett paket" },
+  { mood:"mix", type:"ap", en:"suspiciously good in a crisis", sv:"misstänkt bra i en kris" },
+  { mood:"mix", type:"ap", en:"quietly plotting something", sv:"smider planer i det tysta" },
+  { mood:"spicy", type:"np", en:"the dress code for staying in", sv:"klädkoden för att stanna hemma" },
+  { mood:"spicy", type:"gp", en:"leaving the party early for made-up reasons", sv:"lämna festen tidigt av påhittade skäl" },
+  { mood:"spicy", type:"gp", en:"folding laundry until suddenly nobody is folding laundry", sv:"vika tvätt tills plötsligt ingen viker tvätt" },
+  { mood:"spicy", type:"gp", en:"conducting a thorough review of the hotel bed", sv:"genomföra en grundlig recension av hotellsängen" },
+  { mood:"spicy", type:"gp", en:"racing upstairs after locking the front door", sv:"tävla uppför trappan efter att ytterdörren låsts" },
+  { mood:"spicy", type:"gp", en:"suggesting we save water in a way that saves no water", sv:"föreslå att vi sparar vatten på ett sätt som inte sparar något vatten" },
+  { mood:"spicy", type:"qf", en:"you have my full attention", sv:"du har min fulla uppmärksamhet" },
+  { mood:"spicy", type:"qf", en:"come upstairs and find out", sv:"kom upp så får du se" },
+  { mood:"deep", type:"gp", en:"arriving with the exact right snack like a mind reader", sv:"dyka upp med exakt rätt snacks som en tankeläsare" },
+  { mood:"deep", type:"gp", en:"defending each other's nonsense in public, always", sv:"försvara varandras dumheter offentligt, alltid" },
+  { mood:"deep", type:"gp", en:"texting 'almost home' just so someone's waiting", sv:"sms:a 'snart hemma' bara för att någon ska vänta" },
+  { mood:"deep", type:"qf", en:"you're my favorite problem", sv:"du är mitt favoritproblem" }
 ];
 
 // New AI-written answer candidates, rated in Review mode.
-// Stable ids: future batches continue numbering (c-188, ...). Never renumber.
-// Batch 1 approved answers were baked into ANSWERS on 2026-07-03 and removed here.
+// Stable ids: future batches continue numbering (c-248, ...). Never renumber.
+// Approved batches are baked into ANSWERS and removed here (latest: 2026-07-03, iteration 3).
 var CANDIDATES = [
   { id:"c-001", mood:"fun", type:"np", en:"a laminated list of grievances", sv:"" },
   { id:"c-006", mood:"fun", type:"np", en:"the good scissors, missing since 2019", sv:"" },
   { id:"c-007", mood:"fun", type:"np", en:"the emergency snack drawer", sv:"" },
-  { id:"c-010", mood:"fun", type:"np", en:"a receipt hidden like a state secret", sv:"" },
   { id:"c-013", mood:"fun", type:"np", en:"the 'quick stop' that lasted three hours", sv:"" },
   { id:"c-014", mood:"fun", type:"np", en:"a fitted sheet and two broken spirits", sv:"" },
   { id:"c-020", mood:"fun", type:"np", en:"the world's most passive-aggressive calendar invite", sv:"" },
@@ -693,15 +751,9 @@ var CANDIDATES = [
   { id:"c-027", mood:"fun", type:"gp", en:"executing a synchronized Irish exit", sv:"" },
   { id:"c-030", mood:"fun", type:"gp", en:"hyping each other up to make one (1) phone call", sv:"" },
   { id:"c-031", mood:"fun", type:"gp", en:"confidently checking the oil like we know things", sv:"" },
-  { id:"c-034", mood:"fun", type:"gp", en:"{p2} reorganizing the fridge mid-argument", sv:"" },
   { id:"c-038", mood:"fun", type:"qf", en:"we're never drinking again", sv:"" },
-  { id:"c-041", mood:"fun", type:"qf", en:"I'm just resting my eyes", sv:"" },
   { id:"c-043", mood:"fun", type:"qf", en:"the parking was free though", sv:"" },
   { id:"c-044", mood:"fun", type:"qf", en:"I've been saying that for years", sv:"" },
-  { id:"c-045", mood:"fun", type:"ap", en:"aggressively punctual", sv:"" },
-  { id:"c-047", mood:"fun", type:"ap", en:"two espressos past reasonable", sv:"" },
-  { id:"c-049", mood:"fun", type:"ap", en:"wrong at full volume", sv:"" },
-  { id:"c-050", mood:"fun", type:"ap", en:"athletically lazy", sv:"" },
   { id:"c-052", mood:"mix", type:"np", en:"a six-second slow dance in the parking lot", sv:"" },
   { id:"c-056", mood:"mix", type:"np", en:"the same story, told with two very different villains", sv:"" },
   { id:"c-057", mood:"mix", type:"np", en:"an anniversary we both pretended not to forget", sv:"" },
@@ -713,13 +765,10 @@ var CANDIDATES = [
   { id:"c-068", mood:"mix", type:"gp", en:"walking the long way home on purpose", sv:"" },
   { id:"c-069", mood:"mix", type:"gp", en:"staging interventions for each other's online shopping", sv:"" },
   { id:"c-070", mood:"mix", type:"gp", en:"slow-blinking at each other like house cats", sv:"" },
-  { id:"c-071", mood:"mix", type:"qf", en:"one of us has to be the adult and it's not me", sv:"" },
   { id:"c-072", mood:"mix", type:"qf", en:"same time tomorrow?", sv:"" },
   { id:"c-074", mood:"mix", type:"qf", en:"it's us versus the instructions", sv:"" },
   { id:"c-076", mood:"mix", type:"ap", en:"annoyingly each other's favorite", sv:"" },
-  { id:"c-078", mood:"mix", type:"ap", en:"unsupervised and thriving", sv:"" },
   { id:"c-079", mood:"mix", type:"ap", en:"fluent in eyebrow", sv:"" },
-  { id:"c-080", mood:"mix", type:"ap", en:"dramatic about soup", sv:"" },
   { id:"c-081", mood:"spicy", type:"np", en:"a bathrobe worn as a threat", sv:"" },
   { id:"c-082", mood:"spicy", type:"np", en:"the ten minutes before the guests arrived", sv:"" },
   { id:"c-084", mood:"spicy", type:"np", en:"the good perfume on a random Tuesday", sv:"" },
@@ -729,88 +778,98 @@ var CANDIDATES = [
   { id:"c-089", mood:"spicy", type:"np", en:"the hotel key card held up without a word", sv:"" },
   { id:"c-097", mood:"spicy", type:"gp", en:"reappearing from the bathroom in the other one's shirt", sv:"" },
   { id:"c-099", mood:"spicy", type:"qf", en:"wear the thing", sv:"" },
-  { id:"c-101", mood:"spicy", type:"qf", en:"shhh, the walls are thin", sv:"" },
-  { id:"c-102", mood:"spicy", type:"qf", en:"breakfast can wait", sv:"" },
-  { id:"c-104", mood:"spicy", type:"ap", en:"suspiciously well-rested", sv:"" },
   { id:"c-105", mood:"spicy", type:"ap", en:"unfairly kissable before coffee", sv:"" },
   { id:"c-106", mood:"deep", type:"np", en:"the pep talk in the car before family dinner", sv:"" },
   { id:"c-107", mood:"deep", type:"np", en:"the nod that means 'we're leaving in ten'", sv:"" },
   { id:"c-108", mood:"deep", type:"np", en:"the grudge we gave a retirement party", sv:"" },
-  { id:"c-110", mood:"deep", type:"np", en:"the eight-second hug that fixed a whole Tuesday", sv:"" },
   { id:"c-111", mood:"deep", type:"np", en:"a therapy breakthrough in a parking garage", sv:"" },
   { id:"c-112", mood:"deep", type:"np", en:"the joke that saved the worst day of the year", sv:"" },
   { id:"c-113", mood:"deep", type:"np", en:"your laugh in a room full of strangers", sv:"" },
-  { id:"c-115", mood:"deep", type:"gp", en:"keeping each other's secrets like a tiny two-person cult", sv:"" },
   { id:"c-118", mood:"deep", type:"qf", en:"stay anyway", sv:"" },
-  { id:"c-120", mood:"deep", type:"ap", en:"softer than we admit in public", sv:"" },
-  // ── BATCH 2 (2026-07-03) ──
-  { id:"c-121", mood:"fun", type:"np", en:"the spreadsheet where {p1} tracks being right", sv:"" },
-  { id:"c-122", mood:"fun", type:"np", en:"a second fridge just for beverages and secrets", sv:"" },
-  { id:"c-123", mood:"fun", type:"np", en:"the phone call {p2} rehearsed for twenty minutes and never made", sv:"" },
   { id:"c-124", mood:"fun", type:"np", en:"the Tupperware avalanche", sv:"" },
   { id:"c-125", mood:"fun", type:"np", en:"the browser tab {p1} has kept open since March", sv:"" },
   { id:"c-126", mood:"fun", type:"np", en:"a houseplant on hospice care", sv:"" },
-  { id:"c-127", mood:"fun", type:"np", en:"the extension cord that solves everything", sv:"" },
-  { id:"c-128", mood:"fun", type:"np", en:"a 'quick question' with 45 minutes of follow-ups", sv:"" },
-  { id:"c-129", mood:"fun", type:"np", en:"the drawer of cables we're afraid to throw away", sv:"" },
-  { id:"c-130", mood:"fun", type:"np", en:"the book club book nobody in the book club read", sv:"" },
   { id:"c-131", mood:"fun", type:"np", en:"a wine cork collection with no explanation", sv:"" },
   { id:"c-132", mood:"fun", type:"np", en:"the vacation photo album that ends on day two", sv:"" },
-  { id:"c-133", mood:"fun", type:"gp", en:"renaming the Wi-Fi to send the neighbors a message", sv:"" },
-  { id:"c-134", mood:"fun", type:"gp", en:"reviewing the evening like sports commentators on the drive home", sv:"" },
-  { id:"c-135", mood:"fun", type:"gp", en:"waving goodbye to guests and immediately discussing them", sv:"" },
   { id:"c-136", mood:"fun", type:"gp", en:"leaving restaurant reviews in the group chat instead of online", sv:"" },
   { id:"c-137", mood:"fun", type:"gp", en:"conducting a full trial over who lost the keys", sv:"" },
   { id:"c-138", mood:"fun", type:"gp", en:"photographing the parking spot like crime scene evidence", sv:"" },
-  { id:"c-139", mood:"fun", type:"gp", en:"applauding ourselves for cancelling the same plans twice", sv:"" },
-  { id:"c-140", mood:"fun", type:"gp", en:"teaching the smart speaker to take {p1}'s side", sv:"" },
-  { id:"c-141", mood:"fun", type:"gp", en:"switching to polite voices when the neighbors appear", sv:"" },
   { id:"c-142", mood:"fun", type:"gp", en:"live-updating each other from different aisles of the store", sv:"" },
   { id:"c-143", mood:"fun", type:"gp", en:"getting invested in strangers' arguments at the airport", sv:"" },
   { id:"c-144", mood:"fun", type:"gp", en:"adding 'we should really do this more' to things we never do again", sv:"" },
-  { id:"c-145", mood:"fun", type:"qf", en:"it's technically an investment", sv:"" },
-  { id:"c-146", mood:"fun", type:"qf", en:"we said no more projects", sv:"" },
-  { id:"c-147", mood:"fun", type:"qf", en:"who is 'they' in this story", sv:"" },
-  { id:"c-148", mood:"fun", type:"qf", en:"the dog agrees with me", sv:"" },
-  { id:"c-149", mood:"fun", type:"ap", en:"spiritually retired", sv:"" },
-  { id:"c-150", mood:"fun", type:"ap", en:"professionally offended", sv:"" },
-  { id:"c-151", mood:"mix", type:"np", en:"the good spot on the couch, surrendered voluntarily", sv:"" },
   { id:"c-152", mood:"mix", type:"np", en:"a fridge photo from 2019 nobody will move", sv:"" },
   { id:"c-153", mood:"mix", type:"np", en:"the pizza order that requires zero discussion", sv:"" },
   { id:"c-154", mood:"mix", type:"np", en:"one umbrella, badly shared", sv:"" },
-  { id:"c-155", mood:"mix", type:"np", en:"the playlist that fixes long car silences", sv:"" },
-  { id:"c-156", mood:"mix", type:"np", en:"a doorway kiss that made us late", sv:"" },
-  { id:"c-157", mood:"mix", type:"gp", en:"getting weirdly competitive about the crossword", sv:"" },
-  { id:"c-158", mood:"mix", type:"gp", en:"assigning backstories to people at the airport", sv:"" },
-  { id:"c-159", mood:"mix", type:"gp", en:"saying 'we should leave' and staying two more hours", sv:"" },
-  { id:"c-160", mood:"mix", type:"gp", en:"winning an argument by making the other one laugh", sv:"" },
-  { id:"c-161", mood:"mix", type:"gp", en:"keeping score in a game neither of us admits exists", sv:"" },
-  { id:"c-162", mood:"mix", type:"gp", en:"translating each other's moods for confused waiters", sv:"" },
-  { id:"c-163", mood:"mix", type:"qf", en:"ask me again after coffee", sv:"" },
-  { id:"c-164", mood:"mix", type:"qf", en:"we're a package deal", sv:"" },
-  { id:"c-165", mood:"mix", type:"ap", en:"suspiciously good in a crisis", sv:"" },
-  { id:"c-166", mood:"mix", type:"ap", en:"quietly plotting something", sv:"" },
   { id:"c-167", mood:"spicy", type:"np", en:"a 'let's skip the appetizer' look", sv:"" },
   { id:"c-168", mood:"spicy", type:"np", en:"the text that just says 'home in 10'", sv:"" },
   { id:"c-169", mood:"spicy", type:"np", en:"an early exit with a bad excuse", sv:"" },
-  { id:"c-170", mood:"spicy", type:"np", en:"the dress code for staying in", sv:"" },
   { id:"c-171", mood:"spicy", type:"gp", en:"turning off the lamp with intent", sv:"" },
   { id:"c-172", mood:"spicy", type:"gp", en:"helping with sunscreen more thoroughly than necessary", sv:"" },
-  { id:"c-173", mood:"spicy", type:"gp", en:"leaving the party early for made-up reasons", sv:"" },
-  { id:"c-174", mood:"spicy", type:"gp", en:"folding laundry until suddenly nobody is folding laundry", sv:"" },
-  { id:"c-175", mood:"spicy", type:"gp", en:"conducting a thorough review of the hotel bed", sv:"" },
   { id:"c-176", mood:"spicy", type:"gp", en:"starting a movie neither of us intends to finish", sv:"" },
-  { id:"c-177", mood:"spicy", type:"gp", en:"racing upstairs after locking the front door", sv:"" },
-  { id:"c-178", mood:"spicy", type:"gp", en:"suggesting we save water in a way that saves no water", sv:"" },
-  { id:"c-179", mood:"spicy", type:"qf", en:"you have my full attention", sv:"" },
-  { id:"c-180", mood:"spicy", type:"qf", en:"come upstairs and find out", sv:"" },
   { id:"c-181", mood:"deep", type:"np", en:"the last bite, saved without being asked", sv:"" },
   { id:"c-182", mood:"deep", type:"np", en:"an entire argument resolved in the hallway in four words", sv:"" },
-  { id:"c-183", mood:"deep", type:"gp", en:"arriving with the exact right snack like a mind reader", sv:"" },
-  { id:"c-184", mood:"deep", type:"gp", en:"defending each other's nonsense in public, always", sv:"" },
-  { id:"c-185", mood:"deep", type:"gp", en:"texting 'almost home' just so someone's waiting", sv:"" },
   { id:"c-186", mood:"deep", type:"gp", en:"getting good at the boring parts of love", sv:"" },
-  { id:"c-187", mood:"deep", type:"qf", en:"you're my favorite problem", sv:"" }
+  // ── BATCH 3 (2026-07-03) ──
+  { id:"c-188", mood:"fun", type:"np", en:"the 'we're not buying anything' trip that cost 1,400 kronor", sv:"" },
+  { id:"c-189", mood:"fun", type:"np", en:"a charging cable that belongs to both of us and neither of us", sv:"" },
+  { id:"c-190", mood:"fun", type:"np", en:"the guest bed that's actually a laundry archive", sv:"" },
+  { id:"c-191", mood:"fun", type:"np", en:"the oven drawer we both pretend isn't storage", sv:"" },
+  { id:"c-192", mood:"fun", type:"np", en:"a five-year plan written on a napkin we lost", sv:"" },
+  { id:"c-193", mood:"fun", type:"np", en:"the winter jacket debate that starts every October", sv:"" },
+  { id:"c-194", mood:"fun", type:"np", en:"a return package that has lived in the car for a month", sv:"" },
+  { id:"c-195", mood:"fun", type:"np", en:"the 'good' olive oil reserved for guests we don't have", sv:"" },
+  { id:"c-196", mood:"fun", type:"np", en:"an alarm labeled 'GYM' from 2023", sv:"" },
+  { id:"c-197", mood:"fun", type:"np", en:"a password system based on vibes and one dead pet", sv:"" },
+  { id:"c-198", mood:"fun", type:"gp", en:"clapping once when the Wi-Fi comes back", sv:"" },
+  { id:"c-199", mood:"fun", type:"gp", en:"arguing on behalf of fictional characters", sv:"" },
+  { id:"c-200", mood:"fun", type:"gp", en:"grieving loudly when the kebab place closes early", sv:"" },
+  { id:"c-201", mood:"fun", type:"gp", en:"swirling the wine like we know what we're checking for", sv:"" },
+  { id:"c-202", mood:"fun", type:"gp", en:"rehearsing an exit excuse in the car before the party", sv:"" },
+  { id:"c-203", mood:"fun", type:"gp", en:"timing the microwave to avoid the final beep", sv:"" },
+  { id:"c-204", mood:"fun", type:"gp", en:"accusing each other of losing the good pen", sv:"" },
+  { id:"c-205", mood:"fun", type:"gp", en:"debriefing in the car before driving anywhere", sv:"" },
+  { id:"c-206", mood:"fun", type:"gp", en:"watching the neighbors' renovation like it's a series", sv:"" },
+  { id:"c-207", mood:"fun", type:"gp", en:"quoting a movie neither of us has actually seen", sv:"" },
+  { id:"c-208", mood:"fun", type:"gp", en:"betting on other people's relationships at weddings", sv:"" },
+  { id:"c-209", mood:"fun", type:"qf", en:"it's not hoarding if it's organized", sv:"" },
+  { id:"c-210", mood:"fun", type:"qf", en:"we'll just have one drink", sv:"" },
+  { id:"c-211", mood:"fun", type:"qf", en:"I had it a minute ago", sv:"" },
+  { id:"c-212", mood:"fun", type:"qf", en:"new phone, same grudges", sv:"" },
+  { id:"c-213", mood:"fun", type:"ap", en:"clinically incapable of whispering", sv:"" },
+  { id:"c-214", mood:"fun", type:"ap", en:"optimistic about parking", sv:"" },
+  { id:"c-215", mood:"fun", type:"ap", en:"allergic to instructions", sv:"" },
+  { id:"c-216", mood:"fun", type:"ap", en:"diplomatically starving", sv:"" },
+  { id:"c-217", mood:"fun", type:"ap", en:"ambitious at the buffet", sv:"" },
+  { id:"c-218", mood:"mix", type:"np", en:"a kitchen built for one, occupied by two", sv:"" },
+  { id:"c-219", mood:"mix", type:"np", en:"the shared look when someone says 'fun fact'", sv:"" },
+  { id:"c-220", mood:"mix", type:"np", en:"a joke that needs a 10-minute orientation for new friends", sv:"" },
+  { id:"c-221", mood:"mix", type:"gp", en:"coordinating our story in the elevator", sv:"" },
+  { id:"c-222", mood:"mix", type:"gp", en:"racing to tell the same gossip first", sv:"" },
+  { id:"c-223", mood:"mix", type:"gp", en:"adopting other couples on vacation and never texting them again", sv:"" },
+  { id:"c-224", mood:"mix", type:"gp", en:"negotiating bedtime like opposing lawyers", sv:"" },
+  { id:"c-225", mood:"mix", type:"gp", en:"rating our own dinner like judges on a cooking show", sv:"" },
+  { id:"c-226", mood:"mix", type:"gp", en:"celebrating tiny victories with disproportionate ceremony", sv:"" },
+  { id:"c-227", mood:"mix", type:"gp", en:"maintaining a five-year feud with a seagull", sv:"" },
+  { id:"c-228", mood:"mix", type:"qf", en:"we're working on it", sv:"" },
+  { id:"c-229", mood:"mix", type:"qf", en:"don't fact-check me in public", sv:"" },
+  { id:"c-230", mood:"mix", type:"ap", en:"shameless as a duo", sv:"" },
+  { id:"c-231", mood:"mix", type:"ap", en:"quietly keeping score", sv:"" },
+  { id:"c-232", mood:"mix", type:"ap", en:"peaceful until Monopoly", sv:"" },
+  { id:"c-233", mood:"mix", type:"ap", en:"overdressed for the sofa", sv:"" },
+  { id:"c-234", mood:"spicy", type:"gp", en:"interpreting 'I'm cold' correctly for once", sv:"" },
+  { id:"c-235", mood:"spicy", type:"gp", en:"turning the goodnight kiss into a negotiation", sv:"" },
+  { id:"c-236", mood:"spicy", type:"gp", en:"claiming the shower needs supervision", sv:"" },
+  { id:"c-237", mood:"spicy", type:"gp", en:"declaring the bedroom a phone-free zone with intent", sv:"" },
+  { id:"c-238", mood:"spicy", type:"gp", en:"skipping the last episode for a better plot", sv:"" },
+  { id:"c-239", mood:"spicy", type:"gp", en:"making dessert at home mean something else", sv:"" },
+  { id:"c-240", mood:"spicy", type:"gp", en:"whispering plans during the boring dinner speech", sv:"" },
+  { id:"c-241", mood:"spicy", type:"qf", en:"the door has a lock for a reason", sv:"" },
+  { id:"c-242", mood:"spicy", type:"qf", en:"we'll tell them traffic was bad", sv:"" },
+  { id:"c-243", mood:"deep", type:"gp", en:"noticing the new haircut without being warned", sv:"" },
+  { id:"c-244", mood:"deep", type:"gp", en:"remembering the small thing from a conversation in March", sv:"" },
+  { id:"c-245", mood:"deep", type:"gp", en:"showing up to the boring errands as emotional support", sv:"" },
+  { id:"c-246", mood:"deep", type:"gp", en:"making the waiting room feel less like a waiting room", sv:"" },
+  { id:"c-247", mood:"deep", type:"qf", en:"you count as home", sv:"" }
 ];
 
 var TYPE_LABELS = { np: 'Thing', gp: 'Activity', qf: 'Quote', ap: 'Description' };
@@ -1075,11 +1134,13 @@ function buildExportText() {
   approved.forEach(function(c, i) { candIdx[c.id] = base + i; });
 
   var prompts = PROMPTS.map(function(p, pi) {
-    var skips = getSkips(pi).slice();
+    // merge skips already baked into the prompt with this session's skips
+    var skips = (p.skip || []).concat(getSkips(pi));
     approved.forEach(function(c) {
       var r = state.ratings[c.id + '|' + pi];
       if (r === 'doesntwork' || r === 'notfunny') skips.push(candIdx[c.id]);
     });
+    skips = skips.filter(function(v, i) { return skips.indexOf(v) === i; });
     if (skips.length === 0) return p;
     var copy = Object.assign({}, p);
     copy.skip = skips;
@@ -1116,14 +1177,28 @@ function exportCards() {
   URL.revokeObjectURL(url);
 }
 
-function copyCards() {
-  navigator.clipboard.writeText(buildExportText()).then(function() {
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(function() {
     var flash = document.getElementById('copy-flash');
     flash.style.opacity = '1';
     setTimeout(function() { flash.style.opacity = '0'; }, 1500);
   }, function() {
     alert('Copy failed — use the download button instead.');
   });
+}
+
+function copyCards() {
+  copyToClipboard(buildExportText());
+}
+
+// Compact export for pasting into chat: just the ratings, no card data.
+function copyRatings() {
+  copyToClipboard(JSON.stringify({
+    ratings: state.ratings,
+    candidateStatus: state.candidateStatus,
+    newAnswers: state.newAnswers,
+    skips: state.skips
+  }));
 }
 
 loadState();
