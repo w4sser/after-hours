@@ -233,7 +233,7 @@ button { font-family: inherit; cursor: pointer; }
 #review-done { text-align: center; color: #9A8E7E; font-size: 15px; line-height: 1.8; padding: 40px 0; }
 #review-buttons {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 8px;
   flex-shrink: 0;
 }
@@ -258,6 +258,33 @@ button { font-family: inherit; cursor: pointer; }
   .key-hint { display: none; }
   #review-sentence { font-size: 17px; }
 }
+#review-context { font-size: 11px; color: #9A8E7E; line-height: 1.6; max-width: 560px; }
+#review-context .chip { margin-right: 4px; }
+#review-toggle { font-size: 11px; color: #6B5F52; display: flex; align-items: center; gap: 5px; justify-content: center; cursor: pointer; }
+
+/* STATS */
+#stats-area { flex: 1; overflow-y: auto; padding: 14px 20px; display: none; flex-direction: column; gap: 14px; }
+.dash-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.dash-card { background: #1A1917; border: 1px solid rgba(237,224,200,0.1); border-radius: 8px; padding: 8px 14px; font-size: 12px; color: #9A8E7E; }
+.dash-card strong { color: #EDE0C8; font-size: 15px; display: block; }
+.stats-section-title { font-size: 10px; letter-spacing: 1px; color: #6B5F52; text-transform: uppercase; margin-top: 4px; display: flex; align-items: center; gap: 10px; }
+.stats-section-title select { background: #1A1917; border: 1px solid rgba(237,224,200,0.2); color: #EDE0C8; padding: 3px 6px; border-radius: 5px; font-size: 11px; font-family: inherit; text-transform: none; letter-spacing: 0; }
+.srow { display: flex; align-items: baseline; gap: 8px; padding: 5px 8px; border-radius: 6px; font-size: 12px; line-height: 1.45; border: 1px solid transparent; }
+.srow:nth-child(odd) { background: #161513; }
+.srow:hover { border-color: rgba(237,224,200,0.15); }
+.srow .stext { flex: 1; min-width: 0; color: #EDE0C8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+.srow .snums { color: #6B5F52; font-size: 11px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.srow .sreason { color: #9A8E7E; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px; }
+.chip { display: inline-block; padding: 1px 7px; border-radius: 4px; font-size: 10px; letter-spacing: 0.5px; white-space: nowrap; }
+.chip-healthy { background: rgba(50,205,50,0.12); color: #6FBF6F; }
+.chip-under { background: rgba(237,224,200,0.1); color: #9A8E7E; }
+.chip-weak { background: rgba(205,80,50,0.15); color: #D08060; }
+.chip-repetitive { background: rgba(255,165,0,0.12); color: #C9963F; }
+.chip-keep { background: rgba(50,205,50,0.12); color: #6FBF6F; }
+.chip-rewrite { background: rgba(255,165,0,0.12); color: #C9963F; }
+.chip-cut { background: rgba(205,80,50,0.15); color: #D08060; }
+.chip-dim { background: rgba(237,224,200,0.06); color: #6B5F52; }
+#prompt-stats { font-size: 11px; color: #9A8E7E; margin-top: 8px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
 /* FOOTER */
 #footer {
@@ -290,6 +317,7 @@ button { font-family: inherit; cursor: pointer; }
   <div id="mode-tabs">
     <button class="tab active" id="tab-browse" onclick="setMode('browse')">Browse</button>
     <button class="tab" id="tab-review" onclick="setMode('review')">Review</button>
+    <button class="tab" id="tab-stats" onclick="setMode('stats')">Stats</button>
   </div>
   <div id="prompt-meta">
     <span id="prompt-counter">PROMPT 1 / 64</span>
@@ -310,6 +338,7 @@ button { font-family: inherit; cursor: pointer; }
 
 <div id="prompt-area">
   <div id="prompt-text"></div>
+  <div id="prompt-stats"></div>
 </div>
 
 <div id="answers-area"></div>
@@ -322,15 +351,20 @@ button { font-family: inherit; cursor: pointer; }
       <span id="review-type"></span>
     </div>
     <div id="review-sentence"></div>
+    <div id="review-context"></div>
   </div>
   <div id="review-done" style="display:none;">All combos reviewed 🎉<br>Export cards.js to save your keepers.</div>
   <div id="review-buttons">
-    <button class="rate-btn" onclick="rateCombo('funny')">😂 Funny<span class="key-hint">1</span></button>
-    <button class="rate-btn" onclick="rateCombo('ok')">👍 OK<span class="key-hint">2</span></button>
-    <button class="rate-btn" onclick="rateCombo('doesntwork')">🔧 Doesn't work<span class="key-hint">3</span></button>
-    <button class="rate-btn" onclick="rateCombo('notfunny')">😐 Not funny<span class="key-hint">4</span></button>
+    <button class="rate-btn" onclick="rateCombo('keeper')">🏆 Keeper<span class="key-hint">1</span></button>
+    <button class="rate-btn" onclick="rateCombo('works')">👍 Works<span class="key-hint">2</span></button>
+    <button class="rate-btn" onclick="rateCombo('grammaroff')">🔧 Grammar off<span class="key-hint">3</span></button>
+    <button class="rate-btn" onclick="rateCombo('flat')">😐 Flat<span class="key-hint">4</span></button>
+    <button class="rate-btn" onclick="rateCombo('cut')">🗑 Cut<span class="key-hint">5</span></button>
   </div>
+  <label id="review-toggle"><input type="checkbox" id="include-covered" onchange="toggleIncludeCovered(this.checked)"> include covered prompts in the queue</label>
 </div>
+
+<div id="stats-area"></div>
 
 <div id="add-panel">
   <div id="add-panel-label">+ Add new answer</div>
@@ -977,7 +1011,11 @@ var TYPE_LABELS = { np: 'Thing', gp: 'Activity', qf: 'Quote', ap: 'Description' 
 var TYPE_CODES  = { 'Thing': 'np', 'Activity': 'gp', 'Quote': 'qf', 'Description': 'ap' };
 var STATE_KEY = 'after-hours-editor-state';
 
-var state = { currentIdx: 0, skips: {}, newAnswers: [], ratings: {}, candidateStatus: {}, mode: 'browse' };
+var state = { currentIdx: 0, skips: {}, newAnswers: [], ratings: {}, candidateStatus: {}, mode: 'browse', includeCovered: false };
+
+// Rating model: keeper (top-tier) | works (usable) | grammaroff (bad fit) | flat (works but boring) | cut (bad, kill signal)
+var RATING_LABELS = { keeper: '🏆 keeper', works: '👍 works', grammaroff: '🔧 grammar off', flat: '😐 flat', cut: '🗑 cut' };
+var OLD_RATING_MAP = { funny: 'keeper', ok: 'works', doesntwork: 'grammaroff', notfunny: 'flat' };
 
 function loadState() {
   try {
@@ -988,7 +1026,12 @@ function loadState() {
   if (!state.newAnswers) state.newAnswers = [];
   if (!state.ratings) state.ratings = {};
   if (!state.candidateStatus) state.candidateStatus = {};
-  if (!state.mode) state.mode = 'browse';
+  if (!state.mode || state.mode === 'stats') state.mode = state.mode || 'browse';
+  if (state.includeCovered === undefined) state.includeCovered = false;
+  // migrate pre-2026-07 rating labels
+  Object.keys(state.ratings).forEach(function(k) {
+    if (OLD_RATING_MAP[state.ratings[k]]) state.ratings[k] = OLD_RATING_MAP[state.ratings[k]];
+  });
 }
 
 function saveState() {
@@ -1059,6 +1102,12 @@ function render() {
   // Prompt text
   var pText = sub(prompt.en).replace('___', '<span class="blank">___</span>');
   document.getElementById('prompt-text').innerHTML = pText;
+
+  // Prompt health line (coverage rule lives in computeStats)
+  var ps = computeStats().prompts[idx];
+  document.getElementById('prompt-stats').innerHTML =
+    statusChip(ps.status) + ' ' + ps.working + ' working · ' + ps.keepers + ' keepers · ' +
+    ps.rated + ' rated' + (ps.reason ? ' · ' + ps.reason : '');
 
   // Add hint
   var moodLabel = prompt.mood.charAt(0).toUpperCase() + prompt.mood.slice(1);
@@ -1132,31 +1181,170 @@ function moodCompatible(a, b) {
 
 function candidateRatedMap() {
   var m = {};
-  Object.keys(state.ratings).forEach(function(k) { m[k.split('|')[0]] = true; });
+  Object.keys(state.ratings).forEach(function(k) {
+    var id = k.split('|')[0];
+    if (id.charAt(0) === 'c') m[id] = true;
+  });
   return m;
 }
 
-function unratedCombos() {
+function promptSkips(pi) {
+  return (PROMPTS[pi].skip || []).concat(getSkips(pi));
+}
+
+// ── METRICS ──
+// Prompt coverage rule: covered = 10+ working answers AND 3+ keeper-rated combos
+// AND no accepted lane with zero working answers. Covered prompts leave the queue.
+function computeStats() {
+  var candById = {};
+  CANDIDATES.forEach(function(c) { candById[c.id] = c; });
+
+  var pstats = PROMPTS.map(function() {
+    return { counts: { keeper: 0, works: 0, grammaroff: 0, flat: 0, cut: 0 }, rated: 0,
+             working: 0, keepers: 0, laneGap: null, covered: false, status: '', reason: '',
+             tried: {}, keeperRate: 0 };
+  });
+  var astats = {};
+  function ensureA(key, kind, ref) {
+    if (!astats[key]) astats[key] = { key: key, kind: kind, ref: ref, shown: 0,
+      counts: { keeper: 0, works: 0, grammaroff: 0, flat: 0, cut: 0 },
+      promptsRated: {}, promptsWorked: {} };
+    return astats[key];
+  }
+
+  Object.keys(state.ratings).forEach(function(k) {
+    var r = state.ratings[k];
+    if (!RATING_LABELS[r]) return;
+    var parts = k.split('|'), id = parts[0], pi = +parts[1];
+    var ps = pstats[pi];
+    if (!ps) return;
+    var ref, kind;
+    if (id.charAt(0) === 'c') { ref = candById[id]; kind = 'cand'; }
+    else { ref = ANSWERS[+id.slice(1)]; kind = 'deck'; }
+    if (!ref) return; // rating for a candidate baked/removed in an earlier iteration
+    ps.counts[r]++; ps.rated++; ps.tried[id] = true;
+    var as = ensureA(id, kind, ref);
+    as.counts[r]++; as.shown++; as.promptsRated[pi] = 1;
+    if (r === 'keeper' || r === 'works') as.promptsWorked[pi] = 1;
+  });
+
+  PROMPTS.forEach(function(p, pi) {
+    var ps = pstats[pi];
+    var skips = promptSkips(pi);
+    var laneWorking = {};
+    p.accepts.forEach(function(l) { laneWorking[l] = 0; });
+    var working = 0;
+    ANSWERS.forEach(function(a, ai) {
+      if (p.accepts.indexOf(a.type) === -1 || !moodCompatible(a.mood, p.mood)) return;
+      if (skips.indexOf(ai) !== -1) return;
+      working++; laneWorking[a.type]++;
+    });
+    CANDIDATES.forEach(function(c) {
+      if (state.candidateStatus[c.id] !== 'approved') return;
+      if (p.accepts.indexOf(c.type) === -1 || !moodCompatible(c.mood, p.mood)) return;
+      var r = state.ratings[c.id + '|' + pi];
+      if (r === 'grammaroff' || r === 'cut') return;
+      working++; laneWorking[c.type]++;
+    });
+    ps.working = working;
+    ps.keepers = ps.counts.keeper;
+    p.accepts.forEach(function(l) { if (laneWorking[l] === 0 && !ps.laneGap) ps.laneGap = l; });
+
+    var rated = ps.rated;
+    var grammarRate = rated ? ps.counts.grammaroff / rated : 0;
+    var flatCutRate = rated ? (ps.counts.flat + ps.counts.cut) / rated : 0;
+    ps.keeperRate = rated ? ps.counts.keeper / rated : 0;
+
+    if (rated >= 8 && (grammarRate >= 0.35 || flatCutRate >= 0.4)) {
+      ps.status = 'weak prompt';
+      ps.reason = grammarRate >= 0.35 ? 'high grammar-off rate (' + Math.round(grammarRate * 100) + '%)'
+                                      : 'high flat/cut rate (' + Math.round(flatCutRate * 100) + '%)';
+    } else if (working >= 10 && ps.keepers >= 3 && !ps.laneGap) {
+      if (rated >= 10 && ps.keeperRate < 0.12) {
+        ps.status = 'repetitive';
+        ps.reason = 'plenty of answers, few land as keepers';
+      } else {
+        ps.status = 'healthy';
+        ps.covered = true;
+      }
+    } else {
+      ps.status = 'under-covered';
+      ps.reason = working < 10 ? ('needs ' + (10 - working) + ' more working answers')
+        : ps.keepers < 3 ? ('needs ' + (3 - ps.keepers) + ' more keepers')
+        : ('no working ' + (TYPE_LABELS[ps.laneGap] || ps.laneGap) + ' answers');
+    }
+  });
+
+  return { prompts: pstats, answers: astats };
+}
+
+// Decision rule for answer cards. Practical thresholds:
+// keep: 2+ keepers, or 1+ keeper at >=30% with low grammar-off.
+// cut: 4+ ratings, zero keepers, >=75% flat/cut/grammar-off.
+// rewrite: 4+ ratings with zero keepers, or works but only ever on one prompt.
+function answerSuggestion(as) {
+  var s = as.shown, c = as.counts;
+  if (s < 3) return null;
+  var broad = Object.keys(as.promptsWorked).length;
+  if (c.keeper >= 2 || (c.keeper >= 1 && c.keeper / s >= 0.3 && c.grammaroff / s <= 0.34)) return 'keep';
+  if (s >= 4 && c.keeper === 0 && (c.flat + c.cut + c.grammaroff) / s >= 0.75) return 'cut';
+  if (s >= 4 && (c.keeper === 0 || broad <= 1)) return 'rewrite';
+  return null;
+}
+
+function statusChip(status) {
+  var cls = { 'healthy': 'chip-healthy', 'under-covered': 'chip-under', 'weak prompt': 'chip-weak', 'repetitive': 'chip-repetitive' }[status] || 'chip-dim';
+  return '<span class="chip ' + cls + '">' + status + '</span>';
+}
+
+// ── REVIEW QUEUE ──
+function unratedCandCombos(excludePi) {
   var out = [];
   CANDIDATES.forEach(function(c) {
     if (state.candidateStatus[c.id] === 'killed') return;
     PROMPTS.forEach(function(p, pi) {
+      if (excludePi[pi]) return;
       if (p.accepts.indexOf(c.type) === -1) return;
       if (!moodCompatible(c.mood, p.mood)) return;
       if (state.ratings[c.id + '|' + pi]) return;
-      out.push({ c: c, pi: pi });
+      out.push({ kind: 'cand', c: c, pi: pi });
     });
   });
   return out;
 }
 
-function pickNextCombo() {
-  var combos = unratedCombos();
-  if (combos.length === 0) return null;
-  var rated = candidateRatedMap();
-  var fresh = combos.filter(function(x) { return !rated[x.c.id]; });
-  var pool = fresh.length ? fresh : combos;
-  return pool[Math.floor(Math.random() * pool.length)];
+function unratedDeckCombos(excludePi) {
+  var out = [];
+  PROMPTS.forEach(function(p, pi) {
+    if (excludePi[pi]) return;
+    var skips = promptSkips(pi);
+    ANSWERS.forEach(function(a, ai) {
+      if (p.accepts.indexOf(a.type) === -1 || !moodCompatible(a.mood, p.mood)) return;
+      if (skips.indexOf(ai) !== -1) return;
+      if (state.ratings['a' + ai + '|' + pi]) return;
+      out.push({ kind: 'deck', ai: ai, pi: pi });
+    });
+  });
+  return out;
+}
+
+// Priority: fresh candidates > candidate combos > deck combos (keeper-hunting on
+// baked cards). Covered prompts are excluded unless the toggle is on.
+function pickNextCombo(stats) {
+  var excludePi = {};
+  if (!state.includeCovered) {
+    stats.prompts.forEach(function(ps, pi) { if (ps.covered) excludePi[pi] = true; });
+  }
+  var cand = unratedCandCombos(excludePi);
+  if (cand.length) {
+    var rated = candidateRatedMap();
+    var fresh = cand.filter(function(x) { return !rated[x.c.id]; });
+    var pool = fresh.length ? fresh : cand;
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+  var deck = unratedDeckCombos(excludePi);
+  if (deck.length) return deck[Math.floor(Math.random() * deck.length)];
+  return null;
 }
 
 function reviewCounts() {
@@ -1170,32 +1358,70 @@ function reviewCounts() {
   return { approved: approved, killed: killed, unseen: unseen };
 }
 
+function comboAnswer(combo) {
+  return combo.kind === 'deck' ? ANSWERS[combo.ai] : combo.c;
+}
+
 function renderReview() {
+  var stats = computeStats();
   var counts = reviewCounts();
+  var coveredCount = stats.prompts.filter(function(ps) { return ps.covered; }).length;
   document.getElementById('review-progress').textContent =
-    'approved ' + counts.approved + ' · killed ' + counts.killed + ' · unseen ' + counts.unseen;
-  currentCombo = pickNextCombo();
+    'covered ' + coveredCount + '/' + PROMPTS.length + ' prompts · approved ' + counts.approved +
+    ' · killed ' + counts.killed + ' · unseen ' + counts.unseen;
+  document.getElementById('include-covered').checked = !!state.includeCovered;
+  currentCombo = pickNextCombo(stats);
   var done = !currentCombo;
   document.getElementById('review-card').style.display = done ? 'none' : 'flex';
   document.getElementById('review-buttons').style.display = done ? 'none' : 'grid';
   document.getElementById('review-done').style.display = done ? 'block' : 'none';
   if (done) return;
   var p = PROMPTS[currentCombo.pi];
-  var c = currentCombo.c;
+  var a = comboAnswer(currentCombo);
   document.getElementById('review-mood').textContent = p.mood.toUpperCase();
-  document.getElementById('review-type').textContent = (TYPE_LABELS[c.type] || c.type) + ' · ' + c.id;
-  document.getElementById('review-sentence').innerHTML = buildSentence(p.en, c.en);
+  document.getElementById('review-type').textContent =
+    (TYPE_LABELS[a.type] || a.type) + ' · ' + (currentCombo.kind === 'deck' ? 'deck #' + currentCombo.ai : a.id + ' · new');
+  document.getElementById('review-sentence').innerHTML = buildSentence(p.en, a.en);
+
+  // inline context: why this combo is being dealt + what we know about the answer
+  var ps = stats.prompts[currentCombo.pi];
+  var html = statusChip(ps.status) + ' prompt: ' + ps.working + ' working · ' + ps.keepers + ' keepers' +
+    (ps.reason ? ' · ' + ps.reason : '');
+  var key = currentCombo.kind === 'deck' ? 'a' + currentCombo.ai : a.id;
+  var as = stats.answers[key];
+  if (as && as.shown > 0) {
+    html += '<br>answer: ' + as.counts.keeper + '🏆 ' + as.counts.works + '👍 over ' + as.shown +
+      ' ratings · works on ' + Object.keys(as.promptsWorked).length + ' prompts';
+    var sug = answerSuggestion(as);
+    if (sug) html += ' · <span class="chip chip-' + sug + '">' + sug + '</span>';
+  }
+  document.getElementById('review-context').innerHTML = html;
 }
 
 function rateCombo(rating) {
-  if (!currentCombo) return;
-  var c = currentCombo.c, pi = currentCombo.pi;
-  state.ratings[c.id + '|' + pi] = rating;
-  if (rating === 'funny' || rating === 'ok') {
-    state.candidateStatus[c.id] = 'approved';
-  } else if (rating === 'notfunny' && state.candidateStatus[c.id] !== 'approved') {
-    state.candidateStatus[c.id] = 'killed';
+  if (!currentCombo || !RATING_LABELS[rating]) return;
+  var pi = currentCombo.pi;
+  if (currentCombo.kind === 'deck') {
+    state.ratings['a' + currentCombo.ai + '|' + pi] = rating;
+    if (rating === 'grammaroff' || rating === 'cut') {
+      var skips = getSkips(pi);
+      if (skips.indexOf(currentCombo.ai) === -1) { skips.push(currentCombo.ai); state.skips[pi] = skips; }
+    }
+  } else {
+    var c = currentCombo.c;
+    state.ratings[c.id + '|' + pi] = rating;
+    if (rating === 'keeper' || rating === 'works') {
+      state.candidateStatus[c.id] = 'approved';
+    } else if (rating === 'cut' && state.candidateStatus[c.id] !== 'approved') {
+      state.candidateStatus[c.id] = 'killed';
+    }
   }
+  saveState();
+  renderReview();
+}
+
+function toggleIncludeCovered(on) {
+  state.includeCovered = !!on;
   saveState();
   renderReview();
 }
@@ -1203,21 +1429,150 @@ function rateCombo(rating) {
 document.addEventListener('keydown', function(e) {
   if (state.mode !== 'review') return;
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
-  var map = { '1': 'funny', '2': 'ok', '3': 'doesntwork', '4': 'notfunny' };
+  var map = { '1': 'keeper', '2': 'works', '3': 'grammaroff', '4': 'flat', '5': 'cut' };
   if (map[e.key]) rateCombo(map[e.key]);
 });
+
+// ── STATS TAB ──
+var statsPromptFilter = 'all';
+var statsAnswerFilter = 'all';
+
+function setStatsFilter(which, val) {
+  if (which === 'prompt') statsPromptFilter = val;
+  else statsAnswerFilter = val;
+  renderStats();
+}
+
+function jumpToPrompt(pi) {
+  state.currentIdx = pi;
+  saveState();
+  setMode('browse');
+}
+
+function renderStats() {
+  var stats = computeStats();
+  var ps = stats.prompts;
+  var covered = 0, under = 0, weak = 0, repetitive = 0;
+  ps.forEach(function(s) {
+    if (s.status === 'healthy') covered++;
+    else if (s.status === 'under-covered') under++;
+    else if (s.status === 'weak prompt') weak++;
+    else if (s.status === 'repetitive') repetitive++;
+  });
+
+  // answer rows: every deck card + live candidate, with stats where they exist
+  var arows = [];
+  ANSWERS.forEach(function(a, ai) {
+    arows.push({ key: 'a' + ai, label: 'deck #' + ai, a: a, as: stats.answers['a' + ai] });
+  });
+  CANDIDATES.forEach(function(c) {
+    if (state.candidateStatus[c.id] === 'killed') return;
+    arows.push({ key: c.id, label: c.id, a: c, as: stats.answers[c.id] });
+  });
+
+  var strongest = arows.filter(function(r) { return r.as && r.as.counts.keeper > 0; })
+    .sort(function(x, y) { return y.as.counts.keeper - x.as.counts.keeper; }).slice(0, 5);
+  var weakest = arows.filter(function(r) { return r.as && answerSuggestion(r.as) === 'cut'; }).slice(0, 5);
+  var weakPrompts = ps.map(function(s, pi) { return { s: s, pi: pi }; })
+    .filter(function(x) { return x.s.status === 'weak prompt' || x.s.status === 'repetitive'; }).slice(0, 5);
+
+  var html = '';
+  html += '<div class="dash-row">' +
+    '<div class="dash-card"><strong>' + covered + '</strong>covered</div>' +
+    '<div class="dash-card"><strong>' + under + '</strong>under-covered</div>' +
+    '<div class="dash-card"><strong>' + weak + '</strong>weak</div>' +
+    '<div class="dash-card"><strong>' + repetitive + '</strong>repetitive</div>' +
+    '<div class="dash-card"><strong>' + Object.keys(state.ratings).length + '</strong>ratings total</div>' +
+    '</div>';
+
+  if (strongest.length || weakest.length || weakPrompts.length) {
+    html += '<div class="dash-row">';
+    if (strongest.length) html += '<div class="dash-card">strongest answers<br>' + strongest.map(function(r) {
+      return '🏆' + r.as.counts.keeper + ' ' + r.a.en.slice(0, 38);
+    }).join('<br>') + '</div>';
+    if (weakest.length) html += '<div class="dash-card">cut suggestions<br>' + weakest.map(function(r) {
+      return r.a.en.slice(0, 38);
+    }).join('<br>') + '</div>';
+    if (weakPrompts.length) html += '<div class="dash-card">prompts needing attention<br>' + weakPrompts.map(function(x) {
+      return '#' + (x.pi + 1) + ' ' + sub(PROMPTS[x.pi].en).slice(0, 34) + '…';
+    }).join('<br>') + '</div>';
+    html += '</div>';
+  }
+
+  // prompt table
+  html += '<div class="stats-section-title">Prompts <select onchange="setStatsFilter(\'prompt\', this.value)">' +
+    ['all', 'under-covered', 'weak prompt', 'repetitive', 'healthy', 'hide covered'].map(function(o) {
+      return '<option value="' + o + '"' + (statsPromptFilter === o ? ' selected' : '') + '>' + o + '</option>';
+    }).join('') + '</select></div>';
+  ps.forEach(function(s, pi) {
+    if (statsPromptFilter === 'hide covered' && s.covered) return;
+    if (statsPromptFilter !== 'all' && statsPromptFilter !== 'hide covered' && s.status !== statsPromptFilter) return;
+    html += '<div class="srow">' + statusChip(s.status) +
+      '<span class="stext" onclick="jumpToPrompt(' + pi + ')">#' + (pi + 1) + ' ' + sub(PROMPTS[pi].en) + '</span>' +
+      '<span class="snums">' + s.working + 'w · ' + s.keepers + '🏆 · ' + s.rated + ' rated' +
+      (s.rated ? ' · ' + Math.round(s.keeperRate * 100) + '%🏆' : '') +
+      ' · ' + PROMPTS[pi].accepts.length + ' lanes · ' + Object.keys(s.tried).length + ' tried</span>' +
+      (s.reason ? '<span class="sreason">' + s.reason + '</span>' : '') +
+      '</div>';
+  });
+
+  // answer table
+  html += '<div class="stats-section-title">Answer cards <select onchange="setStatsFilter(\'answer\', this.value)">' +
+    ['all', 'keepers', 'broad', 'weak', 'narrow', 'unreviewed', 'grammar-off combos'].map(function(o) {
+      return '<option value="' + o + '"' + (statsAnswerFilter === o ? ' selected' : '') + '>' + o + '</option>';
+    }).join('') + '</select></div>';
+
+  if (statsAnswerFilter === 'grammar-off combos') {
+    Object.keys(state.ratings).forEach(function(k) {
+      if (state.ratings[k] !== 'grammaroff') return;
+      var parts = k.split('|'), id = parts[0], pi = +parts[1];
+      var a = id.charAt(0) === 'c' ? CANDIDATES.filter(function(c) { return c.id === id; })[0] : ANSWERS[+id.slice(1)];
+      if (!a || !PROMPTS[pi]) return;
+      html += '<div class="srow"><span class="stext" onclick="jumpToPrompt(' + pi + ')">' +
+        buildSentence(PROMPTS[pi].en, a.en) + '</span><span class="snums">#' + (pi + 1) + '</span></div>';
+    });
+  } else {
+    var shown = 0;
+    arows.forEach(function(r) {
+      var as = r.as;
+      var sug = as ? answerSuggestion(as) : null;
+      var broadCount = as ? Object.keys(as.promptsWorked).length : 0;
+      if (statsAnswerFilter === 'keepers' && (!as || as.counts.keeper === 0)) return;
+      if (statsAnswerFilter === 'broad' && broadCount < 4) return;
+      if (statsAnswerFilter === 'weak' && sug !== 'cut' && sug !== 'rewrite') return;
+      if (statsAnswerFilter === 'narrow' && !(as && as.shown >= 4 && broadCount <= 1)) return;
+      if (statsAnswerFilter === 'unreviewed' && as) return;
+      if (statsAnswerFilter === 'all' && !as) return; // keep the default view signal-dense
+      shown++;
+      if (shown > 400) return;
+      var nums = as
+        ? (as.counts.keeper + '🏆 ' + as.counts.works + '👍 ' + as.counts.grammaroff + '🔧 ' + as.counts.flat + '😐 ' +
+           as.counts.cut + '🗑 · ' + as.shown + ' shown · broad ' + broadCount)
+        : 'unreviewed';
+      html += '<div class="srow">' +
+        (sug ? '<span class="chip chip-' + sug + '">' + sug + '</span>' : '<span class="chip chip-dim">' + (TYPE_LABELS[r.a.type] || r.a.type) + '</span>') +
+        '<span class="stext">' + r.a.en + '</span>' +
+        '<span class="snums">' + (TYPE_LABELS[r.a.type] || r.a.type) + ' · ' + r.a.mood + ' · ' + nums + '</span>' +
+        '</div>';
+    });
+  }
+
+  document.getElementById('stats-area').innerHTML = html;
+}
 
 function setMode(m) {
   state.mode = m;
   saveState();
-  var isReview = m === 'review';
-  document.getElementById('tab-browse').className = 'tab' + (isReview ? '' : ' active');
-  document.getElementById('tab-review').className = 'tab' + (isReview ? ' active' : '');
-  ['prompt-meta', 'nav-btns', 'prompt-area', 'answers-area', 'add-panel'].forEach(function(id) {
-    document.getElementById(id).style.display = isReview ? 'none' : '';
+  ['browse', 'review', 'stats'].forEach(function(t) {
+    document.getElementById('tab-' + t).className = 'tab' + (m === t ? ' active' : '');
   });
-  document.getElementById('review-area').style.display = isReview ? 'flex' : 'none';
-  if (isReview) renderReview();
+  ['prompt-meta', 'nav-btns', 'prompt-area', 'answers-area', 'add-panel'].forEach(function(id) {
+    document.getElementById(id).style.display = m === 'browse' ? '' : 'none';
+  });
+  document.getElementById('review-area').style.display = m === 'review' ? 'flex' : 'none';
+  document.getElementById('stats-area').style.display = m === 'stats' ? 'flex' : 'none';
+  if (m === 'review') renderReview();
+  else if (m === 'stats') renderStats();
   else render();
 }
 
@@ -1239,7 +1594,7 @@ function buildExportText() {
     var skips = (p.skip || []).concat(getSkips(pi));
     approved.forEach(function(c) {
       var r = state.ratings[c.id + '|' + pi];
-      if (r === 'doesntwork' || r === 'notfunny') skips.push(candIdx[c.id]);
+      if (r === 'grammaroff' || r === 'cut') skips.push(candIdx[c.id]);
     });
     skips = skips.filter(function(v, i) { return skips.indexOf(v) === i; });
     if (skips.length === 0) return p;
