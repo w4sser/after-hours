@@ -8,2570 +8,415 @@
 // Answers have "type" — their grammar lane
 
 var PROMPTS = [
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "If {p1} and {p2} got stranded at an airport for 6 hours, it would definitely involve ___",
-    "sv": "Om {p1} och {p2} fastnade på en flygplats i 6 timmar skulle det definitivt involvera ___"
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "The most ridiculous thing {p1} and {p2} have ever argued about is ___",
-    "sv": "Det mest absurda {p1} och {p2} någonsin bråkat om är ___"
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "If a reality show filmed us for a week, the highlight reel would include ___",
-    "sv": "Om ett reality-program filmade oss en vecka skulle höjdpunkterna inkludera ___"
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "Our perfect terrible night in always involves ___",
-    "sv": "Vår perfekta hemmakvalls-katastrof involverar alltid ___"
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "If {p1} and {p2} had to survive a week in the wilderness, we'd fail because of ___",
-    "sv": "Om {p1} och {p2} behövde överleva en vecka i vildmarken skulle vi misslyckas på grund av ___"
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "The most chaotic thing about us as a couple is ___",
-    "sv": "Det mest kaotiska med oss som par är ___"
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "We'd never survive a cooking show because of ___",
-    "sv": "Vi skulle aldrig överleva ett matlagningsprogram på grund av ___"
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "What makes our neighbors slightly suspicious is probably ___",
-    "sv": "Det som får våra grannar att bli misstänksamma är förmodligen ___"
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "On our last trip, things went sideways because of ___",
-    "sv": "På vår senaste resa spårade det ur på grund av ___"
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "If someone followed {p1} and {p2} around for a day, the weirdest part would be ___",
-    "sv": "Om någon följde {p1} och {p2} under en dag skulle det konstiga vara ___"
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp",
-      "qf"
-    ],
-    "en": "{p1} getting angry at someone online would sound like ___",
-    "sv": "{p1} som blir arg på någon online skulle låta som ___"
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "The thing {p2} does that makes {p1} laugh despite everything is ___",
-    "sv": "Det som {p2} gör som får {p1} att skratta trots allt är ___"
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp",
-      "qf"
-    ],
-    "en": "If {p1} had to explain why we're late to literally everything, they'd say ___",
-    "sv": "Om {p1} skulle förklara varför vi är sen överallt, skulle de säga ___"
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "The absolute worst decision we've made together as a couple is ___",
-    "sv": "Det absolut värsta beslutet vi har gjort tillsammans som par är ___"
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "After a few drinks, {p2} always wants to talk about ___",
-    "sv": "Efter några drinkar vill {p2} alltid prata om ___"
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np"
-    ],
-    "en": "If we made a couples playlist, the first song would be by artists doing ___",
-    "sv": "Om vi gjorde en pars-spellista skulle första låten vara av artister som gör ___"
-  },
-  {
-    "mood": "deep",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "If {p1} and {p2} wrote a book together, the first chapter would be about ___",
-    "sv": "Om {p1} och {p2} skrev en bok tillsammans skulle första kapitlet handla om ___"
-  },
-  {
-    "mood": "deep",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "Our love language, if we're being truly honest, is ___",
-    "sv": "Vårt kärleksspråk, om vi är helt ärliga, är ___"
-  },
-  {
-    "mood": "deep",
-    "accepts": [
-      "np"
-    ],
-    "en": "If we made a documentary about this relationship, the tagline would be ___",
-    "sv": "Om vi gjorde en dokumentär om det här förhållandet skulle taglinjen vara ___"
-  },
-  {
-    "mood": "deep",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "If we had a couple's theme song, it would be about ___",
-    "sv": "Om vi hade en gemensam temalåt skulle den handla om ___"
-  },
-  {
-    "mood": "deep",
-    "accepts": [
-      "np",
-      "gp",
-      "qf"
-    ],
-    "en": "The most honest thing I could say about our morning routine is ___",
-    "sv": "Det mest ärliga jag kan säga om vår morgonrutin är ___"
-  },
-  {
-    "mood": "deep",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "If we explained our relationship to a therapist, we'd start with ___",
-    "sv": "Om vi förklarade vår relation för en terapeut skulle vi börja med ___"
-  },
-  {
-    "mood": "deep",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "The thing about {p1} and {p2} that I think will still be true in ten years is ___",
-    "sv": "Det med {p1} och {p2} som jag tror fortfarande stämmer om tio år är ___"
-  },
-  {
-    "mood": "deep",
-    "accepts": [
-      "np",
-      "gp",
-      "qf"
-    ],
-    "en": "The thing I noticed about {p2} first that I've never said out loud is ___",
-    "sv": "Det jag märkte hos {p2} först som jag aldrig sagt högt är ___"
-  },
-  {
-    "mood": "deep",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "If {p1} had to describe what makes us work in one sentence, they'd say ___",
-    "sv": "Om {p1} med en mening skulle beskriva vad som gör att vi fungerar, skulle de säga ___"
-  },
-  {
-    "mood": "deep",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "The fight that actually brought us closer was about ___",
-    "sv": "Bråket som faktiskt förenade oss var om ___"
-  },
-  {
-    "mood": "spicy",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "If {p1} and {p2} had a whole evening with no plans and no phones, it would definitely involve ___",
-    "sv": "Om {p1} och {p2} hade en hel kväll utan planer och utan telefoner skulle det definitivt involvera ___"
-  },
-  {
-    "mood": "spicy",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "The thing {p1} does that {p2} finds impossible to resist is ___",
-    "sv": "Det som {p1} gör som {p2} omöjligt kan motstå är ___"
-  },
-  {
-    "mood": "spicy",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "The most unexpectedly good night {p1} and {p2} had together always started with ___",
-    "sv": "Den mest oväntat bra kvällen {p1} och {p2} haft tillsammans började alltid med ___"
-  },
-  {
-    "mood": "spicy",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "If {p1} and {p2} checked into a hotel right now with zero agenda, the first thing would be ___",
-    "sv": "Om {p1} och {p2} checkade in på ett hotell just nu utan plan, det första som skulle hända är ___"
-  },
-  {
-    "mood": "spicy",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "The thing {p1} and {p2} both think about more than they admit is ___",
-    "sv": "Det {p1} och {p2} båda tänker på mer än de erkänner är ___"
-  },
-  {
-    "mood": "spicy",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "The version of {p1} and {p2} that I like most always involves ___",
-    "sv": "Den version av {p1} och {p2} som jag gillar mest involverar alltid ___"
-  },
-  {
-    "mood": "spicy",
-    "accepts": [
-      "np",
-      "gp",
-      "qf"
-    ],
-    "en": "When we're alone and the door closes, {p2} becomes ___",
-    "sv": "När vi är ensamma och dörren stängs, blir {p2} ___"
-  },
-  {
-    "mood": "spicy",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "The most reckless thing {p1} wants to do with {p2} is ___",
-    "sv": "Det mest sorglösa {p1} vill göra med {p2} är ___"
-  },
-  {
-    "mood": "spicy",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "If nobody would ever find out, {p1} and {p2} would definitely ___",
-    "sv": "Om ingen någonsin skulle ta reda på det, skulle {p1} och {p2} definitivt ___"
-  },
-  {
-    "mood": "mix",
-    "accepts": [
-      "np",
-      "gp",
-      "qf"
-    ],
-    "en": "___ is weirdly romantic when it's us",
-    "sv": "___ är märkligt romantiskt när det är vi"
-  },
-  {
-    "mood": "mix",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "The thing about {p1} that {p2} pretends not to love is ___",
-    "sv": "Det med {p1} som {p2} låtsas inte älska är ___"
-  },
-  {
-    "mood": "mix",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "If we had to explain our vibe to someone new, we'd say it's like ___",
-    "sv": "Om vi skulle förklara vår energi för någon ny, skulle vi säga att det är som ___"
-  },
-  {
-    "mood": "mix",
-    "accepts": [
-      "np",
-      "gp",
-      "qf"
-    ],
-    "en": "{p1} gets that look when {p2} ___",
-    "sv": "{p1} får det där uttrycket när {p2} ___"
-  },
-  {
-    "mood": "mix",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "The weirdest inside joke between us is definitely ___",
-    "sv": "Det konstiga internskämtet mellan oss är definitivt ___"
-  },
-  {
-    "mood": "mix",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "If someone asked what we do all night, the honest answer is ___",
-    "sv": "Om någon frågade vad vi gör hela natten, skulle det ärliga svaret vara ___"
-  },
-  {
-    "mood": "mix",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "The time we were the worst version of ourselves together was when ___",
-    "sv": "Gången vi var den värsta versionen av oss tillsammans var när ___"
-  },
-  {
-    "mood": "mix",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "If we could go back and change one thing about us, it would be ___",
-    "sv": "Om vi kunde gå tillbaka och ändra något om oss skulle det vara ___"
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "{p1}, I swear to God, if you bring home ___ one more time, we’re done.",
-    "sv": "{p1}, jag svär, om du tar hem ___ en gång till så är vi slut."
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np"
-    ],
-    "en": "Breaking news: local couple found guilty of ___ in broad daylight.",
-    "sv": "Extrainsatt: lokalt par bekände sig skyldiga till ___ mitt på ljusa dagen."
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "Hey Siri, why does {p2} keep ___ at 2am?",
-    "sv": "Hej Siri, varför håller {p2} på med ___ klockan två på natten?"
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "Our therapist said we need to stop ___. We said no.",
-    "sv": "Vår terapeut sa att vi måste sluta med ___. Vi sa nej."
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np"
-    ],
-    "en": "Welcome to IKEA. Today’s couple fight will be in the ___ department.",
-    "sv": "Välkommen till IKEA. Dagens parbråk utspelar sig på ___-avdelningen."
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "{p2} keeps a secret stash of ___ and thinks {p1} doesn’t know.",
-    "sv": "{p2} har ett hemligt förråd av ___ och tror att {p1} inte vet."
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "qf"
-    ],
-    "en": "The last text {p1} sent before the argument was just “___”",
-    "sv": "Det sista meddelandet {p1} skickade före bråket var bara “___”"
-  },
-  {
-    "mood": "fun",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "If we wrote a Yelp review of our relationship, the one-star part would be ___",
-    "sv": "Om vi skrev en Yelp-recension av vårt förhållande skulle enstjärn-delen vara ___"
-  },
-  {
-    "mood": "deep",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "The thing {p1} carries that nobody else sees is ___",
-    "sv": "Det {p1} bär på som ingen annan ser är ___"
-  },
-  {
-    "mood": "deep",
-    "accepts": [
-      "qf"
-    ],
-    "en": "The thing {p2} said that I’ll never forget is “___”",
-    "sv": "Det {p2} sa som jag aldrig glömmer är “___”"
-  },
-  {
-    "mood": "deep",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "At 3am when neither of us could sleep, we ended up ___ and it changed everything.",
-    "sv": "Klockan tre på natten när ingen av oss kunde sova, slutade vi med att ___ och det förändrade allt."
-  },
-  {
-    "mood": "deep",
-    "accepts": [
-      "np"
-    ],
-    "en": "If our love was a place, it would look like ___",
-    "sv": "Om vår kärlek var en plats, skulle den se ut som ___"
-  },
-  {
-    "mood": "spicy",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "{p1} just whispered “come here” and now the plan is ___ apparently.",
-    "sv": "{p1} viskade just “kom hit” och nu är planen tydligen ___."
-  },
-  {
-    "mood": "spicy",
-    "accepts": [
-      "qf"
-    ],
-    "en": "The thing {p2} whispers when nobody’s around is “___”",
-    "sv": "Det {p2} viskar när ingen är i närheten är “___”"
-  },
-  {
-    "mood": "spicy",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "That outfit {p1} wore last Saturday was basically ___",
-    "sv": "Den där outfiten {p1} hade på sig i lördags var i princip ___"
-  },
-  {
-    "mood": "spicy",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "{p2} says they’re going to bed early but actually they mean ___",
-    "sv": "{p2} säger att de ska lägga sig tidigt men menar egentligen ___"
-  },
-  {
-    "mood": "mix",
-    "accepts": [
-      "np",
-      "gp"
-    ],
-    "en": "Our friends think we’re normal but behind closed doors it’s all ___",
-    "sv": "Våra vänner tror vi är normala men bakom stängda dörrar är det bara ___"
-  },
-  {
-    "mood": "mix",
-    "accepts": [
-      "qf"
-    ],
-    "en": "If our relationship had a tagline it would be “___”",
-    "sv": "Om vårt förhållande hade en tagline skulle det vara “___”"
-  },
-  {
-    "mood": "mix",
-    "accepts": [
-      "ap"
-    ],
-    "en": "After a long day, {p1} gets very ___",
-    "sv": "Efter en lång dag blir {p1} väldigt ___"
-  },
-  {
-    "mood": "mix",
-    "accepts": [
-      "ap"
-    ],
-    "en": "Our energy as a couple is best described as ___",
-    "sv": "Vår energi som par beskrivs bäst som ___"
-  },
-  {
-    "mood": "mix",
-    "accepts": [
-      "ap"
-    ],
-    "en": "When {p2} hasn’t eaten in four hours, they become ___",
-    "sv": "När {p2} inte ätit på fyra timmar blir de ___"
-  }
+  { mood:"fun", accepts:["np","gp"], en:"If {p1} and {p2} got stranded at an airport for 6 hours, it would definitely involve ___", sv:"Om {p1} och {p2} fastnade på en flygplats i 6 timmar skulle det definitivt involvera ___" },
+  { mood:"fun", accepts:["np","gp"], en:"The most ridiculous thing {p1} and {p2} have ever argued about is ___", sv:"Det mest absurda {p1} och {p2} någonsin bråkat om är ___" },
+  { mood:"fun", accepts:["np","gp"], en:"If a reality show filmed us for a week, the highlight reel would include ___", sv:"Om ett reality-program filmade oss en vecka skulle höjdpunkterna inkludera ___" },
+  { mood:"fun", accepts:["np","gp"], en:"Our perfect terrible night in always involves ___", sv:"Vår perfekta hemmakvalls-katastrof involverar alltid ___" },
+  { mood:"fun", accepts:["np","gp"], en:"If {p1} and {p2} had to survive a week in the wilderness, we'd fail because of ___", sv:"Om {p1} och {p2} behövde överleva en vecka i vildmarken skulle vi misslyckas på grund av ___" },
+  { mood:"fun", accepts:["np","gp"], en:"The most chaotic thing about us as a couple is ___", sv:"Det mest kaotiska med oss som par är ___" },
+  { mood:"fun", accepts:["np","gp"], en:"We'd never survive a cooking show because of ___", sv:"Vi skulle aldrig överleva ett matlagningsprogram på grund av ___" },
+  { mood:"fun", accepts:["np","gp"], en:"What makes our neighbors slightly suspicious is probably ___", sv:"Det som får våra grannar att bli misstänksamma är förmodligen ___" },
+  { mood:"fun", accepts:["np","gp"], en:"On our last trip, things went sideways because of ___", sv:"På vår senaste resa spårade det ur på grund av ___" },
+  { mood:"fun", accepts:["np","gp"], en:"If someone followed {p1} and {p2} around for a day, the weirdest part would be ___", sv:"Om någon följde {p1} och {p2} under en dag skulle det konstiga vara ___" },
+  { mood:"fun", accepts:["np","gp","qf"], en:"{p1} getting angry at someone online would sound like ___", sv:"{p1} som blir arg på någon online skulle låta som ___" },
+  { mood:"fun", accepts:["np","gp"], en:"The thing {p2} does that makes {p1} laugh despite everything is ___", sv:"Det som {p2} gör som får {p1} att skratta trots allt är ___" },
+  { mood:"fun", accepts:["np","gp","qf"], en:"If {p1} had to explain why we're late to literally everything, they'd say ___", sv:"Om {p1} skulle förklara varför vi är sen överallt, skulle de säga ___" },
+  { mood:"fun", accepts:["np","gp"], en:"The absolute worst decision we've made together as a couple is ___", sv:"Det absolut värsta beslutet vi har gjort tillsammans som par är ___" },
+  { mood:"fun", accepts:["np","gp"], en:"After a few drinks, {p2} always wants to talk about ___", sv:"Efter några drinkar vill {p2} alltid prata om ___" },
+  { mood:"fun", accepts:["np"], en:"If we made a couples playlist, the first song would be by artists doing ___", sv:"Om vi gjorde en pars-spellista skulle första låten vara av artister som gör ___" },
+  { mood:"deep", accepts:["np","gp"], en:"If {p1} and {p2} wrote a book together, the first chapter would be about ___", sv:"Om {p1} och {p2} skrev en bok tillsammans skulle första kapitlet handla om ___" },
+  { mood:"deep", accepts:["np","gp"], en:"Our love language, if we're being truly honest, is ___", sv:"Vårt kärleksspråk, om vi är helt ärliga, är ___" },
+  { mood:"deep", accepts:["np"], en:"If we made a documentary about this relationship, the tagline would be ___", sv:"Om vi gjorde en dokumentär om det här förhållandet skulle taglinjen vara ___" },
+  { mood:"deep", accepts:["np","gp"], en:"If we had a couple's theme song, it would be about ___", sv:"Om vi hade en gemensam temalåt skulle den handla om ___" },
+  { mood:"deep", accepts:["np","gp","qf"], en:"The most honest thing I could say about our morning routine is ___", sv:"Det mest ärliga jag kan säga om vår morgonrutin är ___" },
+  { mood:"deep", accepts:["np","gp"], en:"If we explained our relationship to a therapist, we'd start with ___", sv:"Om vi förklarade vår relation för en terapeut skulle vi börja med ___" },
+  { mood:"deep", accepts:["np","gp"], en:"The thing about {p1} and {p2} that I think will still be true in ten years is ___", sv:"Det med {p1} och {p2} som jag tror fortfarande stämmer om tio år är ___" },
+  { mood:"deep", accepts:["np","gp","qf"], en:"The thing I noticed about {p2} first that I've never said out loud is ___", sv:"Det jag märkte hos {p2} först som jag aldrig sagt högt är ___" },
+  { mood:"deep", accepts:["np","gp"], en:"If {p1} had to describe what makes us work in one sentence, they'd say ___", sv:"Om {p1} med en mening skulle beskriva vad som gör att vi fungerar, skulle de säga ___" },
+  { mood:"deep", accepts:["np","gp"], en:"The fight that actually brought us closer was about ___", sv:"Bråket som faktiskt förenade oss var om ___" },
+  { mood:"spicy", accepts:["np","gp"], en:"If {p1} and {p2} had a whole evening with no plans and no phones, it would definitely involve ___", sv:"Om {p1} och {p2} hade en hel kväll utan planer och utan telefoner skulle det definitivt involvera ___" },
+  { mood:"spicy", accepts:["np","gp"], en:"The thing {p1} does that {p2} finds impossible to resist is ___", sv:"Det som {p1} gör som {p2} omöjligt kan motstå är ___" },
+  { mood:"spicy", accepts:["np","gp"], en:"The most unexpectedly good night {p1} and {p2} had together always started with ___", sv:"Den mest oväntat bra kvällen {p1} och {p2} haft tillsammans började alltid med ___" },
+  { mood:"spicy", accepts:["np","gp"], en:"If {p1} and {p2} checked into a hotel right now with zero agenda, the first thing would be ___", sv:"Om {p1} och {p2} checkade in på ett hotell just nu utan plan, det första som skulle hända är ___" },
+  { mood:"spicy", accepts:["np","gp"], en:"The thing {p1} and {p2} both think about more than they admit is ___", sv:"Det {p1} och {p2} båda tänker på mer än de erkänner är ___" },
+  { mood:"spicy", accepts:["np","gp"], en:"The version of {p1} and {p2} that I like most always involves ___", sv:"Den version av {p1} och {p2} som jag gillar mest involverar alltid ___" },
+  { mood:"spicy", accepts:["np","gp","qf"], en:"When we're alone and the door closes, {p2} becomes ___", sv:"När vi är ensamma och dörren stängs, blir {p2} ___" },
+  { mood:"spicy", accepts:["np","gp"], en:"The most reckless thing {p1} wants to do with {p2} is ___", sv:"Det mest sorglösa {p1} vill göra med {p2} är ___" },
+  { mood:"spicy", accepts:["np","gp"], en:"If nobody would ever find out, {p1} and {p2} would definitely ___", sv:"Om ingen någonsin skulle ta reda på det, skulle {p1} och {p2} definitivt ___" },
+  { mood:"mix", accepts:["np","gp","qf"], en:"___ is weirdly romantic when it's us", sv:"___ är märkligt romantiskt när det är vi" },
+  { mood:"mix", accepts:["np","gp"], en:"The thing about {p1} that {p2} pretends not to love is ___", sv:"Det med {p1} som {p2} låtsas inte älska är ___" },
+  { mood:"mix", accepts:["np","gp"], skip:[247], en:"If we had to explain our vibe to someone new, we'd say it's like ___", sv:"Om vi skulle förklara vår energi för någon ny, skulle vi säga att det är som ___" },
+  { mood:"mix", accepts:["np","gp","qf"], en:"{p1} gets that look when {p2} ___", sv:"{p1} får det där uttrycket när {p2} ___" },
+  { mood:"mix", accepts:["np","gp"], en:"The weirdest inside joke between us is definitely ___", sv:"Det konstiga internskämtet mellan oss är definitivt ___" },
+  { mood:"mix", accepts:["np","gp"], en:"If someone asked what we do all night, the honest answer is ___", sv:"Om någon frågade vad vi gör hela natten, skulle det ärliga svaret vara ___" },
+  { mood:"mix", accepts:["np","gp"], en:"The time we were the worst version of ourselves together was when ___", sv:"Gången vi var den värsta versionen av oss tillsammans var när ___" },
+  { mood:"mix", accepts:["np","gp"], en:"If we could go back and change one thing about us, it would be ___", sv:"Om vi kunde gå tillbaka och ändra något om oss skulle det vara ___" },
+  { mood:"fun", accepts:["np","gp"], en:"{p1}, I swear to God, if you bring home ___ one more time, we’re done.", sv:"{p1}, jag svär, om du tar hem ___ en gång till så är vi slut." },
+  { mood:"fun", accepts:["np"], en:"Breaking news: local couple found guilty of ___ in broad daylight.", sv:"Extrainsatt: lokalt par bekände sig skyldiga till ___ mitt på ljusa dagen." },
+  { mood:"fun", accepts:["np","gp"], en:"Hey Siri, why does {p2} keep ___ at 2am?", sv:"Hej Siri, varför håller {p2} på med ___ klockan två på natten?" },
+  { mood:"fun", accepts:["np","gp"], skip:[284], en:"Our therapist said we need to stop ___. We said no.", sv:"Vår terapeut sa att vi måste sluta med ___. Vi sa nej." },
+  { mood:"fun", accepts:["np"], en:"Welcome to IKEA. Today’s couple fight will be in the ___ department.", sv:"Välkommen till IKEA. Dagens parbråk utspelar sig på ___-avdelningen." },
+  { mood:"fun", accepts:["np","gp"], en:"{p2} keeps a secret stash of ___ and thinks {p1} doesn’t know.", sv:"{p2} har ett hemligt förråd av ___ och tror att {p1} inte vet." },
+  { mood:"fun", accepts:["qf"], en:"The last text {p1} sent before the argument was just “___”", sv:"Det sista meddelandet {p1} skickade före bråket var bara “___”" },
+  { mood:"fun", accepts:["np","gp"], en:"If we wrote a Yelp review of our relationship, the one-star part would be ___", sv:"Om vi skrev en Yelp-recension av vårt förhållande skulle enstjärn-delen vara ___" },
+  { mood:"deep", accepts:["np","gp"], en:"The thing {p1} carries that nobody else sees is ___", sv:"Det {p1} bär på som ingen annan ser är ___" },
+  { mood:"deep", accepts:["qf"], en:"The thing {p2} said that I’ll never forget is “___”", sv:"Det {p2} sa som jag aldrig glömmer är “___”" },
+  { mood:"deep", accepts:["np","gp"], en:"At 3am when neither of us could sleep, we ended up ___ and it changed everything.", sv:"Klockan tre på natten när ingen av oss kunde sova, slutade vi med att ___ och det förändrade allt." },
+  { mood:"deep", accepts:["np"], en:"If our love was a place, it would look like ___", sv:"Om vår kärlek var en plats, skulle den se ut som ___" },
+  { mood:"spicy", accepts:["np","gp"], en:"{p1} just whispered “come here” and now the plan is ___ apparently.", sv:"{p1} viskade just “kom hit” och nu är planen tydligen ___." },
+  { mood:"spicy", accepts:["qf"], en:"The thing {p2} whispers when nobody’s around is “___”", sv:"Det {p2} viskar när ingen är i närheten är “___”" },
+  { mood:"spicy", accepts:["np","gp"], en:"That outfit {p1} wore last Saturday was basically ___", sv:"Den där outfiten {p1} hade på sig i lördags var i princip ___" },
+  { mood:"spicy", accepts:["np","gp"], en:"{p2} says they’re going to bed early but actually they mean ___", sv:"{p2} säger att de ska lägga sig tidigt men menar egentligen ___" },
+  { mood:"mix", accepts:["np","gp"], en:"Our friends think we’re normal but behind closed doors it’s all ___", sv:"Våra vänner tror vi är normala men bakom stängda dörrar är det bara ___" },
+  { mood:"mix", accepts:["qf"], en:"If our relationship had a tagline it would be “___”", sv:"Om vårt förhållande hade en tagline skulle det vara “___”" },
+  { mood:"mix", accepts:["ap"], en:"After a long day, {p1} gets very ___", sv:"Efter en lång dag blir {p1} väldigt ___" },
+  { mood:"mix", accepts:["ap"], en:"Our energy as a couple is best described as ___", sv:"Vår energi som par beskrivs bäst som ___" },
+  { mood:"mix", accepts:["ap"], en:"When {p2} hasn’t eaten in four hours, they become ___", sv:"När {p2} inte ätit på fyra timmar blir de ___" }
 ];
 
 var ANSWERS = [
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "47 throw pillows",
-    "sv": "47 prydnadskuddar"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "a passive-aggressive Post-it note",
-    "sv": "en passiv-aggressiv Post-it-lapp"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "the thermostat",
-    "sv": "termostaten"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "three bottles of rosé",
-    "sv": "tre flaskor rosé"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "{p2}'s 400 unread emails",
-    "sv": "{p2}s 400 olästa mejl"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "an IKEA bookshelf and a broken marriage",
-    "sv": "en IKEA-bokhylla och ett trasigt äktenskap"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "the Wi-Fi password argument",
-    "sv": "Wi-Fi-lösenordsbråket"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "{p1}'s snoring",
-    "sv": "{p1}s snarkande"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "a parking lot meltdown",
-    "sv": "ett parkeringsplatshaveri"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "four different food delivery apps",
-    "sv": "fyra olika matleveransappar"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "the duvet",
-    "sv": "täcket"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "a cart full of things we don't need",
-    "sv": "en vagn full med saker vi inte behöver"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "{p2}'s screen time report",
-    "sv": "{p2}s skärmtidsrapport"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "the wrong IKEA bag",
-    "sv": "fel IKEA-kasse"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "{p1}'s Spotify Wrapped",
-    "sv": "{p1}s Spotify Wrapped"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "another candle",
-    "sv": "ännu ett ljus"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "a very loud wrong opinion",
-    "sv": "en väldigt högljudd fel åsikt"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "eleven Amazon packages",
-    "sv": "elva Amazon-paket"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "the shared Netflix account",
-    "sv": "det delade Netflix-kontot"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "a 90-minute parking job",
-    "sv": "en 90-minuters parkering"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "{p2}'s mom calling at the worst moment",
-    "sv": "{p2}s mamma som ringer i värsta ögonblicket"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "leftover pizza at 7am",
-    "sv": "kvarglömd pizza klockan sju"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "a toilet seat left up",
-    "sv": "en toalettsits som lämnats uppe"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "matching Crocs",
-    "sv": "matchande Crocs"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "a suspiciously specific Google search",
-    "sv": "en misstänkt specifik Google-sökning"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "one shared brain cell",
-    "sv": "en delad hjärncell"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "{p1}'s 'I'm fine' face",
-    "sv": "{p1}s 'det är lugnt'-ansikte"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "the group chat screenshot",
-    "sv": "skärmdumpen från gruppchatten"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "an extremely passive-aggressive playlist",
-    "sv": "en extremt passiv-aggressiv spellista"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "{p2}'s 47 alarms that never work",
-    "sv": "{p2}s 47 alarm som aldrig fungerar"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "a dramatic exit to the balcony",
-    "sv": "en dramatisk sorti till balkongen"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "the world's longest grocery list",
-    "sv": "världens längsta inköpslista"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "{p2} refusing to pick a restaurant",
-    "sv": "{p2} vägrar välja restaurang"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "googling symptoms at 3am",
-    "sv": "googla symptom klockan tre på natten"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "{p1} eating the last piece and denying it",
-    "sv": "{p1} äter sista biten och förnekar det"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "ordering Uber Eats twice in one night",
-    "sv": "beställa Uber Eats två gånger på en kväll"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "{p1} dramatically reading the receipt out loud",
-    "sv": "{p1} som dramatiskt läser kvittot högt"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "stress-buying candles",
-    "sv": "stressköpa ljus"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "both blaming the GPS",
-    "sv": "båda skyller på GPS:en"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "{p2} hiding shopping bags in the trunk",
-    "sv": "{p2} gömmer shoppingkassar i bagaget"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "{p1} falling asleep during the movie",
-    "sv": "{p1} somnar under filmen"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "watching true crime and side-eyeing each other",
-    "sv": "titta på true crime och snegla på varandra"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "{p2} taking 45 minutes to get ready",
-    "sv": "{p2} tar 45 minuter att bli klar"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "arguing about whose turn it is to cook",
-    "sv": "bråka om vems tur det är att laga mat"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "{p1} assembling furniture without the manual",
-    "sv": "{p1} monterar möbler utan manualen"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "drunk-texting each other from the same couch",
-    "sv": "fylletexa varandra från samma soffa"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "fighting over the aux cord",
-    "sv": "slåss om aux-sladden"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "pretending to be asleep to avoid the conversation",
-    "sv": "låtsas sova för att slippa samtalet"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "{p2} narrating everything like a documentary",
-    "sv": "{p2} som kommenterar allt som en dokumentär"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "{p1} panic-cleaning before guests arrive",
-    "sv": "{p1} panikstädar innan gästerna kommer"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "blaming each other for the missing remote",
-    "sv": "skylla på varandra för den försvunna fjärrkontrollen"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "{p2} starting a new series without {p1}",
-    "sv": "{p2} börjar en ny serie utan {p1}"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "aggressively loading the dishwasher to prove a point",
-    "sv": "aggressivt ladda diskmaskinen för att bevisa en poäng"
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "I'm almost ready",
-    "sv": "jag är nästan klar"
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "we need to talk",
-    "sv": "vi behöver prata"
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "it was on sale",
-    "sv": "det var på rea"
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "I already told you this",
-    "sv": "jag har redan sagt det här"
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "fine. do whatever you want.",
-    "sv": "okej. gör vad du vill."
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "that's not what happened",
-    "sv": "det är inte vad som hände"
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "I'm not the one who",
-    "sv": "det är inte jag som"
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "you always do this",
-    "sv": "du gör alltid så här"
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "I said I was sorry",
-    "sv": "jag sa att jag var ledsen"
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "whatever. I'm going to bed.",
-    "sv": "skärsansen. jag går och lägger mig."
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "I literally just said that",
-    "sv": "jag sa precis det"
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "Google says I'm dying",
-    "sv": "Google säger att jag dör"
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "are you even listening",
-    "sv": "lyssnar du ens"
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "that's not how you load a dishwasher",
-    "sv": "det är inte så man laddar en diskmaskin"
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "I'll do it tomorrow",
-    "sv": "jag gör det imorgon"
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "we should probably talk about this",
-    "sv": "vi borde nog prata om det här"
-  },
-  {
-    "mood": "fun",
-    "type": "ap",
-    "en": "suspiciously quiet",
-    "sv": "misstänkt tyst"
-  },
-  {
-    "mood": "fun",
-    "type": "ap",
-    "en": "aggressively wrong",
-    "sv": "aggressivt fel"
-  },
-  {
-    "mood": "fun",
-    "type": "ap",
-    "en": "dangerously hangry",
-    "sv": "farligt hungrig"
-  },
-  {
-    "mood": "fun",
-    "type": "ap",
-    "en": "offensively late",
-    "sv": "kränkande sen"
-  },
-  {
-    "mood": "fun",
-    "type": "ap",
-    "en": "painfully stubborn",
-    "sv": "pinsamt envis"
-  },
-  {
-    "mood": "fun",
-    "type": "ap",
-    "en": "unreasonably competitive",
-    "sv": "orimligt tävlingsinriktad"
-  },
-  {
-    "mood": "fun",
-    "type": "ap",
-    "en": "emotionally unavailable (about dinner plans)",
-    "sv": "emotionellt otillgänglig (om middagsplaner)"
-  },
-  {
-    "mood": "fun",
-    "type": "ap",
-    "en": "confidently incorrect",
-    "sv": "självsäkert felaktig"
-  },
-  {
-    "mood": "fun",
-    "type": "ap",
-    "en": "tragically overdressed",
-    "sv": "tragiskt överklädda"
-  },
-  {
-    "mood": "fun",
-    "type": "ap",
-    "en": "petty beyond repair",
-    "sv": "småaktig bortom räddning"
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "the ugly cry on a Tuesday",
-    "sv": "fulbölet en tisdag"
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "the 3am kitchen conversation",
-    "sv": "kökssamtalet klockan tre"
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "your voice when you're actually scared",
-    "sv": "din röst när du är på riktigt rädd"
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "the apology that took a year",
-    "sv": "ursäkten som tog ett år"
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "your parents' divorce",
-    "sv": "dina föräldrars skilsmässa"
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "the first night you stayed over",
-    "sv": "första natten du sov över"
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "the fight in the car after the party",
-    "sv": "bråket i bilen efter festen"
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "the voicemail I never deleted",
-    "sv": "röstmeddelandet jag aldrig raderade"
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "the silence after the door closed",
-    "sv": "tystnaden efter att dörren stängdes"
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "{p2}'s face when they think nobody's watching",
-    "sv": "{p2}s ansikte när de tror ingen ser"
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "that one photo from the first year",
-    "sv": "det där fotot från första året"
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "the song that still hurts a little",
-    "sv": "låten som fortfarande gör lite ont"
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "your toothbrush at my place",
-    "sv": "din tandborste hos mig"
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "{p1}'s hands when they're nervous",
-    "sv": "{p1}s händer när de är nervösa"
-  },
-  {
-    "mood": "deep",
-    "type": "gp",
-    "en": "crying in the bathroom and pretending you didn't",
-    "sv": "gråta på badrummet och låtsas att du inte gjorde det"
-  },
-  {
-    "mood": "deep",
-    "type": "gp",
-    "en": "sleeping on the couch after the fight",
-    "sv": "sova på soffan efter bråket"
-  },
-  {
-    "mood": "deep",
-    "type": "gp",
-    "en": "holding hands at the hospital",
-    "sv": "hålla händer på sjukhuset"
-  },
-  {
-    "mood": "deep",
-    "type": "gp",
-    "en": "reading each other's faces across the room",
-    "sv": "läsa varandras ansikten över rummet"
-  },
-  {
-    "mood": "deep",
-    "type": "gp",
-    "en": "forgiving before they even ask",
-    "sv": "förlåta innan de ens frågar"
-  },
-  {
-    "mood": "deep",
-    "type": "gp",
-    "en": "driving home in silence after a hard day",
-    "sv": "köra hem i tystnad efter en tung dag"
-  },
-  {
-    "mood": "deep",
-    "type": "gp",
-    "en": "choosing this even when it's hard",
-    "sv": "välja det här även när det är svårt"
-  },
-  {
-    "mood": "deep",
-    "type": "gp",
-    "en": "letting {p2} see the worst version",
-    "sv": "låta {p2} se den värsta versionen"
-  },
-  {
-    "mood": "deep",
-    "type": "gp",
-    "en": "saying sorry and actually meaning it",
-    "sv": "säga förlåt och faktiskt mena det"
-  },
-  {
-    "mood": "deep",
-    "type": "gp",
-    "en": "building a life without a blueprint",
-    "sv": "bygga ett liv utan ritning"
-  },
-  {
-    "mood": "deep",
-    "type": "gp",
-    "en": "{p1} picking up {p2} from a bad night without asking questions",
-    "sv": "{p1} hämtar {p2} efter en dålig kväll utan frågor"
-  },
-  {
-    "mood": "deep",
-    "type": "qf",
-    "en": "I didn't mean it",
-    "sv": "jag menade inte det"
-  },
-  {
-    "mood": "deep",
-    "type": "qf",
-    "en": "please don't leave",
-    "sv": "snälla gå inte"
-  },
-  {
-    "mood": "deep",
-    "type": "qf",
-    "en": "I'm trying my best",
-    "sv": "jag gör så gott jag kan"
-  },
-  {
-    "mood": "deep",
-    "type": "qf",
-    "en": "I should have said something sooner",
-    "sv": "jag borde ha sagt något tidigare"
-  },
-  {
-    "mood": "deep",
-    "type": "qf",
-    "en": "you're the only one who knows",
-    "sv": "du är den enda som vet"
-  },
-  {
-    "mood": "deep",
-    "type": "qf",
-    "en": "that's the nicest thing anyone's ever said",
-    "sv": "det är det finaste någon någonsin sagt"
-  },
-  {
-    "mood": "deep",
-    "type": "ap",
-    "en": "terrifyingly honest",
-    "sv": "skrämmande ärlig"
-  },
-  {
-    "mood": "deep",
-    "type": "ap",
-    "en": "quietly falling apart",
-    "sv": "tyst faller isär"
-  },
-  {
-    "mood": "deep",
-    "type": "ap",
-    "en": "finally ready",
-    "sv": "äntligen redo"
-  },
-  {
-    "mood": "deep",
-    "type": "ap",
-    "en": "annoyingly right",
-    "sv": "irriterande rätt"
-  },
-  {
-    "mood": "deep",
-    "type": "ap",
-    "en": "stubbornly in love",
-    "sv": "envist kär"
-  },
-  {
-    "mood": "spicy",
-    "type": "np",
-    "en": "that one outfit from the third date",
-    "sv": "den där outfiten från tredje dejten"
-  },
-  {
-    "mood": "spicy",
-    "type": "np",
-    "en": "a hotel minibar and no checkout time",
-    "sv": "en hotellminibar och ingen utcheckning"
-  },
-  {
-    "mood": "spicy",
-    "type": "np",
-    "en": "the shower with the good water pressure",
-    "sv": "duschen med bra vattentryck"
-  },
-  {
-    "mood": "spicy",
-    "type": "np",
-    "en": "{p2}'s neck",
-    "sv": "{p2}s nacke"
-  },
-  {
-    "mood": "spicy",
-    "type": "np",
-    "en": "two glasses of wine and no kids",
-    "sv": "två glas vin och inga barn"
-  },
-  {
-    "mood": "spicy",
-    "type": "np",
-    "en": "the back seat of the car",
-    "sv": "baksätet i bilen"
-  },
-  {
-    "mood": "spicy",
-    "type": "np",
-    "en": "the dress that caused the car accident",
-    "sv": "klänningen som orsakade bilolyckan"
-  },
-  {
-    "mood": "spicy",
-    "type": "np",
-    "en": "{p1}'s gym selfie",
-    "sv": "{p1}s gym-selfie"
-  },
-  {
-    "mood": "spicy",
-    "type": "np",
-    "en": "the 'do not disturb' sign",
-    "sv": "'stör ej'-skylten"
-  },
-  {
-    "mood": "spicy",
-    "type": "np",
-    "en": "a bathtub for two",
-    "sv": "ett badkar för två"
-  },
-  {
-    "mood": "spicy",
-    "type": "np",
-    "en": "that message at 11:47pm",
-    "sv": "det där meddelandet klockan 23:47"
-  },
-  {
-    "mood": "spicy",
-    "type": "np",
-    "en": "an empty apartment and zero plans",
-    "sv": "en tom lägenhet och noll planer"
-  },
-  {
-    "mood": "spicy",
-    "type": "np",
-    "en": "{p2} in that white t-shirt",
-    "sv": "{p2} i den där vita t-shirten"
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "{p2} biting their lip like that",
-    "sv": "{p2} som biter sig i läppen så där"
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "skipping dessert and going straight home",
-    "sv": "skippa desserten och åka rakt hem"
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "texting 'come over' at midnight",
-    "sv": "sms:a 'kom över' vid midnatt"
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "{p1} cooking shirtless",
-    "sv": "{p1} lagar mat utan tröja"
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "making eye contact a little too long",
-    "sv": "ha ögonkontakt lite för länge"
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "forgetting to close the blinds",
-    "sv": "glömma att stänga persiennerna"
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "whispering something at the dinner party",
-    "sv": "viska något på middagsfesten"
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "staying in bed until checkout",
-    "sv": "stanna i sängen till utcheckning"
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "{p2} walking out of the bathroom in just a towel",
-    "sv": "{p2} som går ut från badrummet i bara en handduk"
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "playing footsie under the table at {p2}'s parents' house",
-    "sv": "leka fotleken under bordet hos {p2}s föräldrar"
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "booking a hotel room for no reason",
-    "sv": "boka ett hotellrum utan anledning"
-  },
-  {
-    "mood": "spicy",
-    "type": "qf",
-    "en": "do that again",
-    "sv": "gör det igen"
-  },
-  {
-    "mood": "spicy",
-    "type": "qf",
-    "en": "don't stop",
-    "sv": "sluta inte"
-  },
-  {
-    "mood": "spicy",
-    "type": "qf",
-    "en": "we have ten minutes",
-    "sv": "vi har tio minuter"
-  },
-  {
-    "mood": "spicy",
-    "type": "qf",
-    "en": "lock the door",
-    "sv": "lås dörren"
-  },
-  {
-    "mood": "spicy",
-    "type": "qf",
-    "en": "what are you wearing",
-    "sv": "vad har du på dig"
-  },
-  {
-    "mood": "spicy",
-    "type": "qf",
-    "en": "get over here",
-    "sv": "kom hit"
-  },
-  {
-    "mood": "spicy",
-    "type": "qf",
-    "en": "I was thinking about last Tuesday",
-    "sv": "jag tänkte på i tisdags"
-  },
-  {
-    "mood": "spicy",
-    "type": "qf",
-    "en": "the kids are asleep",
-    "sv": "barnen sover"
-  },
-  {
-    "mood": "spicy",
-    "type": "qf",
-    "en": "leave the lights on",
-    "sv": "låt lamporna vara på"
-  },
-  {
-    "mood": "spicy",
-    "type": "ap",
-    "en": "dangerously attractive",
-    "sv": "farligt attraktiv"
-  },
-  {
-    "mood": "spicy",
-    "type": "ap",
-    "en": "deliberately slow",
-    "sv": "avsiktligt långsam"
-  },
-  {
-    "mood": "spicy",
-    "type": "ap",
-    "en": "barely dressed",
-    "sv": "knappt klädd"
-  },
-  {
-    "mood": "spicy",
-    "type": "ap",
-    "en": "extremely distracting",
-    "sv": "extremt distraherande"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "cheese and wine at 11pm",
-    "sv": "ost och vin klockan 23"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "a takeaway on the kitchen floor",
-    "sv": "takeaway på köksgolvet"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "that one song in the car",
-    "sv": "den där låten i bilen"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "the couch, a blanket, and silence",
-    "sv": "soffan, en filt, och tystnad"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "a plan that went perfectly wrong",
-    "sv": "en plan som gick perfekt fel"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "{p2}'s cold feet at 3am",
-    "sv": "{p2}s kalla fötter klockan tre"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "the grocery store on a Sunday",
-    "sv": "matbutiken på en söndag"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "{p1}'s terrible cooking",
-    "sv": "{p1}s hemska matlagning"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "the wrong exit on the highway",
-    "sv": "fel avfart på motorvägen"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "a shared Spotify queue",
-    "sv": "en delad Spotify-kö"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "the 'we should try something new' conversation",
-    "sv": "'vi borde testa något nytt'-samtalet"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "a two-person blanket burrito",
-    "sv": "en tvåpersons-filtburrito"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "{p1}'s face during family dinners",
-    "sv": "{p1}s ansikte under familjemiddagar"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "the bathroom door that doesn't lock",
-    "sv": "badrumsdörren som inte låser"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "a midnight kebab run",
-    "sv": "en midnatts-kebabrunda"
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "laughing until one of us can't breathe",
-    "sv": "skratta tills en av oss inte kan andas"
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "arguing about where to eat (again)",
-    "sv": "bråka om var vi ska äta (igen)"
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "being embarrassing in public together",
-    "sv": "vara pinsamma offentligt ihop"
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "falling asleep on the couch mid-sentence",
-    "sv": "somna på soffan mitt i en mening"
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "{p1} making {p2} laugh at the worst time",
-    "sv": "{p1} får {p2} att skratta vid värsta tillfället"
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "slow-dancing in the kitchen to nothing",
-    "sv": "dansa långsamt i köket utan musik"
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "sharing a toothbrush and pretending it's fine",
-    "sv": "dela tandborste och låtsas att det är ok"
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "holding hands in the supermarket like teenagers",
-    "sv": "hålla hand i mataffären som tonåringar"
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "{p2} stealing all the covers and denying it",
-    "sv": "{p2} som stjäl hela täcket och förnekar det"
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "ugly-laughing at something nobody else finds funny",
-    "sv": "fulskratta åt något ingen annan tycker är roligt"
-  },
-  {
-    "mood": "mix",
-    "type": "qf",
-    "en": "you're stuck with me",
-    "sv": "du är fast med mig"
-  },
-  {
-    "mood": "mix",
-    "type": "qf",
-    "en": "whose turn is it",
-    "sv": "vems tur är det"
-  },
-  {
-    "mood": "mix",
-    "type": "qf",
-    "en": "just five more minutes",
-    "sv": "bara fem minuter till"
-  },
-  {
-    "mood": "mix",
-    "type": "qf",
-    "en": "I can explain",
-    "sv": "jag kan förklara"
-  },
-  {
-    "mood": "mix",
-    "type": "qf",
-    "en": "that was your idea",
-    "sv": "det var din idé"
-  },
-  {
-    "mood": "mix",
-    "type": "qf",
-    "en": "we're not doing this again",
-    "sv": "vi gör inte det här igen"
-  },
-  {
-    "mood": "mix",
-    "type": "qf",
-    "en": "I love you but absolutely not",
-    "sv": "jag älskar dig men absolut inte"
-  },
-  {
-    "mood": "mix",
-    "type": "ap",
-    "en": "weirdly compatible",
-    "sv": "märkligt kompatibla"
-  },
-  {
-    "mood": "mix",
-    "type": "ap",
-    "en": "chaotically wholesome",
-    "sv": "kaotiskt gulliga"
-  },
-  {
-    "mood": "mix",
-    "type": "ap",
-    "en": "completely unhinged together",
-    "sv": "helt galna ihop"
-  },
-  {
-    "mood": "mix",
-    "type": "ap",
-    "en": "disgustingly cute",
-    "sv": "vedervärdigt söta"
-  },
-  {
-    "mood": "mix",
-    "type": "ap",
-    "en": "absolutely feral at home",
-    "sv": "helt vilda hemma"
-  },
-  {
-    "mood": "mix",
-    "type": "ap",
-    "en": "suspiciously synchronized",
-    "sv": "misstänkt synkade"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "an emotional support shopping cart",
-    "sv": "en kundvagn för emotionellt stöd"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "a PowerPoint titled 'Why We Should Get a Dog'",
-    "sv": "en PowerPoint med titeln 'Därför borde vi skaffa hund'"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "the vacation spreadsheet with 14 tabs",
-    "sv": "semester-kalkylarket med 14 flikar"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "a candle that costs more than the electric bill",
-    "sv": "ett ljus som kostar mer än elräkningen"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "a conspiracy theory about the neighbors' recycling",
-    "sv": "en konspirationsteori om grannarnas återvinning"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "the phrase 'we should host more'",
-    "sv": "frasen 'vi borde bjuda hem folk oftare'"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "two competing weather apps",
-    "sv": "två konkurrerande väderappar"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "a betrayal involving the last of the oat milk",
-    "sv": "ett svek som involverar den sista havremjölken"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "the seventh 'last episode' of the night",
-    "sv": "kvällens sjunde 'sista avsnitt'"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "a vendetta against the self-checkout machine",
-    "sv": "en vendetta mot självscanningskassan"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "the fourth attempt at sourdough",
-    "sv": "det fjärde surdegsförsöket"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "an argument neither of us remembers starting",
-    "sv": "ett bråk ingen av oss minns hur det började"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "a decorative towel nobody is allowed to use",
-    "sv": "en prydnadshandduk ingen får använda"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "rating other couples' arguments at restaurants",
-    "sv": "betygsätta andra pars bråk på restaurang"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "practicing fake laughs for the work party",
-    "sv": "öva låtsasskratt inför jobbfesten"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "arguing about the plot of a movie neither of us finished",
-    "sv": "bråka om handlingen i en film ingen av oss såg klart"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "getting emotionally attached to the robot vacuum",
-    "sv": "bli känslomässigt fäst vid robotdammsugaren"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "whispering 'we're leaving in five minutes' for two hours",
-    "sv": "viska 'vi går om fem minuter' i två timmar"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "starting a diet in the morning and folding by lunch",
-    "sv": "börja en diet på morgonen och ge upp till lunch"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "narrating the dog's inner monologue",
-    "sv": "sätta röst på hundens inre monolog"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "googling 'is it normal to...' and immediately closing the tab",
-    "sv": "googla 'är det normalt att...' och genast stänga fliken"
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "reading one-star reviews of places we love, out loud",
-    "sv": "läsa enstjärniga recensioner av ställen vi älskar, högt"
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "I know a shortcut",
-    "sv": "jag kan en genväg"
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "don't make it weird",
-    "sv": "gör det inte konstigt"
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "this is why we can't have nice things",
-    "sv": "det är därför vi inte kan ha fina saker"
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "define 'expensive'",
-    "sv": "definiera 'dyrt'"
-  },
-  {
-    "mood": "fun",
-    "type": "ap",
-    "en": "politely furious",
-    "sv": "artigt rasande"
-  },
-  {
-    "mood": "fun",
-    "type": "ap",
-    "en": "financially optimistic",
-    "sv": "ekonomiskt optimistisk"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "the last slice, cut into two suspiciously unequal halves",
-    "sv": "sista biten, delad i två misstänkt olika halvor"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "matching hangovers",
-    "sv": "matchande bakfyllor"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "a shared calendar neither of us checks",
-    "sv": "en delad kalender ingen av oss kollar"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "breakfast for dinner and zero regrets",
-    "sv": "frukost till middag och noll ånger"
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "the couch dent shaped like us",
-    "sv": "soffgropen formad som oss"
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "planning a whole future in the cereal aisle",
-    "sv": "planera en hel framtid vid flinghyllan"
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "sending memes instead of apologizing",
-    "sv": "skicka memes istället för att be om förlåtelse"
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "re-telling the same story and tag-teaming the punchline",
-    "sv": "dra samma historia igen och turas om med poängen"
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "judging house-hunting shows like we own property",
-    "sv": "döma bostadsprogram som om vi ägde fastigheter"
-  },
-  {
-    "mood": "mix",
-    "type": "qf",
-    "en": "you're lucky you're cute",
-    "sv": "tur att du är söt"
-  },
-  {
-    "mood": "mix",
-    "type": "qf",
-    "en": "we'll sleep when we're dead",
-    "sv": "vi sover när vi är döda"
-  },
-  {
-    "mood": "mix",
-    "type": "ap",
-    "en": "co-dependent in a fun way",
-    "sv": "medberoende på ett kul sätt"
-  },
-  {
-    "mood": "spicy",
-    "type": "np",
-    "en": "a very specific playlist titled 'chores'",
-    "sv": "en väldigt specifik spellista som heter 'hushållssysslor'"
-  },
-  {
-    "mood": "spicy",
-    "type": "np",
-    "en": "a countdown that started at dinner",
-    "sv": "en nedräkning som började vid middagen"
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "turning 'help me with this zipper' into a whole event",
-    "sv": "göra 'hjälp mig med dragkedjan' till en hel grej"
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "taking the scenic route to bed",
-    "sv": "ta den natursköna vägen till sängen"
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "losing at strip poker on purpose",
-    "sv": "förlora i strippoker med flit"
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "answering the door slightly too composed",
-    "sv": "öppna dörren aningen för samlad"
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "calling it an early night at 8pm with witnesses",
-    "sv": "säga godnatt klockan åtta inför vittnen"
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "making 'getting ready' take twice as long together",
-    "sv": "få 'göra sig i ordning' att ta dubbelt så lång tid ihop"
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "testing whether the new couch was a good investment",
-    "sv": "testa om nya soffan var en bra investering"
-  },
-  {
-    "mood": "spicy",
-    "type": "qf",
-    "en": "the meeting ran long, I swear",
-    "sv": "mötet drog ut på tiden, jag lovar"
-  },
-  {
-    "mood": "spicy",
-    "type": "qf",
-    "en": "we can be a little late",
-    "sv": "vi kan komma lite sent"
-  },
-  {
-    "mood": "spicy",
-    "type": "ap",
-    "en": "criminally distracting in sweatpants",
-    "sv": "kriminellt distraherande i mjukisbyxor"
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "the world's smallest apology that fixed everything",
-    "sv": "världens minsta ursäkt som fixade allt"
-  },
-  {
-    "mood": "deep",
-    "type": "gp",
-    "en": "apologizing with snacks because words are hard",
-    "sv": "be om förlåtelse med snacks för att ord är svårt"
-  },
-  {
-    "mood": "deep",
-    "type": "gp",
-    "en": "learning to fight fair on the twelfth try",
-    "sv": "lära sig bråka schysst på tolfte försöket"
-  },
-  {
-    "mood": "deep",
-    "type": "gp",
-    "en": "loving the 7am version of each other anyway",
-    "sv": "älska klockan-sju-versionen av varandra ändå"
-  },
-  {
-    "mood": "deep",
-    "type": "qf",
-    "en": "we figured it out, didn't we",
-    "sv": "vi löste det ju, eller hur"
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "the emergency snack drawer",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "the 'quick stop' that lasted three hours",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "a fitted sheet and two broken spirits",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "a nap that was supposed to be twenty minutes",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "{p1} explaining the offside rule with condiments",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "I'm just resting my eyes",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "the parking was free though",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "I've been saying that for years",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "ap",
-    "en": "aggressively punctual",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "ap",
-    "en": "two espressos past reasonable",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "ap",
-    "en": "wrong at full volume",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "ap",
-    "en": "athletically lazy",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "an anniversary we both pretended not to forget",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "the blanket fort that took two hours and one argument",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "a plan B that was always the real plan",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "cancelling plans and celebrating like we won something",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "walking the long way home on purpose",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "staging interventions for each other's online shopping",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "slow-blinking at each other like house cats",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "qf",
-    "en": "one of us has to be the adult and it's not me",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "qf",
-    "en": "same time tomorrow?",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "qf",
-    "en": "it's us versus the instructions",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "ap",
-    "en": "unsupervised and thriving",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "ap",
-    "en": "fluent in eyebrow",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "ap",
-    "en": "dramatic about soup",
-    "sv": ""
-  },
-  {
-    "mood": "spicy",
-    "type": "np",
-    "en": "one raised eyebrow from across the party",
-    "sv": ""
-  },
-  {
-    "mood": "spicy",
-    "type": "np",
-    "en": "a 'work from home' day with air quotes",
-    "sv": ""
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "reappearing from the bathroom in the other one's shirt",
-    "sv": ""
-  },
-  {
-    "mood": "spicy",
-    "type": "qf",
-    "en": "wear the thing",
-    "sv": ""
-  },
-  {
-    "mood": "spicy",
-    "type": "qf",
-    "en": "breakfast can wait",
-    "sv": ""
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "the pep talk in the car before family dinner",
-    "sv": ""
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "a therapy breakthrough in a parking garage",
-    "sv": ""
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "your laugh in a room full of strangers",
-    "sv": ""
-  },
-  {
-    "mood": "deep",
-    "type": "gp",
-    "en": "keeping each other's secrets like a tiny two-person cult",
-    "sv": ""
-  },
-  {
-    "mood": "deep",
-    "type": "qf",
-    "en": "stay anyway",
-    "sv": ""
-  },
-  {
-    "mood": "deep",
-    "type": "ap",
-    "en": "softer than we admit in public",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "the phone call {p2} rehearsed for twenty minutes and never made",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "the Tupperware avalanche",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "a houseplant on hospice care",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "the extension cord that solves everything",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "a 'quick question' with 45 minutes of follow-ups",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "the drawer of cables we're afraid to throw away",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "the book club book nobody in the book club read",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "a wine cork collection with no explanation",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "np",
-    "en": "the vacation photo album that ends on day two",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "renaming the Wi-Fi to send the neighbors a message",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "reviewing the evening like sports commentators on the drive home",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "waving goodbye to guests and immediately discussing them",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "conducting a full trial over who lost the keys",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "applauding ourselves for cancelling the same plans twice",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "teaching the smart speaker to take {p1}'s side",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "switching to polite voices when the neighbors appear",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "live-updating each other from different aisles of the store",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "gp",
-    "en": "getting invested in strangers' arguments at the airport",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "it's technically an investment",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "who is 'they' in this story",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "qf",
-    "en": "the dog agrees with me",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "ap",
-    "en": "spiritually retired",
-    "sv": ""
-  },
-  {
-    "mood": "fun",
-    "type": "ap",
-    "en": "professionally offended",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "a fridge photo from 2019 nobody will move",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "one umbrella, badly shared",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "np",
-    "en": "the playlist that fixes long car silences",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "getting weirdly competitive about the crossword",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "assigning backstories to people at the airport",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "saying 'we should leave' and staying two more hours",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "keeping score in a game neither of us admits exists",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "gp",
-    "en": "translating each other's moods for confused waiters",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "qf",
-    "en": "ask me again after coffee",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "ap",
-    "en": "suspiciously good in a crisis",
-    "sv": ""
-  },
-  {
-    "mood": "mix",
-    "type": "ap",
-    "en": "quietly plotting something",
-    "sv": ""
-  },
-  {
-    "mood": "spicy",
-    "type": "np",
-    "en": "the dress code for staying in",
-    "sv": ""
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "turning off the lamp with intent",
-    "sv": ""
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "leaving the party early for made-up reasons",
-    "sv": ""
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "folding laundry until suddenly nobody is folding laundry",
-    "sv": ""
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "conducting a thorough review of the hotel bed",
-    "sv": ""
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "racing upstairs after locking the front door",
-    "sv": ""
-  },
-  {
-    "mood": "spicy",
-    "type": "gp",
-    "en": "suggesting we save water in a way that saves no water",
-    "sv": ""
-  },
-  {
-    "mood": "spicy",
-    "type": "qf",
-    "en": "you have my full attention",
-    "sv": ""
-  },
-  {
-    "mood": "spicy",
-    "type": "qf",
-    "en": "come upstairs and find out",
-    "sv": ""
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "the last bite, saved without being asked",
-    "sv": ""
-  },
-  {
-    "mood": "deep",
-    "type": "np",
-    "en": "an entire argument resolved in the hallway in four words",
-    "sv": ""
-  },
-  {
-    "mood": "deep",
-    "type": "gp",
-    "en": "arriving with the exact right snack like a mind reader",
-    "sv": ""
-  },
-  {
-    "mood": "deep",
-    "type": "gp",
-    "en": "defending each other's nonsense in public, always",
-    "sv": ""
-  },
-  {
-    "mood": "deep",
-    "type": "gp",
-    "en": "texting 'almost home' just so someone's waiting",
-    "sv": ""
-  },
-  {
-    "mood": "deep",
-    "type": "qf",
-    "en": "you're my favorite problem",
-    "sv": ""
-  }
+  { mood:"fun", type:"np", en:"47 throw pillows", sv:"47 prydnadskuddar" },
+  { mood:"fun", type:"np", en:"a passive-aggressive Post-it note", sv:"en passiv-aggressiv Post-it-lapp" },
+  { mood:"fun", type:"np", en:"the thermostat", sv:"termostaten" },
+  { mood:"fun", type:"np", en:"three bottles of rosé", sv:"tre flaskor rosé" },
+  { mood:"fun", type:"np", en:"{p2}'s 400 unread emails", sv:"{p2}s 400 olästa mejl" },
+  { mood:"fun", type:"np", en:"an IKEA bookshelf and a broken marriage", sv:"en IKEA-bokhylla och ett trasigt äktenskap" },
+  { mood:"fun", type:"np", en:"the Wi-Fi password argument", sv:"Wi-Fi-lösenordsbråket" },
+  { mood:"fun", type:"np", en:"{p1}'s snoring", sv:"{p1}s snarkande" },
+  { mood:"fun", type:"np", en:"a parking lot meltdown", sv:"ett parkeringsplatshaveri" },
+  { mood:"fun", type:"np", en:"four different food delivery apps", sv:"fyra olika matleveransappar" },
+  { mood:"fun", type:"np", en:"the duvet", sv:"täcket" },
+  { mood:"fun", type:"np", en:"a cart full of things we don't need", sv:"en vagn full med saker vi inte behöver" },
+  { mood:"fun", type:"np", en:"{p2}'s screen time report", sv:"{p2}s skärmtidsrapport" },
+  { mood:"fun", type:"np", en:"the wrong IKEA bag", sv:"fel IKEA-kasse" },
+  { mood:"fun", type:"np", en:"{p1}'s Spotify Wrapped", sv:"{p1}s Spotify Wrapped" },
+  { mood:"fun", type:"np", en:"another candle", sv:"ännu ett ljus" },
+  { mood:"fun", type:"np", en:"a very loud wrong opinion", sv:"en väldigt högljudd fel åsikt" },
+  { mood:"fun", type:"np", en:"eleven Amazon packages", sv:"elva Amazon-paket" },
+  { mood:"fun", type:"np", en:"the shared Netflix account", sv:"det delade Netflix-kontot" },
+  { mood:"fun", type:"np", en:"a 90-minute parking job", sv:"en 90-minuters parkering" },
+  { mood:"fun", type:"np", en:"{p2}'s mom calling at the worst moment", sv:"{p2}s mamma som ringer i värsta ögonblicket" },
+  { mood:"fun", type:"np", en:"leftover pizza at 7am", sv:"kvarglömd pizza klockan sju" },
+  { mood:"fun", type:"np", en:"a toilet seat left up", sv:"en toalettsits som lämnats uppe" },
+  { mood:"fun", type:"np", en:"matching Crocs", sv:"matchande Crocs" },
+  { mood:"fun", type:"np", en:"a suspiciously specific Google search", sv:"en misstänkt specifik Google-sökning" },
+  { mood:"fun", type:"np", en:"one shared brain cell", sv:"en delad hjärncell" },
+  { mood:"fun", type:"np", en:"{p1}'s 'I'm fine' face", sv:"{p1}s 'det är lugnt'-ansikte" },
+  { mood:"fun", type:"np", en:"the group chat screenshot", sv:"skärmdumpen från gruppchatten" },
+  { mood:"fun", type:"np", en:"an extremely passive-aggressive playlist", sv:"en extremt passiv-aggressiv spellista" },
+  { mood:"fun", type:"np", en:"{p2}'s 47 alarms that never work", sv:"{p2}s 47 alarm som aldrig fungerar" },
+  { mood:"fun", type:"np", en:"a dramatic exit to the balcony", sv:"en dramatisk sorti till balkongen" },
+  { mood:"fun", type:"np", en:"the world's longest grocery list", sv:"världens längsta inköpslista" },
+  { mood:"fun", type:"gp", en:"{p2} refusing to pick a restaurant", sv:"{p2} vägrar välja restaurang" },
+  { mood:"fun", type:"gp", en:"googling symptoms at 3am", sv:"googla symptom klockan tre på natten" },
+  { mood:"fun", type:"gp", en:"{p1} eating the last piece and denying it", sv:"{p1} äter sista biten och förnekar det" },
+  { mood:"fun", type:"gp", en:"ordering Uber Eats twice in one night", sv:"beställa Uber Eats två gånger på en kväll" },
+  { mood:"fun", type:"gp", en:"{p1} dramatically reading the receipt out loud", sv:"{p1} som dramatiskt läser kvittot högt" },
+  { mood:"fun", type:"gp", en:"stress-buying candles", sv:"stressköpa ljus" },
+  { mood:"fun", type:"gp", en:"both blaming the GPS", sv:"båda skyller på GPS:en" },
+  { mood:"fun", type:"gp", en:"{p2} hiding shopping bags in the trunk", sv:"{p2} gömmer shoppingkassar i bagaget" },
+  { mood:"fun", type:"gp", en:"{p1} falling asleep during the movie", sv:"{p1} somnar under filmen" },
+  { mood:"fun", type:"gp", en:"watching true crime and side-eyeing each other", sv:"titta på true crime och snegla på varandra" },
+  { mood:"fun", type:"gp", en:"{p2} taking 45 minutes to get ready", sv:"{p2} tar 45 minuter att bli klar" },
+  { mood:"fun", type:"gp", en:"arguing about whose turn it is to cook", sv:"bråka om vems tur det är att laga mat" },
+  { mood:"fun", type:"gp", en:"{p1} assembling furniture without the manual", sv:"{p1} monterar möbler utan manualen" },
+  { mood:"fun", type:"gp", en:"drunk-texting each other from the same couch", sv:"fylletexa varandra från samma soffa" },
+  { mood:"fun", type:"gp", en:"fighting over the aux cord", sv:"slåss om aux-sladden" },
+  { mood:"fun", type:"gp", en:"pretending to be asleep to avoid the conversation", sv:"låtsas sova för att slippa samtalet" },
+  { mood:"fun", type:"gp", en:"{p2} narrating everything like a documentary", sv:"{p2} som kommenterar allt som en dokumentär" },
+  { mood:"fun", type:"gp", en:"{p1} panic-cleaning before guests arrive", sv:"{p1} panikstädar innan gästerna kommer" },
+  { mood:"fun", type:"gp", en:"blaming each other for the missing remote", sv:"skylla på varandra för den försvunna fjärrkontrollen" },
+  { mood:"fun", type:"gp", en:"{p2} starting a new series without {p1}", sv:"{p2} börjar en ny serie utan {p1}" },
+  { mood:"fun", type:"gp", en:"aggressively loading the dishwasher to prove a point", sv:"aggressivt ladda diskmaskinen för att bevisa en poäng" },
+  { mood:"fun", type:"qf", en:"I'm almost ready", sv:"jag är nästan klar" },
+  { mood:"fun", type:"qf", en:"we need to talk", sv:"vi behöver prata" },
+  { mood:"fun", type:"qf", en:"it was on sale", sv:"det var på rea" },
+  { mood:"fun", type:"qf", en:"I already told you this", sv:"jag har redan sagt det här" },
+  { mood:"fun", type:"qf", en:"fine. do whatever you want.", sv:"okej. gör vad du vill." },
+  { mood:"fun", type:"qf", en:"that's not what happened", sv:"det är inte vad som hände" },
+  { mood:"fun", type:"qf", en:"I'm not the one who", sv:"det är inte jag som" },
+  { mood:"fun", type:"qf", en:"you always do this", sv:"du gör alltid så här" },
+  { mood:"fun", type:"qf", en:"I said I was sorry", sv:"jag sa att jag var ledsen" },
+  { mood:"fun", type:"qf", en:"whatever. I'm going to bed.", sv:"skärsansen. jag går och lägger mig." },
+  { mood:"fun", type:"qf", en:"I literally just said that", sv:"jag sa precis det" },
+  { mood:"fun", type:"qf", en:"Google says I'm dying", sv:"Google säger att jag dör" },
+  { mood:"fun", type:"qf", en:"are you even listening", sv:"lyssnar du ens" },
+  { mood:"fun", type:"qf", en:"that's not how you load a dishwasher", sv:"det är inte så man laddar en diskmaskin" },
+  { mood:"fun", type:"qf", en:"I'll do it tomorrow", sv:"jag gör det imorgon" },
+  { mood:"fun", type:"qf", en:"we should probably talk about this", sv:"vi borde nog prata om det här" },
+  { mood:"fun", type:"ap", en:"suspiciously quiet", sv:"misstänkt tyst" },
+  { mood:"fun", type:"ap", en:"aggressively wrong", sv:"aggressivt fel" },
+  { mood:"fun", type:"ap", en:"dangerously hangry", sv:"farligt hungrig" },
+  { mood:"fun", type:"ap", en:"offensively late", sv:"kränkande sen" },
+  { mood:"fun", type:"ap", en:"painfully stubborn", sv:"pinsamt envis" },
+  { mood:"fun", type:"ap", en:"unreasonably competitive", sv:"orimligt tävlingsinriktad" },
+  { mood:"fun", type:"ap", en:"emotionally unavailable (about dinner plans)", sv:"emotionellt otillgänglig (om middagsplaner)" },
+  { mood:"fun", type:"ap", en:"confidently incorrect", sv:"självsäkert felaktig" },
+  { mood:"fun", type:"ap", en:"tragically overdressed", sv:"tragiskt överklädda" },
+  { mood:"fun", type:"ap", en:"petty beyond repair", sv:"småaktig bortom räddning" },
+  { mood:"deep", type:"np", en:"the ugly cry on a Tuesday", sv:"fulbölet en tisdag" },
+  { mood:"deep", type:"np", en:"the 3am kitchen conversation", sv:"kökssamtalet klockan tre" },
+  { mood:"deep", type:"np", en:"your voice when you're actually scared", sv:"din röst när du är på riktigt rädd" },
+  { mood:"deep", type:"np", en:"the apology that took a year", sv:"ursäkten som tog ett år" },
+  { mood:"deep", type:"np", en:"your parents' divorce", sv:"dina föräldrars skilsmässa" },
+  { mood:"deep", type:"np", en:"the first night you stayed over", sv:"första natten du sov över" },
+  { mood:"deep", type:"np", en:"the fight in the car after the party", sv:"bråket i bilen efter festen" },
+  { mood:"deep", type:"np", en:"the voicemail I never deleted", sv:"röstmeddelandet jag aldrig raderade" },
+  { mood:"deep", type:"np", en:"the silence after the door closed", sv:"tystnaden efter att dörren stängdes" },
+  { mood:"deep", type:"np", en:"{p2}'s face when they think nobody's watching", sv:"{p2}s ansikte när de tror ingen ser" },
+  { mood:"deep", type:"np", en:"that one photo from the first year", sv:"det där fotot från första året" },
+  { mood:"deep", type:"np", en:"the song that still hurts a little", sv:"låten som fortfarande gör lite ont" },
+  { mood:"deep", type:"np", en:"your toothbrush at my place", sv:"din tandborste hos mig" },
+  { mood:"deep", type:"np", en:"{p1}'s hands when they're nervous", sv:"{p1}s händer när de är nervösa" },
+  { mood:"deep", type:"gp", en:"crying in the bathroom and pretending you didn't", sv:"gråta på badrummet och låtsas att du inte gjorde det" },
+  { mood:"deep", type:"gp", en:"sleeping on the couch after the fight", sv:"sova på soffan efter bråket" },
+  { mood:"deep", type:"gp", en:"holding hands at the hospital", sv:"hålla händer på sjukhuset" },
+  { mood:"deep", type:"gp", en:"reading each other's faces across the room", sv:"läsa varandras ansikten över rummet" },
+  { mood:"deep", type:"gp", en:"forgiving before they even ask", sv:"förlåta innan de ens frågar" },
+  { mood:"deep", type:"gp", en:"driving home in silence after a hard day", sv:"köra hem i tystnad efter en tung dag" },
+  { mood:"deep", type:"gp", en:"choosing this even when it's hard", sv:"välja det här även när det är svårt" },
+  { mood:"deep", type:"gp", en:"letting {p2} see the worst version", sv:"låta {p2} se den värsta versionen" },
+  { mood:"deep", type:"gp", en:"saying sorry and actually meaning it", sv:"säga förlåt och faktiskt mena det" },
+  { mood:"deep", type:"gp", en:"building a life without a blueprint", sv:"bygga ett liv utan ritning" },
+  { mood:"deep", type:"gp", en:"{p1} picking up {p2} from a bad night without asking questions", sv:"{p1} hämtar {p2} efter en dålig kväll utan frågor" },
+  { mood:"deep", type:"qf", en:"I didn't mean it", sv:"jag menade inte det" },
+  { mood:"deep", type:"qf", en:"please don't leave", sv:"snälla gå inte" },
+  { mood:"deep", type:"qf", en:"I'm trying my best", sv:"jag gör så gott jag kan" },
+  { mood:"deep", type:"qf", en:"I should have said something sooner", sv:"jag borde ha sagt något tidigare" },
+  { mood:"deep", type:"qf", en:"you're the only one who knows", sv:"du är den enda som vet" },
+  { mood:"deep", type:"qf", en:"that's the nicest thing anyone's ever said", sv:"det är det finaste någon någonsin sagt" },
+  { mood:"deep", type:"ap", en:"terrifyingly honest", sv:"skrämmande ärlig" },
+  { mood:"deep", type:"ap", en:"quietly falling apart", sv:"tyst faller isär" },
+  { mood:"deep", type:"ap", en:"finally ready", sv:"äntligen redo" },
+  { mood:"deep", type:"ap", en:"annoyingly right", sv:"irriterande rätt" },
+  { mood:"deep", type:"ap", en:"stubbornly in love", sv:"envist kär" },
+  { mood:"spicy", type:"np", en:"that one outfit from the third date", sv:"den där outfiten från tredje dejten" },
+  { mood:"spicy", type:"np", en:"a hotel minibar and no checkout time", sv:"en hotellminibar och ingen utcheckning" },
+  { mood:"spicy", type:"np", en:"the shower with the good water pressure", sv:"duschen med bra vattentryck" },
+  { mood:"spicy", type:"np", en:"{p2}'s neck", sv:"{p2}s nacke" },
+  { mood:"spicy", type:"np", en:"two glasses of wine and no kids", sv:"två glas vin och inga barn" },
+  { mood:"spicy", type:"np", en:"the back seat of the car", sv:"baksätet i bilen" },
+  { mood:"spicy", type:"np", en:"the dress that caused the car accident", sv:"klänningen som orsakade bilolyckan" },
+  { mood:"spicy", type:"np", en:"{p1}'s gym selfie", sv:"{p1}s gym-selfie" },
+  { mood:"spicy", type:"np", en:"the 'do not disturb' sign", sv:"'stör ej'-skylten" },
+  { mood:"spicy", type:"np", en:"a bathtub for two", sv:"ett badkar för två" },
+  { mood:"spicy", type:"np", en:"that message at 11:47pm", sv:"det där meddelandet klockan 23:47" },
+  { mood:"spicy", type:"np", en:"an empty apartment and zero plans", sv:"en tom lägenhet och noll planer" },
+  { mood:"spicy", type:"np", en:"{p2} in that white t-shirt", sv:"{p2} i den där vita t-shirten" },
+  { mood:"spicy", type:"gp", en:"{p2} biting their lip like that", sv:"{p2} som biter sig i läppen så där" },
+  { mood:"spicy", type:"gp", en:"skipping dessert and going straight home", sv:"skippa desserten och åka rakt hem" },
+  { mood:"spicy", type:"gp", en:"texting 'come over' at midnight", sv:"sms:a 'kom över' vid midnatt" },
+  { mood:"spicy", type:"gp", en:"{p1} cooking shirtless", sv:"{p1} lagar mat utan tröja" },
+  { mood:"spicy", type:"gp", en:"making eye contact a little too long", sv:"ha ögonkontakt lite för länge" },
+  { mood:"spicy", type:"gp", en:"forgetting to close the blinds", sv:"glömma att stänga persiennerna" },
+  { mood:"spicy", type:"gp", en:"whispering something at the dinner party", sv:"viska något på middagsfesten" },
+  { mood:"spicy", type:"gp", en:"staying in bed until checkout", sv:"stanna i sängen till utcheckning" },
+  { mood:"spicy", type:"gp", en:"{p2} walking out of the bathroom in just a towel", sv:"{p2} som går ut från badrummet i bara en handduk" },
+  { mood:"spicy", type:"gp", en:"playing footsie under the table at {p2}'s parents' house", sv:"leka fotleken under bordet hos {p2}s föräldrar" },
+  { mood:"spicy", type:"gp", en:"booking a hotel room for no reason", sv:"boka ett hotellrum utan anledning" },
+  { mood:"spicy", type:"qf", en:"do that again", sv:"gör det igen" },
+  { mood:"spicy", type:"qf", en:"don't stop", sv:"sluta inte" },
+  { mood:"spicy", type:"qf", en:"we have ten minutes", sv:"vi har tio minuter" },
+  { mood:"spicy", type:"qf", en:"lock the door", sv:"lås dörren" },
+  { mood:"spicy", type:"qf", en:"what are you wearing", sv:"vad har du på dig" },
+  { mood:"spicy", type:"qf", en:"get over here", sv:"kom hit" },
+  { mood:"spicy", type:"qf", en:"I was thinking about last Tuesday", sv:"jag tänkte på i tisdags" },
+  { mood:"spicy", type:"qf", en:"the kids are asleep", sv:"barnen sover" },
+  { mood:"spicy", type:"qf", en:"leave the lights on", sv:"låt lamporna vara på" },
+  { mood:"spicy", type:"ap", en:"dangerously attractive", sv:"farligt attraktiv" },
+  { mood:"spicy", type:"ap", en:"deliberately slow", sv:"avsiktligt långsam" },
+  { mood:"spicy", type:"ap", en:"barely dressed", sv:"knappt klädd" },
+  { mood:"spicy", type:"ap", en:"extremely distracting", sv:"extremt distraherande" },
+  { mood:"mix", type:"np", en:"cheese and wine at 11pm", sv:"ost och vin klockan 23" },
+  { mood:"mix", type:"np", en:"a takeaway on the kitchen floor", sv:"takeaway på köksgolvet" },
+  { mood:"mix", type:"np", en:"that one song in the car", sv:"den där låten i bilen" },
+  { mood:"mix", type:"np", en:"the couch, a blanket, and silence", sv:"soffan, en filt, och tystnad" },
+  { mood:"mix", type:"np", en:"a plan that went perfectly wrong", sv:"en plan som gick perfekt fel" },
+  { mood:"mix", type:"np", en:"{p2}'s cold feet at 3am", sv:"{p2}s kalla fötter klockan tre" },
+  { mood:"mix", type:"np", en:"the grocery store on a Sunday", sv:"matbutiken på en söndag" },
+  { mood:"mix", type:"np", en:"{p1}'s terrible cooking", sv:"{p1}s hemska matlagning" },
+  { mood:"mix", type:"np", en:"the wrong exit on the highway", sv:"fel avfart på motorvägen" },
+  { mood:"mix", type:"np", en:"a shared Spotify queue", sv:"en delad Spotify-kö" },
+  { mood:"mix", type:"np", en:"the 'we should try something new' conversation", sv:"'vi borde testa något nytt'-samtalet" },
+  { mood:"mix", type:"np", en:"a two-person blanket burrito", sv:"en tvåpersons-filtburrito" },
+  { mood:"mix", type:"np", en:"{p1}'s face during family dinners", sv:"{p1}s ansikte under familjemiddagar" },
+  { mood:"mix", type:"np", en:"the bathroom door that doesn't lock", sv:"badrumsdörren som inte låser" },
+  { mood:"mix", type:"np", en:"a midnight kebab run", sv:"en midnatts-kebabrunda" },
+  { mood:"mix", type:"gp", en:"laughing until one of us can't breathe", sv:"skratta tills en av oss inte kan andas" },
+  { mood:"mix", type:"gp", en:"arguing about where to eat (again)", sv:"bråka om var vi ska äta (igen)" },
+  { mood:"mix", type:"gp", en:"being embarrassing in public together", sv:"vara pinsamma offentligt ihop" },
+  { mood:"mix", type:"gp", en:"falling asleep on the couch mid-sentence", sv:"somna på soffan mitt i en mening" },
+  { mood:"mix", type:"gp", en:"{p1} making {p2} laugh at the worst time", sv:"{p1} får {p2} att skratta vid värsta tillfället" },
+  { mood:"mix", type:"gp", en:"slow-dancing in the kitchen to nothing", sv:"dansa långsamt i köket utan musik" },
+  { mood:"mix", type:"gp", en:"sharing a toothbrush and pretending it's fine", sv:"dela tandborste och låtsas att det är ok" },
+  { mood:"mix", type:"gp", en:"holding hands in the supermarket like teenagers", sv:"hålla hand i mataffären som tonåringar" },
+  { mood:"mix", type:"gp", en:"{p2} stealing all the covers and denying it", sv:"{p2} som stjäl hela täcket och förnekar det" },
+  { mood:"mix", type:"gp", en:"ugly-laughing at something nobody else finds funny", sv:"fulskratta åt något ingen annan tycker är roligt" },
+  { mood:"mix", type:"qf", en:"you're stuck with me", sv:"du är fast med mig" },
+  { mood:"mix", type:"qf", en:"whose turn is it", sv:"vems tur är det" },
+  { mood:"mix", type:"qf", en:"just five more minutes", sv:"bara fem minuter till" },
+  { mood:"mix", type:"qf", en:"I can explain", sv:"jag kan förklara" },
+  { mood:"mix", type:"qf", en:"that was your idea", sv:"det var din idé" },
+  { mood:"mix", type:"qf", en:"we're not doing this again", sv:"vi gör inte det här igen" },
+  { mood:"mix", type:"qf", en:"I love you but absolutely not", sv:"jag älskar dig men absolut inte" },
+  { mood:"mix", type:"ap", en:"weirdly compatible", sv:"märkligt kompatibla" },
+  { mood:"mix", type:"ap", en:"chaotically wholesome", sv:"kaotiskt gulliga" },
+  { mood:"mix", type:"ap", en:"completely unhinged together", sv:"helt galna ihop" },
+  { mood:"mix", type:"ap", en:"disgustingly cute", sv:"vedervärdigt söta" },
+  { mood:"mix", type:"ap", en:"absolutely feral at home", sv:"helt vilda hemma" },
+  { mood:"mix", type:"ap", en:"suspiciously synchronized", sv:"misstänkt synkade" },
+  { mood:"fun", type:"np", en:"an emotional support shopping cart", sv:"en kundvagn för emotionellt stöd" },
+  { mood:"fun", type:"np", en:"a PowerPoint titled 'Why We Should Get a Dog'", sv:"en PowerPoint med titeln 'Därför borde vi skaffa hund'" },
+  { mood:"fun", type:"np", en:"the vacation spreadsheet with 14 tabs", sv:"semester-kalkylarket med 14 flikar" },
+  { mood:"fun", type:"np", en:"a candle that costs more than the electric bill", sv:"ett ljus som kostar mer än elräkningen" },
+  { mood:"fun", type:"np", en:"a conspiracy theory about the neighbors' recycling", sv:"en konspirationsteori om grannarnas återvinning" },
+  { mood:"fun", type:"np", en:"the phrase 'we should host more'", sv:"frasen 'vi borde bjuda hem folk oftare'" },
+  { mood:"fun", type:"np", en:"two competing weather apps", sv:"två konkurrerande väderappar" },
+  { mood:"fun", type:"np", en:"a betrayal involving the last of the oat milk", sv:"ett svek som involverar den sista havremjölken" },
+  { mood:"fun", type:"np", en:"the seventh 'last episode' of the night", sv:"kvällens sjunde 'sista avsnitt'" },
+  { mood:"fun", type:"np", en:"a vendetta against the self-checkout machine", sv:"en vendetta mot självscanningskassan" },
+  { mood:"fun", type:"np", en:"the fourth attempt at sourdough", sv:"det fjärde surdegsförsöket" },
+  { mood:"fun", type:"np", en:"an argument neither of us remembers starting", sv:"ett bråk ingen av oss minns hur det började" },
+  { mood:"fun", type:"np", en:"a decorative towel nobody is allowed to use", sv:"en prydnadshandduk ingen får använda" },
+  { mood:"fun", type:"gp", en:"rating other couples' arguments at restaurants", sv:"betygsätta andra pars bråk på restaurang" },
+  { mood:"fun", type:"gp", en:"practicing fake laughs for the work party", sv:"öva låtsasskratt inför jobbfesten" },
+  { mood:"fun", type:"gp", en:"arguing about the plot of a movie neither of us finished", sv:"bråka om handlingen i en film ingen av oss såg klart" },
+  { mood:"fun", type:"gp", en:"getting emotionally attached to the robot vacuum", sv:"bli känslomässigt fäst vid robotdammsugaren" },
+  { mood:"fun", type:"gp", en:"whispering 'we're leaving in five minutes' for two hours", sv:"viska 'vi går om fem minuter' i två timmar" },
+  { mood:"fun", type:"gp", en:"starting a diet in the morning and folding by lunch", sv:"börja en diet på morgonen och ge upp till lunch" },
+  { mood:"fun", type:"gp", en:"narrating the dog's inner monologue", sv:"sätta röst på hundens inre monolog" },
+  { mood:"fun", type:"gp", en:"googling 'is it normal to...' and immediately closing the tab", sv:"googla 'är det normalt att...' och genast stänga fliken" },
+  { mood:"fun", type:"gp", en:"reading one-star reviews of places we love, out loud", sv:"läsa enstjärniga recensioner av ställen vi älskar, högt" },
+  { mood:"fun", type:"qf", en:"I know a shortcut", sv:"jag kan en genväg" },
+  { mood:"fun", type:"qf", en:"don't make it weird", sv:"gör det inte konstigt" },
+  { mood:"fun", type:"qf", en:"this is why we can't have nice things", sv:"det är därför vi inte kan ha fina saker" },
+  { mood:"fun", type:"qf", en:"define 'expensive'", sv:"definiera 'dyrt'" },
+  { mood:"fun", type:"ap", en:"politely furious", sv:"artigt rasande" },
+  { mood:"fun", type:"ap", en:"financially optimistic", sv:"ekonomiskt optimistisk" },
+  { mood:"mix", type:"np", en:"the last slice, cut into two suspiciously unequal halves", sv:"sista biten, delad i två misstänkt olika halvor" },
+  { mood:"mix", type:"np", en:"matching hangovers", sv:"matchande bakfyllor" },
+  { mood:"mix", type:"np", en:"a shared calendar neither of us checks", sv:"en delad kalender ingen av oss kollar" },
+  { mood:"mix", type:"np", en:"breakfast for dinner and zero regrets", sv:"frukost till middag och noll ånger" },
+  { mood:"mix", type:"np", en:"the couch dent shaped like us", sv:"soffgropen formad som oss" },
+  { mood:"mix", type:"gp", en:"planning a whole future in the cereal aisle", sv:"planera en hel framtid vid flinghyllan" },
+  { mood:"mix", type:"gp", en:"sending memes instead of apologizing", sv:"skicka memes istället för att be om förlåtelse" },
+  { mood:"mix", type:"gp", en:"re-telling the same story and tag-teaming the punchline", sv:"dra samma historia igen och turas om med poängen" },
+  { mood:"mix", type:"gp", en:"judging house-hunting shows like we own property", sv:"döma bostadsprogram som om vi ägde fastigheter" },
+  { mood:"mix", type:"qf", en:"you're lucky you're cute", sv:"tur att du är söt" },
+  { mood:"mix", type:"qf", en:"we'll sleep when we're dead", sv:"vi sover när vi är döda" },
+  { mood:"mix", type:"ap", en:"co-dependent in a fun way", sv:"medberoende på ett kul sätt" },
+  { mood:"spicy", type:"np", en:"a very specific playlist titled 'chores'", sv:"en väldigt specifik spellista som heter 'hushållssysslor'" },
+  { mood:"spicy", type:"np", en:"a countdown that started at dinner", sv:"en nedräkning som började vid middagen" },
+  { mood:"spicy", type:"gp", en:"turning 'help me with this zipper' into a whole event", sv:"göra 'hjälp mig med dragkedjan' till en hel grej" },
+  { mood:"spicy", type:"gp", en:"taking the scenic route to bed", sv:"ta den natursköna vägen till sängen" },
+  { mood:"spicy", type:"gp", en:"losing at strip poker on purpose", sv:"förlora i strippoker med flit" },
+  { mood:"spicy", type:"gp", en:"answering the door slightly too composed", sv:"öppna dörren aningen för samlad" },
+  { mood:"spicy", type:"gp", en:"calling it an early night at 8pm with witnesses", sv:"säga godnatt klockan åtta inför vittnen" },
+  { mood:"spicy", type:"gp", en:"making 'getting ready' take twice as long together", sv:"få 'göra sig i ordning' att ta dubbelt så lång tid ihop" },
+  { mood:"spicy", type:"gp", en:"testing whether the new couch was a good investment", sv:"testa om nya soffan var en bra investering" },
+  { mood:"spicy", type:"qf", en:"the meeting ran long, I swear", sv:"mötet drog ut på tiden, jag lovar" },
+  { mood:"spicy", type:"qf", en:"we can be a little late", sv:"vi kan komma lite sent" },
+  { mood:"spicy", type:"ap", en:"criminally distracting in sweatpants", sv:"kriminellt distraherande i mjukisbyxor" },
+  { mood:"deep", type:"np", en:"the world's smallest apology that fixed everything", sv:"världens minsta ursäkt som fixade allt" },
+  { mood:"deep", type:"gp", en:"apologizing with snacks because words are hard", sv:"be om förlåtelse med snacks för att ord är svårt" },
+  { mood:"deep", type:"gp", en:"learning to fight fair on the twelfth try", sv:"lära sig bråka schysst på tolfte försöket" },
+  { mood:"deep", type:"gp", en:"loving the 7am version of each other anyway", sv:"älska klockan-sju-versionen av varandra ändå" },
+  { mood:"deep", type:"qf", en:"we figured it out, didn't we", sv:"vi löste det ju, eller hur" },
+  { mood:"fun", type:"np", en:"a receipt hidden like a state secret", sv:"ett kvitto gömt som en statshemlighet" },
+  { mood:"fun", type:"gp", en:"{p2} reorganizing the fridge mid-argument", sv:"{p2} som möblerar om i kylen mitt i bråket" },
+  { mood:"fun", type:"qf", en:"I'm just resting my eyes", sv:"jag vilar bara ögonen" },
+  { mood:"fun", type:"ap", en:"aggressively punctual", sv:"aggressivt punktlig" },
+  { mood:"fun", type:"ap", en:"two espressos past reasonable", sv:"två espresso bortom det rimliga" },
+  { mood:"fun", type:"ap", en:"wrong at full volume", sv:"fel på högsta volym" },
+  { mood:"fun", type:"ap", en:"athletically lazy", sv:"atletiskt lat" },
+  { mood:"mix", type:"qf", en:"one of us has to be the adult and it's not me", sv:"en av oss måste vara vuxen och det är inte jag" },
+  { mood:"mix", type:"ap", en:"unsupervised and thriving", sv:"oövervakade och blomstrande" },
+  { mood:"mix", type:"ap", en:"dramatic about soup", sv:"dramatisk kring soppa" },
+  { mood:"spicy", type:"qf", en:"shhh, the walls are thin", sv:"schh, väggarna är tunna" },
+  { mood:"spicy", type:"qf", en:"breakfast can wait", sv:"frukosten kan vänta" },
+  { mood:"spicy", type:"ap", en:"suspiciously well-rested", sv:"misstänkt utvilad" },
+  { mood:"deep", type:"np", en:"the eight-second hug that fixed a whole Tuesday", sv:"den åtta sekunder långa kramen som räddade en hel tisdag" },
+  { mood:"deep", type:"gp", en:"keeping each other's secrets like a tiny two-person cult", sv:"bevara varandras hemligheter som en liten tvåpersonssekt" },
+  { mood:"deep", type:"ap", en:"softer than we admit in public", sv:"mjukare än vi erkänner offentligt" },
+  { mood:"fun", type:"np", en:"the spreadsheet where {p1} tracks being right", sv:"kalkylarket där {p1} för statistik över att ha rätt" },
+  { mood:"fun", type:"np", en:"a second fridge just for beverages and secrets", sv:"en extra kyl bara för drycker och hemligheter" },
+  { mood:"fun", type:"np", en:"the phone call {p2} rehearsed for twenty minutes and never made", sv:"telefonsamtalet {p2} övade på i tjugo minuter och aldrig ringde" },
+  { mood:"fun", type:"np", en:"the extension cord that solves everything", sv:"förlängningssladden som löser allt" },
+  { mood:"fun", type:"np", en:"a 'quick question' with 45 minutes of follow-ups", sv:"en 'snabb fråga' med 45 minuters följdfrågor" },
+  { mood:"fun", type:"np", en:"the drawer of cables we're afraid to throw away", sv:"lådan med sladdar vi inte vågar slänga" },
+  { mood:"fun", type:"np", en:"the book club book nobody in the book club read", sv:"bokcirkelboken ingen i bokcirkeln läste" },
+  { mood:"fun", type:"gp", en:"renaming the Wi-Fi to send the neighbors a message", sv:"döpa om Wi-Fi:t för att skicka ett budskap till grannarna" },
+  { mood:"fun", type:"gp", en:"reviewing the evening like sports commentators on the drive home", sv:"recensera kvällen som sportkommentatorer på vägen hem" },
+  { mood:"fun", type:"gp", en:"waving goodbye to guests and immediately discussing them", sv:"vinka hejdå till gästerna och genast börja diskutera dem" },
+  { mood:"fun", type:"gp", en:"applauding ourselves for cancelling the same plans twice", sv:"applådera oss själva för att ha ställt in samma planer två gånger" },
+  { mood:"fun", type:"gp", en:"teaching the smart speaker to take {p1}'s side", sv:"lära den smarta högtalaren att ta {p1}s parti" },
+  { mood:"fun", type:"gp", en:"switching to polite voices when the neighbors appear", sv:"byta till artiga röster när grannarna dyker upp" },
+  { mood:"fun", type:"qf", en:"it's technically an investment", sv:"det är tekniskt sett en investering" },
+  { mood:"fun", type:"qf", en:"we said no more projects", sv:"vi sa inga fler projekt" },
+  { mood:"fun", type:"qf", en:"who is 'they' in this story", sv:"vem är 'dom' i den här historien" },
+  { mood:"fun", type:"qf", en:"the dog agrees with me", sv:"hunden håller med mig" },
+  { mood:"fun", type:"ap", en:"spiritually retired", sv:"andligt pensionerad" },
+  { mood:"fun", type:"ap", en:"professionally offended", sv:"professionellt kränkt" },
+  { mood:"mix", type:"np", en:"the good spot on the couch, surrendered voluntarily", sv:"bästa platsen i soffan, frivilligt överlämnad" },
+  { mood:"mix", type:"np", en:"the playlist that fixes long car silences", sv:"spellistan som fixar långa biltystnader" },
+  { mood:"mix", type:"np", en:"a doorway kiss that made us late", sv:"en kyss i hallen som gjorde oss sena" },
+  { mood:"mix", type:"gp", en:"getting weirdly competitive about the crossword", sv:"bli konstigt tävlingsinriktade om korsordet" },
+  { mood:"mix", type:"gp", en:"assigning backstories to people at the airport", sv:"hitta på bakgrundshistorier åt folk på flygplatsen" },
+  { mood:"mix", type:"gp", en:"saying 'we should leave' and staying two more hours", sv:"säga 'vi borde gå' och stanna två timmar till" },
+  { mood:"mix", type:"gp", en:"winning an argument by making the other one laugh", sv:"vinna ett bråk genom att få den andra att skratta" },
+  { mood:"mix", type:"gp", en:"keeping score in a game neither of us admits exists", sv:"hålla räkningen i ett spel ingen av oss erkänner finns" },
+  { mood:"mix", type:"gp", en:"translating each other's moods for confused waiters", sv:"översätta varandras humör för förvirrade servitörer" },
+  { mood:"mix", type:"qf", en:"ask me again after coffee", sv:"fråga mig igen efter kaffet" },
+  { mood:"mix", type:"qf", en:"we're a package deal", sv:"vi kommer som ett paket" },
+  { mood:"mix", type:"ap", en:"suspiciously good in a crisis", sv:"misstänkt bra i en kris" },
+  { mood:"mix", type:"ap", en:"quietly plotting something", sv:"smider planer i det tysta" },
+  { mood:"spicy", type:"np", en:"the dress code for staying in", sv:"klädkoden för att stanna hemma" },
+  { mood:"spicy", type:"gp", en:"leaving the party early for made-up reasons", sv:"lämna festen tidigt av påhittade skäl" },
+  { mood:"spicy", type:"gp", en:"folding laundry until suddenly nobody is folding laundry", sv:"vika tvätt tills plötsligt ingen viker tvätt" },
+  { mood:"spicy", type:"gp", en:"conducting a thorough review of the hotel bed", sv:"genomföra en grundlig recension av hotellsängen" },
+  { mood:"spicy", type:"gp", en:"racing upstairs after locking the front door", sv:"tävla uppför trappan efter att ytterdörren låsts" },
+  { mood:"spicy", type:"gp", en:"suggesting we save water in a way that saves no water", sv:"föreslå att vi sparar vatten på ett sätt som inte sparar något vatten" },
+  { mood:"spicy", type:"qf", en:"you have my full attention", sv:"du har min fulla uppmärksamhet" },
+  { mood:"spicy", type:"qf", en:"come upstairs and find out", sv:"kom upp så får du se" },
+  { mood:"deep", type:"gp", en:"arriving with the exact right snack like a mind reader", sv:"dyka upp med exakt rätt snacks som en tankeläsare" },
+  { mood:"deep", type:"gp", en:"defending each other's nonsense in public, always", sv:"försvara varandras dumheter offentligt, alltid" },
+  { mood:"deep", type:"gp", en:"texting 'almost home' just so someone's waiting", sv:"sms:a 'snart hemma' bara för att någon ska vänta" },
+  { mood:"deep", type:"qf", en:"you're my favorite problem", sv:"du är mitt favoritproblem" },
+  { mood:"fun", type:"np", en:"the emergency snack drawer", sv:"nödsnackslådan" },
+  { mood:"fun", type:"np", en:"the 'quick stop' that lasted three hours", sv:"'snabbstoppet' som tog tre timmar" },
+  { mood:"fun", type:"np", en:"a fitted sheet and two broken spirits", sv:"ett dra-på-lakan och två knäckta själar" },
+  { mood:"fun", type:"np", en:"a nap that was supposed to be twenty minutes", sv:"en tupplur som skulle vara tjugo minuter" },
+  { mood:"fun", type:"gp", en:"{p1} explaining the offside rule with condiments", sv:"{p1} som förklarar offsideregeln med kryddflaskor" },
+  { mood:"fun", type:"qf", en:"the parking was free though", sv:"men parkeringen var gratis" },
+  { mood:"fun", type:"qf", en:"I've been saying that for years", sv:"det har jag sagt i åratal" },
+  { mood:"mix", type:"np", en:"an anniversary we both pretended not to forget", sv:"en årsdag vi båda låtsades att vi inte glömt" },
+  { mood:"mix", type:"np", en:"the blanket fort that took two hours and one argument", sv:"filtkojan som tog två timmar och ett bråk" },
+  { mood:"mix", type:"np", en:"a plan B that was always the real plan", sv:"en plan B som alltid var den riktiga planen" },
+  { mood:"mix", type:"gp", en:"cancelling plans and celebrating like we won something", sv:"ställa in planer och fira som om vi vunnit något" },
+  { mood:"mix", type:"gp", en:"walking the long way home on purpose", sv:"ta den långa vägen hem med flit" },
+  { mood:"mix", type:"gp", en:"staging interventions for each other's online shopping", sv:"ordna interventioner för varandras näthandel" },
+  { mood:"mix", type:"gp", en:"slow-blinking at each other like house cats", sv:"långsamblinka åt varandra som huskatter" },
+  { mood:"mix", type:"qf", en:"same time tomorrow?", sv:"samma tid imorgon?" },
+  { mood:"mix", type:"qf", en:"it's us versus the instructions", sv:"det är vi mot instruktionerna" },
+  { mood:"mix", type:"ap", en:"fluent in eyebrow", sv:"flytande i ögonbryn" },
+  { mood:"spicy", type:"np", en:"one raised eyebrow from across the party", sv:"ett höjt ögonbryn från andra sidan festen" },
+  { mood:"spicy", type:"np", en:"a 'work from home' day with air quotes", sv:"en 'jobba hemifrån'-dag med citattecken i luften" },
+  { mood:"spicy", type:"gp", en:"reappearing from the bathroom in the other one's shirt", sv:"dyka upp från badrummet i den andras skjorta" },
+  { mood:"spicy", type:"qf", en:"wear the thing", sv:"ta på dig den där" },
+  { mood:"deep", type:"np", en:"the pep talk in the car before family dinner", sv:"peppsnacket i bilen före släktmiddagen" },
+  { mood:"deep", type:"np", en:"a therapy breakthrough in a parking garage", sv:"ett terapigenombrott i ett parkeringshus" },
+  { mood:"deep", type:"np", en:"your laugh in a room full of strangers", sv:"ditt skratt i ett rum fullt av främlingar" },
+  { mood:"deep", type:"qf", en:"stay anyway", sv:"stanna ändå" },
+  { mood:"fun", type:"np", en:"the Tupperware avalanche", sv:"matlådslavinen" },
+  { mood:"fun", type:"np", en:"a houseplant on hospice care", sv:"en krukväxt i palliativ vård" },
+  { mood:"fun", type:"np", en:"a wine cork collection with no explanation", sv:"en vinkorkssamling utan förklaring" },
+  { mood:"fun", type:"np", en:"the vacation photo album that ends on day two", sv:"semesteralbumet som slutar på dag två" },
+  { mood:"fun", type:"gp", en:"conducting a full trial over who lost the keys", sv:"hålla en hel rättegång om vem som tappade nycklarna" },
+  { mood:"fun", type:"gp", en:"live-updating each other from different aisles of the store", sv:"liverapportera till varandra från olika gångar i affären" },
+  { mood:"fun", type:"gp", en:"getting invested in strangers' arguments at the airport", sv:"bli känslomässigt engagerade i främlingars bråk på flygplatsen" },
+  { mood:"mix", type:"np", en:"a fridge photo from 2019 nobody will move", sv:"ett kylskåpsfoto från 2019 som ingen får flytta" },
+  { mood:"mix", type:"np", en:"one umbrella, badly shared", sv:"ett paraply, dåligt delat" },
+  { mood:"spicy", type:"gp", en:"turning off the lamp with intent", sv:"släcka lampan med avsikt" },
+  { mood:"deep", type:"np", en:"the last bite, saved without being asked", sv:"sista tuggan, sparad utan att någon bett om det" },
+  { mood:"deep", type:"np", en:"an entire argument resolved in the hallway in four words", sv:"ett helt bråk löst i hallen med fyra ord" }
 ];
